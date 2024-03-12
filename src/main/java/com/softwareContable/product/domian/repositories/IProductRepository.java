@@ -1,6 +1,6 @@
-package domian.repositories;
+package com.softwareContable.product.domian.repositories;
 
-import domian.models.Product;
+import com.softwareContable.product.domian.models.Product;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 @Repository

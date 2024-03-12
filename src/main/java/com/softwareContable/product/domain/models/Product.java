@@ -1,4 +1,4 @@
-package com.softwareContable.product.domian.models;
+package com.softwareContable.product.domain.models;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -27,12 +27,5 @@ public class Product {
         this.description = description;
     }
 
-    public Product(String name, float price, LocalDateTime dateCreated, LocalDateTime dateUpdated, String description) {
-        this.name = name;
-        this.price = price;
-        this.dateCreated = dateCreated;
-        this.dateUpdated = dateUpdated;
-        this.description = description;
-    }
 
 }

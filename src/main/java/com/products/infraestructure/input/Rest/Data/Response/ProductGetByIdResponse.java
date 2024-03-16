@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Date;
+
 @Builder
 @Getter
 @Setter
@@ -13,8 +15,16 @@ import lombok.Setter;
 @NoArgsConstructor
 public class ProductGetByIdResponse {
     private String id;
-    private String name;
+    private String itemType;
+    private String code;
     private String description;
-    private Double price;
+    private Integer minQuantity;
+    private Integer maxQuantity;
+    private Integer taxPercentage;
+    private Date creationDate;
+    private String unitOfMeasure;//TODO cambiar tipo de dato por unidad de medida
+    private String supplier; //TODO cambiar tipo de dato por lista de proveedores
+    private String category; //TODO cambiar tipo de dato por lista de categorias
+    private double price;
 
 }

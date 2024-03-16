@@ -26,12 +26,12 @@ public class ProductController{
     private final IProductCreateManagerPort productCreateManagerPort;
     private final IProductRestMapper productRestMapper;
 
-    @GetMapping("/{id}")
+    @GetMapping("/GetById{id}")
     public ResponseEntity<ProductGetByIdResponse> getByIdProduct(@RequestParam String id){
         return ResponseEntity.ok(productRestMapper.toResponse(productSearchManagerPort.getByIdProduct(id)));
     }
     
-    @PostMapping("/")
+    @PostMapping("/CreateProduct")
     public ResponseEntity<ProductCreateResponse> createProduct(@RequestBody ProductCreateRequest productCreateRequest) {
         Product product = productCreateManagerPort.createProduct(productRestMapper.toProduct(productCreateRequest));
         ProductCreateResponse productCreateResponse = productRestMapper.toCreateProductResponse(product);

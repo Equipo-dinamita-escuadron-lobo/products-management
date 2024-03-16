@@ -21,8 +21,7 @@ public class ProductJpaAdapter implements IProductSearchOutputPort, IProductCrea
     @Override
     public Product getById(String id) {
         ProductEntity productEntity = productRepository.findById(id).get();
-        Product product = productMapper.toDomain(productEntity);
-        return product;
+        return productMapper.toDomain(productEntity);
     }
     
     @Override

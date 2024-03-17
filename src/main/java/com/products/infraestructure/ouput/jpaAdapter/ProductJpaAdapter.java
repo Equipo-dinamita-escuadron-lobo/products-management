@@ -1,19 +1,20 @@
 package com.products.infraestructure.ouput.jpaAdapter;
 
-import org.springframework.stereotype.Component;
-
 import com.products.aplication.output.IProductCreateOutputPort;
+import com.products.aplication.output.IProductGetAllOutputPort;
 import com.products.aplication.output.IProductSearchOutputPort;
 import com.products.domain.models.Product;
 import com.products.infraestructure.ouput.jpaAdapter.Entity.ProductEntity;
 import com.products.infraestructure.ouput.jpaAdapter.Mapper.IProductMapper;
 import com.products.infraestructure.ouput.jpaAdapter.Repository.IProductRepository;
-
 import lombok.Data;
+import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 @Component
 @Data
-public class ProductJpaAdapter implements IProductSearchOutputPort, IProductCreateOutputPort {
+public class ProductJpaAdapter implements IProductSearchOutputPort, IProductCreateOutputPort, IProductGetAllOutputPort {
 
     private final IProductRepository productRepository;
     private final IProductMapper productMapper;
@@ -32,5 +33,10 @@ public class ProductJpaAdapter implements IProductSearchOutputPort, IProductCrea
         ProductEntity productEntity = productMapper.toEntity(product);
         productEntity = productRepository.save(productEntity);
         return productMapper.toDomain(productEntity);
+    }
+    @Override
+    public List<Product> getAllProduct() {
+        List<ProductEntity> productEntities = productRepository.findAll();
+        return productMapper.toDomainList(productEntities);
     }
 }

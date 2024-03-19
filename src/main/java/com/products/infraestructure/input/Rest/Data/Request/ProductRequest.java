@@ -13,7 +13,7 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 
-public class ProductCreateRequest {
+public class ProductRequest {
 //TODO: analizar si es necesario agregar todos los campos
 
     @NotBlank(message = "ID es requerido")

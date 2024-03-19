@@ -1,8 +1,6 @@
 package com.products.infraestructure.ouput.jpaAdapter;
 
-import com.products.aplication.output.IProductCreateOutputPort;
-import com.products.aplication.output.IProductGetAllOutputPort;
-import com.products.aplication.output.IProductSearchOutputPort;
+import com.products.aplication.output.IProductOutputPort;
 import com.products.domain.models.Product;
 import com.products.infraestructure.ouput.jpaAdapter.Entity.ProductEntity;
 import com.products.infraestructure.ouput.jpaAdapter.Mapper.IProductMapper;
@@ -14,7 +12,7 @@ import java.util.List;
 
 @Component
 @Data
-public class ProductJpaAdapter implements IProductSearchOutputPort, IProductCreateOutputPort, IProductGetAllOutputPort {
+public class ProductJpaAdapter implements IProductOutputPort {
 
     private final IProductRepository productRepository;
     private final IProductMapper productMapper;

@@ -13,7 +13,7 @@ import java.util.Date;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ProductCreateResponse {
+public class ProductResponse {
     private String id;
     private String itemType;
     private String code;

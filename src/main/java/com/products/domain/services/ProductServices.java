@@ -1,11 +1,7 @@
 package com.products.domain.services;
 
-import com.products.aplication.input.IProductCreateManagerPort;
-import com.products.aplication.input.IProductGetAllManagerPort;
-import com.products.aplication.input.IProductSearchManagerPort;
-import com.products.aplication.output.IProductCreateOutputPort;
-import com.products.aplication.output.IProductGetAllOutputPort;
-import com.products.aplication.output.IProductSearchOutputPort;
+import com.products.aplication.input.IProductManagerPort;
+import com.products.aplication.output.IProductOutputPort;
 import com.products.domain.models.Product;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -14,27 +10,23 @@ import java.util.List;
 
 @AllArgsConstructor
 @Service
-public class ProductServices implements IProductSearchManagerPort, IProductCreateManagerPort, IProductGetAllManagerPort{
+public class ProductServices implements IProductManagerPort {
 
-    private final IProductSearchOutputPort outputPortSearch;
+    private final IProductOutputPort productOutputPort;
 
     @Override
     public Product getByIdProduct(String id) {
-        return outputPortSearch.getById(id);
+        return productOutputPort.getById(id);
     }
-
-    private final IProductCreateOutputPort outputPortCreate;
 
     @Override
-    public Product createProduct(Product product){
-        return outputPortCreate.createProduct(product);
+    public Product createProduct(Product product) {
+        return productOutputPort.createProduct(product);
     }
-
-    private final IProductGetAllOutputPort outputPortGetAll;
 
     @Override
     public List<Product> getAllProducts() {
-        return outputPortGetAll.getAllProduct();
+        return productOutputPort.getAllProduct();
 
     }
 }

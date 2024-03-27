@@ -5,11 +5,18 @@ import com.products.domain.models.Product;
 import com.products.infraestructure.input.Rest.Data.Request.ProductRequest;
 import com.products.infraestructure.input.Rest.Data.Response.ProductResponse;
 import com.products.infraestructure.input.Rest.Mapper.IProductRestMapper;
+
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+
+import org.aspectj.bridge.Message;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Objects;
 
 @RestController
 @RequestMapping("/product")
@@ -28,7 +35,12 @@ public class ProductController{
     }
 
     @PostMapping("/CreateProduct")
-    public ResponseEntity<ProductResponse> createProduct(@RequestBody ProductRequest productRequest) {
+    public ResponseEntity<?> createProduct(@Valid @RequestBody ProductRequest productRequest, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            StringBuilder errorMessage = new StringBuilder();
+            bindingResult.getAllErrors().forEach(error -> errorMessage.append(error.getDefaultMessage()).append("; "));
+            return ResponseEntity.badRequest().body(errorMessage.toString());
+        }
         Product product = productManagerPort.createProduct(productRestMapper.toProduct(productRequest));
         ProductResponse productResponse = productRestMapper.toResponse(product);
         return ResponseEntity.ok(productResponse);

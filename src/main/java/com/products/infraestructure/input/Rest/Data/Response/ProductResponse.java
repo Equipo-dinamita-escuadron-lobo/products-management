@@ -14,9 +14,8 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ProductResponse {
-    private String id;
+    private Long id;
     private String itemType;
-    private String code;
     private String description;
     private Integer minQuantity;
     private Integer maxQuantity;

@@ -13,9 +13,8 @@ import java.util.Date;
 @Builder
 public class Product {
 
-    private String id;
+    private Long id;
     private String itemType;
-    private String code;
     private String description;
     private Integer minQuantity;
     private Integer maxQuantity;

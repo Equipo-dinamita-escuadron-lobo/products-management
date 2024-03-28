@@ -21,14 +21,10 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 public class ProductRequest {
 //TODO: analizar si es necesario agregar todos los campos
     @JsonIgnore
-    private String id;
+    private Long id;
 
     @NotBlank(message = "Nombre es requerido")
     private String itemType;
-
-    @NotBlank(message = "Codigo es requerido")
-    @NotNull(message = "El codigo es nulo")
-    private String code;
 
     @NotBlank(message = "Descripticion es requerida")
     @NotNull(message = "la descripcion es nula")

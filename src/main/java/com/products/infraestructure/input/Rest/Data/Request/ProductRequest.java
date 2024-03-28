@@ -11,6 +11,8 @@ import lombok.Setter;
 
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -18,13 +20,10 @@ import java.util.Date;
 
 public class ProductRequest {
 //TODO: analizar si es necesario agregar todos los campos
-
-    @NotBlank(message = "ID es requerido")
-    @NotNull(message = "El ID es nulo")
+    @JsonIgnore
     private String id;
 
     @NotBlank(message = "Nombre es requerido")
-    @NotNull(message = "El nombre es nulo")
     private String itemType;
 
     @NotBlank(message = "Codigo es requerido")
@@ -36,19 +35,15 @@ public class ProductRequest {
     @Size(min = 4, max = 100, message = "La descripcion debe estar en el rango de 4 a 100 caracteres")
     private String description;
 
-    @NotBlank(message = "Cantidad minima es requerida")
     @NotNull(message = "la cantidad minima es nulo")
     private Integer minQuantity;
 
-    @NotBlank(message = "Cantidad maxima es requerida")
     @NotNull(message = "la cantidad maxima es nulo")
     private Integer maxQuantity;
 
-    @NotBlank(message = "porcentaje de impuesto es requerido")
     @NotNull(message = "porcentaje de impuesto es nulo")
     private Integer taxPercentage;
 
-    @NotBlank(message = "Fecha de creacion es requerida")
     @NotNull(message = "Fecha de creacion es nulo")
     private Date creationDate;
 
@@ -64,7 +59,6 @@ public class ProductRequest {
     @NotNull(message = "Categoria es nula")
     private String category;
 
-    @NotBlank(message = "Precio es requerido")
     @NotNull(message = "Precio es nulo")
     @Min(value = 0, message="El precio no puede ser negativo")
     private Double price;

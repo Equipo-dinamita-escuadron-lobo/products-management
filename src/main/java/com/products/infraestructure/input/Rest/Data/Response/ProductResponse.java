@@ -16,6 +16,7 @@ import java.util.Date;
 public class ProductResponse {
     private Long id;
     private String itemType;
+    private String code;
     private String description;
     private Integer minQuantity;
     private Integer maxQuantity;

@@ -22,7 +22,7 @@ import java.util.Map;
 import java.util.Objects;
 
 @RestController
-@RequestMapping("/product")
+@RequestMapping("/api/product")
 @AllArgsConstructor
 public class ProductController{
     private final IProductManagerPort productManagerPort;

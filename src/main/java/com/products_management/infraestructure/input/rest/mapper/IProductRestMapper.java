@@ -7,7 +7,6 @@ import com.products_management.domain.model.Product;
 import org.mapstruct.ReportingPolicy;
 import java.util.List;
 
-@Mapper (componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface IProductRestMapper {
 
     Product toProduct(ProductCreateRequest productCreateRequest);

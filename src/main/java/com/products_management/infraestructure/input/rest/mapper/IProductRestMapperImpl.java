@@ -5,14 +5,8 @@ import com.products_management.infraestructure.input.rest.model.request.ProductC
 import com.products_management.infraestructure.input.rest.model.response.ProductResponse;
 import java.util.ArrayList;
 import java.util.List;
-import javax.annotation.processing.Generated;
 import org.springframework.stereotype.Component;
 
-@Generated(
-    value = "org.mapstruct.ap.MappingProcessor",
-    date = "2024-04-05T00:05:11-0500",
-    comments = "version: 1.6.0.Beta1, compiler: Eclipse JDT (IDE) 3.38.0.v20240325-1403, environment: Java 17.0.10 (Eclipse Adoptium)"
-)
 @Component
 public class IProductRestMapperImpl implements IProductRestMapper {
 

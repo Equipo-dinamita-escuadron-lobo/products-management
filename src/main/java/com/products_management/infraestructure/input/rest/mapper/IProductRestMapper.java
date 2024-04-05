@@ -1,10 +1,8 @@
 package com.products_management.infraestructure.input.rest.mapper;
 
 import com.products_management.infraestructure.input.rest.model.response.ProductResponse;
-import org.mapstruct.Mapper;
 import com.products_management.infraestructure.input.rest.model.request.ProductCreateRequest;
 import com.products_management.domain.model.Product;
-import org.mapstruct.ReportingPolicy;
 import java.util.List;
 
 public interface IProductRestMapper {

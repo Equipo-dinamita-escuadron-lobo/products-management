@@ -10,6 +10,8 @@ import java.util.List;
 public interface IProductPersistenceMapper {
 
     ProductEntity toProductEntity(Product product);
+
     Product toProduct(ProductEntity productEntity);
+
     List<Product> toProductList(List<ProductEntity> productList);
 }

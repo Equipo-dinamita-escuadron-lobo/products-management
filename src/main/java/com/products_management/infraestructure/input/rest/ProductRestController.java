@@ -2,6 +2,7 @@ package com.products_management.infraestructure.input.rest;
 
 import com.products_management.application.ports.input.IProductServicePort;
 import com.products_management.infraestructure.input.rest.mapper.IProductRestMapper;
+import com.products_management.infraestructure.input.rest.mapper.IProductRestMapperImpl;
 import com.products_management.infraestructure.input.rest.model.request.ProductCreateRequest;
 import com.products_management.infraestructure.input.rest.model.response.ProductResponse;
 import jakarta.validation.Valid;
@@ -18,7 +19,7 @@ import java.util.List;
 public class ProductRestController {
 
     private final IProductServicePort productServicePort;
-    private final IProductRestMapper productRestMapper;
+    private final IProductRestMapperImpl productRestMapper;
 
     @GetMapping("/findAllProducts")
     public List<ProductResponse> findAllProducts() {

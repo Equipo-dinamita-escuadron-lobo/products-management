@@ -4,7 +4,6 @@ import com.products_management.domain.model.Product;
 import com.products_management.infraestructure.output.persistence.entity.ProductEntity;
 import java.util.ArrayList;
 import java.util.List;
-import javax.annotation.processing.Generated;
 import org.springframework.stereotype.Component;
 
 

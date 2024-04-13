@@ -1,7 +1,6 @@
 package com.products_management.infraestructure.input.rest;
 
 import com.products_management.application.ports.input.IProductServicePort;
-import com.products_management.infraestructure.input.rest.mapper.IProductRestMapper;
 import com.products_management.infraestructure.input.rest.mapper.IProductRestMapperImpl;
 import com.products_management.infraestructure.input.rest.model.request.ProductCreateRequest;
 import com.products_management.infraestructure.input.rest.model.response.ProductResponse;
@@ -21,29 +20,29 @@ public class ProductRestController {
     private final IProductServicePort productServicePort;
     private final IProductRestMapperImpl productRestMapper;
 
-    @GetMapping("/findAllProducts")
-    public List<ProductResponse> findAllProducts() {
-        return productRestMapper.toProductResponseList(productServicePort.findAllProducts());
+    @GetMapping("/findAll")
+    public List<ProductResponse> findAll() {
+        return productRestMapper.toProductResponseList(productServicePort.findAll());
     }
 
-    @GetMapping("/findByCodeProduct/{code}")
-    public ProductResponse findByCodeProduct(@PathVariable String code) {
-        return productRestMapper.toProductResponse(productServicePort.findByCodeProduct(code));
+    @GetMapping("/findById/{id}")
+    public ProductResponse findById(@PathVariable Long id) {
+        return productRestMapper.toProductResponse(productServicePort.findById(id));
     }
 
-    @PostMapping("/createProduct")
-    public ResponseEntity<ProductResponse> createProduct(@Valid @RequestBody ProductCreateRequest productCreateRequest) {
+    @PostMapping("/create")
+    public ResponseEntity<ProductResponse> create(@Valid @RequestBody ProductCreateRequest productCreateRequest) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(productRestMapper.toProductResponse(
-                        productServicePort.createProduct(productRestMapper.toProduct(productCreateRequest))));
+                        productServicePort.create(productRestMapper.toProduct(productCreateRequest))));
     }
-    @PutMapping("/updateProduct/{code}")
-    public ProductResponse updateProduct(@PathVariable String code, @Valid @RequestBody ProductCreateRequest productCreateRequest) {
+    @PutMapping("/update/{id}")
+    public ProductResponse update(@PathVariable Long id, @Valid @RequestBody ProductCreateRequest productCreateRequest) {
         return productRestMapper.toProductResponse(
-                productServicePort.updateProduct(code, productRestMapper.toProduct(productCreateRequest)));
+                productServicePort.update(id, productRestMapper.toProduct(productCreateRequest)));
     }
-    @DeleteMapping("/deleteProduct/{code}")
-    public void deleteProduct(@PathVariable String code) {
-        productServicePort.deleteByCodeProduct(code);
+    @DeleteMapping("/delete/{id}")
+    public void deleteById(@PathVariable Long id) {
+        productServicePort.deleteById(id);
     }
 }

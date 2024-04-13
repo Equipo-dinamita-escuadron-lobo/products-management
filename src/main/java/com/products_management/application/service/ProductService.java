@@ -15,43 +15,43 @@ public class ProductService implements IProductServicePort {
     private final IProductPersistencePort productPersistencePort;
 
     @Override
-    public Product findByCodeProduct(String code) {
-        return productPersistencePort.findByCodeProduct(code).orElseThrow(ProductNotFoundException::new);
+    public Product findById(Long id) {
+        return productPersistencePort.findById(id).orElseThrow(ProductNotFoundException::new);
     }
 
     @Override
-    public List<Product> findAllProducts() {
-        return productPersistencePort.findAllProducts();
+    public List<Product> findAll() {
+        return productPersistencePort.findAll();
     }
 
     @Override
-    public Product createProduct(Product product) {
-        return productPersistencePort.createProduct(product);
+    public Product create(Product product) {
+        return productPersistencePort.create(product);
     }
 
     @Override
-    public Product updateProduct(String code, Product product) {
-        return productPersistencePort.findByCodeProduct(code)
-                .map(createProduct ->{
-                    createProduct.setItemType(product.getItemType());
-                    createProduct.setDescription(product.getDescription());
-                    createProduct.setMinQuantity(product.getMinQuantity());
-                    createProduct.setMaxQuantity(product.getMaxQuantity());
-                    createProduct.setTaxPercentage(product.getTaxPercentage());
-                    createProduct.setUnitOfMeasure(product.getUnitOfMeasure());
-                    createProduct.setSupplier(product.getSupplier());
-                    createProduct.setCategory(product.getCategory());
-                    createProduct.setPrice(product.getPrice());
-                    return productPersistencePort.createProduct(createProduct);
+    public Product update(Long id, Product product) {
+        return productPersistencePort.findById(id)
+                .map(create ->{
+                    create.setItemType(product.getItemType());
+                    create.setDescription(product.getDescription());
+                    create.setMinQuantity(product.getMinQuantity());
+                    create.setMaxQuantity(product.getMaxQuantity());
+                    create.setTaxPercentage(product.getTaxPercentage());
+                    create.setUnitOfMeasure(product.getUnitOfMeasure());
+                    create.setSupplier(product.getSupplier());
+                    create.setCategory(product.getCategory());
+                    create.setPrice(product.getPrice());
+                    return productPersistencePort.create(create);
                 })
                 .orElseThrow(ProductNotFoundException::new);
     }
 
     @Override
-    public void deleteByCodeProduct(String code) {
-        if(productPersistencePort.findByCodeProduct(code).isEmpty()){
+    public void deleteById(Long id) {
+        if(productPersistencePort.findById(id).isEmpty()){
             throw new ProductNotFoundException();
         }
-        productPersistencePort.deleteByCodeProduct(code);
+        productPersistencePort.deleteById(id);
     }
 }

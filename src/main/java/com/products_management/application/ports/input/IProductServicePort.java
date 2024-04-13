@@ -5,14 +5,14 @@ import com.products_management.domain.model.Product;
 
 public interface IProductServicePort {
 
-  Product findByCodeProduct(String code);
+  Product findById(Long id);
 
-  List<Product> findAllProducts();
+  List<Product> findAll();
 
-  Product createProduct(Product product);
+  Product create(Product product);
 
-  Product updateProduct(String code, Product product);
+  Product update(Long id, Product product);
 
-  void deleteByCodeProduct(String code);  
+  void deleteById(Long id);  
   
 }

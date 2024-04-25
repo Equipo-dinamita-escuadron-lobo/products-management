@@ -9,10 +9,13 @@ public interface IProductServicePort {
 
   List<Product> findAll();
 
+  List<Product> findActivated(Boolean state);
+
   Product create(Product product);
 
   Product update(Long id, Product product);
 
-  void deleteById(Long id);  
+  void deleteById(Long id);
+
   
 }

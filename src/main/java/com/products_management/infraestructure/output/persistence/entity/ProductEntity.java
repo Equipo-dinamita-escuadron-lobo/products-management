@@ -29,4 +29,5 @@ public class ProductEntity {
     private String supplier;
     private String category;
     private double price;
+    private String state;
 }

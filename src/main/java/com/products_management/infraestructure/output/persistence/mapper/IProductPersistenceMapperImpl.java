@@ -30,6 +30,8 @@ public class IProductPersistenceMapperImpl implements IProductPersistenceMapper 
         productEntity.setSupplier( product.getSupplier() );
         productEntity.setTaxPercentage( product.getTaxPercentage() );
         productEntity.setUnitOfMeasure( product.getUnitOfMeasure() );
+        productEntity.setState("true");
+        
 
         return productEntity;
     }

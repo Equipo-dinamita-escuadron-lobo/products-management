@@ -26,4 +26,5 @@ public class Product {
     private String supplier; 
     private String category;
     private double price;
+    private boolean state;
 }

@@ -9,7 +9,7 @@ public interface IProductServicePort {
 
   List<Product> findAll();
 
-  List<Product> findActivated(Boolean state);
+  List<Product> findActivated(String state);
 
   Product create(Product product);
 

@@ -58,6 +58,7 @@ public class ProductPersistenceMapperImpl implements IProductPersistenceMapper {
         productBuilder.categoryId(productEntity.getCategoryId());
         productBuilder.enterpriseId(productEntity.getEnterpriseId());
         productBuilder.price(productEntity.getPrice());
+        productBuilder.state(productEntity.getState());
 
         return productBuilder.build();
     }

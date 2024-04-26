@@ -28,7 +28,7 @@ public class ProductPersistenceAdapter implements IProductPersistencePort {
     }
 
     @Override
-    public List<Product> findActivated(boolean state) {
+    public List<Product> findActivated(String state) {
         return productPersistenceMapper.toProductList(productRepository.findByState(state));
     }
 

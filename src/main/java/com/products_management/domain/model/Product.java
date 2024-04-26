@@ -27,5 +27,5 @@ public class Product {
     private Long categoryId;
     private Long enterpriseId;
     private double price;
-    private boolean state;
+    private String state;
 }

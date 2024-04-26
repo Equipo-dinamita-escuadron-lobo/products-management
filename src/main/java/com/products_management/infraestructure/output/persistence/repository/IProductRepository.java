@@ -11,5 +11,5 @@ import org.springframework.data.repository.query.Param;
 public interface IProductRepository extends JpaRepository<ProductEntity, Long> {
 
     @Query("SELECT p FROM ProductEntity p WHERE p.state = :state")
-    List<ProductEntity> findByState(@Param("state") Boolean state);
+    List<ProductEntity> findByState(@Param("state") String state);
 }

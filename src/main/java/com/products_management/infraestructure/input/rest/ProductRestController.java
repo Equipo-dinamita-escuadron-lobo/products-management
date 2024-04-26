@@ -31,7 +31,7 @@ public class ProductRestController {
     }
 
     @GetMapping("/findActivate/{state}")
-    public List<ProductResponse>  findActivate(@PathVariable boolean state) {
+    public List<ProductResponse>  findActivate(@PathVariable String state) {
         return productRestMapper.toProductResponseList(productServicePort.findActivated(state));
     }
 

@@ -8,7 +8,7 @@ import java.util.Optional;
 public interface IProductPersistencePort {
     Optional<Product> findById(Long id);
     List<Product> findAll();
-    List<Product> findActivated(boolean state);
+    List<Product> findActivated(String state);
     Product create(Product product);
     void deleteById(Long id);
 }

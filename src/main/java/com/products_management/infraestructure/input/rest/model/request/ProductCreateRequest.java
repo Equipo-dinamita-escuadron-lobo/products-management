@@ -52,4 +52,7 @@ public class ProductCreateRequest {
 
     @NotNull(message = "Precio es requerido")
     private double price;
+
+    @JsonIgnore
+    private String state;
 }

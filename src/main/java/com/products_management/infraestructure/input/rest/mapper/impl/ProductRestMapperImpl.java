@@ -1,7 +1,6 @@
 package com.products_management.infraestructure.input.rest.mapper.impl;
 
 import com.products_management.domain.model.Product;
-import com.products_management.domain.model.UnitOfMeasure;
 import com.products_management.infraestructure.input.rest.mapper.interfaces.IProductRestMapper;
 import com.products_management.infraestructure.input.rest.model.request.ProductCreateRequest;
 import com.products_management.infraestructure.input.rest.model.response.ProductResponse;
@@ -32,7 +31,8 @@ public class ProductRestMapperImpl implements IProductRestMapper {
         product.supplierId(productCreateRequest.getSupplierId());
         product.categoryId(productCreateRequest.getCategoryId());
         product.enterpriseId(productCreateRequest.getEnterpriseId());
-        product.price( productCreateRequest.getPrice() );        
+        product.price(productCreateRequest.getPrice());
+        product.state(productCreateRequest.getState());
         
         return product.build();
     }
@@ -57,7 +57,8 @@ public class ProductRestMapperImpl implements IProductRestMapper {
         productResponse.supplierId(product.getSupplierId());
         productResponse.categoryId(product.getCategoryId());
         productResponse.enterpriseId(product.getEnterpriseId());
-        productResponse.price( product.getPrice() );
+        productResponse.price(product.getPrice());
+        productResponse.state(product.getState());
         
         return productResponse.build();
     }

@@ -26,10 +26,10 @@ public class ProductService implements IProductServicePort {
     }
 
     @Override
-    public List<Product> findActivated(Boolean state) {
+    public List<Product> findActivated(String state) {
         List<Product> allProducts = productPersistencePort.findAll();
         return allProducts.stream()
-                .filter(product -> product.isState() == state)
+                .filter(product -> product.getState() == state)
                 .collect(Collectors.toList());
     }
 

@@ -30,4 +30,5 @@ public class ProductEntity {
     private Long categoryId;
     private Long enterpriseId;
     private double price;
+    private String state;
 }

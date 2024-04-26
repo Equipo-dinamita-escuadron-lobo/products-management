@@ -7,6 +7,7 @@ import com.products_management.domain.model.Product;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -22,6 +23,14 @@ public class ProductService implements IProductServicePort {
     @Override
     public List<Product> findAll() {
         return productPersistencePort.findAll();
+    }
+
+    @Override
+    public List<Product> findActivated(Boolean state) {
+        List<Product> allProducts = productPersistencePort.findAll();
+        return allProducts.stream()
+                .filter(product -> product.isState() == state)
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -55,4 +64,7 @@ public class ProductService implements IProductServicePort {
         }
         productPersistencePort.deleteById(id);
     }
+
+
+    
 }

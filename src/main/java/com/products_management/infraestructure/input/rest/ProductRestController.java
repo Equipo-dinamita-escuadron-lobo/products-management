@@ -30,6 +30,11 @@ public class ProductRestController {
         return productRestMapper.toProductResponse(productServicePort.findById(id));
     }
 
+    @GetMapping("/findActivate/{state}")
+    public List<ProductResponse>  findActivate(@PathVariable boolean state) {
+        return productRestMapper.toProductResponseList(productServicePort.findActivated(state));
+    }
+
     @PostMapping("/create")
     public ResponseEntity<ProductResponse> create(@Valid @RequestBody ProductCreateRequest productCreateRequest) {
         return ResponseEntity.status(HttpStatus.CREATED)

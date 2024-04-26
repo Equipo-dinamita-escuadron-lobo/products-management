@@ -22,8 +22,9 @@ public class Product {
     private Integer maxQuantity;
     private Integer taxPercentage;
     private Date creationDate;
-    private String unitOfMeasure;
-    private String supplier; 
-    private String category;
+    private Long unitOfMeasureId;
+    private Long supplierId; 
+    private Long categoryId;
+    private Long enterpriseId;
     private double price;
 }

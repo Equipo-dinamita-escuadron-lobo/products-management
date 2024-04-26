@@ -1,6 +1,9 @@
 package com.products_management.infraestructure.input.rest;
 
+import com.products_management.domain.exception.UnitOfMeasureNotFoundException;
 import com.products_management.domain.model.ErrorResponse;
+import com.products_management.domain.model.Product;
+import com.products_management.domain.model.UnitOfMeasure;
 import com.products_management.domain.exception.ProductNotFoundException;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
@@ -20,28 +23,58 @@ public class GlobalControllerAdvice {
 
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(ProductNotFoundException.class)
-    public ErrorResponse handleProductNotFoundException() {
+    public ErrorResponse handlerProductNotFoundException() {
         return ErrorResponse.builder()
                 .code(PRODUCT_NOT_FOUND.getCode())
                 .message(PRODUCT_NOT_FOUND.getMessage())
                 .timestamp(LocalDateTime.now())
                 .build();
     }
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(UnitOfMeasureNotFoundException.class)
+    public ErrorResponse handlerUnitOfMeasureNotFoundException() {
+        return ErrorResponse.builder()
+                .code(UNITOFMEASURE_NOT_FOUND.getCode())
+                .message(UNITOFMEASURE_NOT_FOUND.getMessage())
+                .timestamp(LocalDateTime.now())
+                .build();
+    }
+
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ErrorResponse handleProductNotFoundException(
+    public ErrorResponse handleValidationException(
             MethodArgumentNotValidException exception) {
         BindingResult bindingResult = exception.getBindingResult();
 
-        return ErrorResponse.builder()
-                .code(INVALID_PRODUCT.getCode())
-                .message(INVALID_PRODUCT.getMessage())
-                .details(bindingResult.getFieldErrors()
-                        .stream()
-                        .map(DefaultMessageSourceResolvable::getDefaultMessage)
-                        .collect(Collectors.toList()))
-                .timestamp(LocalDateTime.now())
-                .build();
+        // Verificar si la excepción se refiere a un producto o una unidad de medida
+        if (exception.getBindingResult().getTarget() instanceof Product) {
+            return ErrorResponse.builder()
+                    .code(INVALID_PRODUCT.getCode())
+                    .message(INVALID_PRODUCT.getMessage())
+                    .details(bindingResult.getFieldErrors()
+                            .stream()
+                            .map(DefaultMessageSourceResolvable::getDefaultMessage)
+                            .collect(Collectors.toList()))
+                    .timestamp(LocalDateTime.now())
+                    .build();
+        } else if (exception.getBindingResult().getTarget() instanceof UnitOfMeasure) {
+            return ErrorResponse.builder()
+                    .code(INVALID_UNITOFMEASURE.getCode())
+                    .message(INVALID_UNITOFMEASURE.getMessage())
+                    .details(bindingResult.getFieldErrors()
+                            .stream()
+                            .map(DefaultMessageSourceResolvable::getDefaultMessage)
+                            .collect(Collectors.toList()))
+                    .timestamp(LocalDateTime.now())
+                    .build();
+        } else {
+            return ErrorResponse.builder()
+                    .code(GENERIC_ERROR.getCode())
+                    .message(GENERIC_ERROR.getMessage())
+                    .details(Collections.singletonList(exception.getMessage()))
+                    .timestamp(LocalDateTime.now())
+                    .build();
+        }
     }
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)

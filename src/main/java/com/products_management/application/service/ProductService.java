@@ -38,9 +38,10 @@ public class ProductService implements IProductServicePort {
                     create.setMinQuantity(product.getMinQuantity());
                     create.setMaxQuantity(product.getMaxQuantity());
                     create.setTaxPercentage(product.getTaxPercentage());
-                    create.setUnitOfMeasure(product.getUnitOfMeasure());
-                    create.setSupplier(product.getSupplier());
-                    create.setCategory(product.getCategory());
+                    create.setUnitOfMeasureId(product.getUnitOfMeasureId());
+                    create.setSupplierId(product.getSupplierId());
+                    create.setCategoryId(product.getCategoryId());
+                    create.setEnterpriseId(product.getEnterpriseId());
                     create.setPrice(product.getPrice());
                     return productPersistencePort.create(create);
                 })

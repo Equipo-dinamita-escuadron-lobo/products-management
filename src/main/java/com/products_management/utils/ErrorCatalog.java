@@ -7,7 +7,11 @@ public enum ErrorCatalog {
 
     PRODUCT_NOT_FOUND("PRODUCT_NOT_FOUND", "Product not found"),
     INVALID_PRODUCT("INVALID_PRODUCT", "Invalid product"),
-    GENERIC_ERROR("GENERIC_ERROR", "An error occurred");
+    GENERIC_ERROR("GENERIC_ERROR", "An error occurred"),
+    UNITOFMEASURE_NOT_FOUND("UNITOFMEASURE_NOT_FOUND", "Unit of measure not found"),
+    INVALID_UNITOFMEASURE("INVALID_UNITOFMEASURE", "Invalid unit of measure"),
+    CATEGORY_NOT_FOUND("CATEGORY_NOT_FOUND", "Category not found"),
+    INVALID_CATEGORY("INVALID_CATEGORY", "Invalid category");
 
     private final String code;
     private final String message;

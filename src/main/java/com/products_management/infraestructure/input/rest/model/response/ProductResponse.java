@@ -1,5 +1,6 @@
 package com.products_management.infraestructure.input.rest.model.response;
 
+import com.products_management.domain.model.UnitOfMeasure;
 import lombok.*;
 
 import java.util.Date;
@@ -19,8 +20,9 @@ public class ProductResponse {
     private Integer maxQuantity;
     private Integer taxPercentage;
     private Date creationDate;
-    private String unitOfMeasure;
-    private String supplier;
-    private String category;
+    private Long unitOfMeasureId;
+    private Long supplierId;
+    private Long categoryId;
+    private Long enterpriseId;
     private double price;
 }

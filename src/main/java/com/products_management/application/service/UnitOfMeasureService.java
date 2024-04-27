@@ -43,10 +43,27 @@ public class UnitOfMeasureService implements IUnitOfMeasureServicePort {
     }
 
     @Override
+    public void changeState(Long id) {
+    UnitOfMeasure unitOfMeasure = unitMeasurePersistencePort.findById(id)
+                .orElseThrow(() -> new UnitOfMeasureNotFoundException());
+        if ("true".equals(unitOfMeasure.getState())) {
+            unitOfMeasure.setState("false"); 
+        } else {
+            unitOfMeasure.setState("true"); 
+        }
+        unitMeasurePersistencePort.create(unitOfMeasure);
+    }
+
+    @Override
     public void deleteById(Long id) {
         if(unitMeasurePersistencePort.findById(id).isEmpty()){
             throw new UnitOfMeasureNotFoundException();
         }
         unitMeasurePersistencePort.deleteById(id);
+    }
+
+    @Override
+    public void deleteAll() {
+        unitMeasurePersistencePort.deleteAll();
     }
 }

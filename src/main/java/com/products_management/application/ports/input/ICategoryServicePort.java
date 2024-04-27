@@ -10,5 +10,7 @@ public interface ICategoryServicePort {
     Category create(Category category);
     Category update(Long id, Category category);
     void deleteById(Long id);
+    void changeState(Long id);
+    void deleteAll();
 
 }

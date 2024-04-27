@@ -16,4 +16,5 @@ public class CategoryResponse {
     private Long costId;
     private Long saleId;
     private Long returnId;
+    private String state;
 }

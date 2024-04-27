@@ -9,4 +9,6 @@ public interface IUnitOfMeasureServicePort {
     UnitOfMeasure create(UnitOfMeasure unitOfMeasure);
     UnitOfMeasure update(Long id, UnitOfMeasure unitOfMeasure);
     void deleteById(Long id);
+    void changeState(Long id);
+    void deleteAll();
 }

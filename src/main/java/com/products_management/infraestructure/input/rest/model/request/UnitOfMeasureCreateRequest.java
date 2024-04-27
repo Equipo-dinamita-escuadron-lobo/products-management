@@ -19,4 +19,6 @@ public class UnitOfMeasureCreateRequest {
     private String description;
     @NotBlank(message = "Abreviacion es requerida")
     private String abbreviation;
+    @JsonIgnore
+    private String state;
 }

@@ -10,5 +10,5 @@ public interface IProductPersistencePort {
     List<Product> findAll();
     Product create(Product product);
     void deleteById(Long id);
-    public void deleteAll();
+    void deleteAll();
 }

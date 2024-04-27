@@ -41,8 +41,18 @@ public class CategoryRestController {
         return categoryRestMapper.toCategoryResponse(
                 categoryServicePort.update(id, categoryRestMapper.toCategory(categoryCreateRequest)));
     }
+    @PutMapping("/changeState/{id}")
+    public void changeState(@PathVariable Long id) {
+        categoryServicePort.changeState(id);
+    }
+
     @DeleteMapping("/delete/{id}")
     public void deleteById(@PathVariable Long id) {
         categoryServicePort.deleteById(id);
+    }
+
+    @DeleteMapping("/deleteAll")
+    public void deleteAll() {
+        categoryServicePort.deleteAll();
     }
 }

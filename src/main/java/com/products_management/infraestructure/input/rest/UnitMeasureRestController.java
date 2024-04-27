@@ -36,13 +36,25 @@ public class UnitMeasureRestController {
                 .body(unitOfMeasureRestMapper.toUnitOfMeasureResponse(
                         unitOfMeasureServicePort.create(unitOfMeasureRestMapper.toUnitOfMeasure(unitOfMeasureCreateRequest))));
     }
+    
     @PutMapping("/update/{id}")
     public UnitOfMeasureResponse update(@PathVariable Long id, @Valid @RequestBody UnitOfMeasureCreateRequest unitOfMeasureCreateRequest) {
         return unitOfMeasureRestMapper.toUnitOfMeasureResponse(
                 unitOfMeasureServicePort.update(id, unitOfMeasureRestMapper.toUnitOfMeasure(unitOfMeasureCreateRequest)));
     }
+
+    @PutMapping("/changeState/{id}")
+    public void changeState(@PathVariable Long id) {
+        unitOfMeasureServicePort.changeState(id);
+    }
+
     @DeleteMapping("/delete/{id}")
     public void deleteById(@PathVariable Long id) {
         unitOfMeasureServicePort.deleteById(id);
+    }
+
+    @DeleteMapping("/deleteAll")
+    public void deleteAll() {
+        unitOfMeasureServicePort.deleteAll();
     }
 }

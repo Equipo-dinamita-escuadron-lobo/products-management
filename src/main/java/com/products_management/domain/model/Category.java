@@ -17,4 +17,5 @@ public class Category {
     private Long costId;
     private Long saleId;
     private Long returnId;
+    private String state;
 }

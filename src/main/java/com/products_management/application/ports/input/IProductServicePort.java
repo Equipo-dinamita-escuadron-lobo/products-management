@@ -11,7 +11,7 @@ public interface IProductServicePort {
   Product create(Product product);
   Product update(Long id, Product product);
   void deleteById(Long id);
-  public void changeState(Long id);
-  public void deleteAll();
+  void changeState(Long id);
+  void deleteAll();
   
 }

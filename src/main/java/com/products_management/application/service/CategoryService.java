@@ -4,6 +4,7 @@ import com.products_management.application.ports.input.ICategoryServicePort;
 import com.products_management.application.ports.output.ICategoryPersistencePort;
 import com.products_management.domain.exception.CategoryNotFoundException;
 import com.products_management.domain.model.Category;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -47,10 +48,27 @@ public class CategoryService implements ICategoryServicePort {
     }
 
     @Override
+    public void changeState(Long id) {
+    Category category = categoryPersistencePort.findById(id)
+                .orElseThrow(() -> new CategoryNotFoundException());
+        if ("true".equals(category.getState())) {
+            category.setState("false"); 
+        } else {
+            category.setState("true"); 
+        }
+        categoryPersistencePort.create(category);
+    }
+
+    @Override
     public void deleteById(Long id) {
         if(categoryPersistencePort.findById(id).isEmpty()){
             throw new CategoryNotFoundException();
         }
         categoryPersistencePort.deleteById(id);
+    }
+
+    @Override
+    public void deleteAll() {
+        categoryPersistencePort.deleteAll();
     }
 }

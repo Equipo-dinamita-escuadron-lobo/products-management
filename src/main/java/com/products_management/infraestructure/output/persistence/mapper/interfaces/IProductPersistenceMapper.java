@@ -1,4 +1,4 @@
-package com.products_management.infraestructure.output.persistence.mapper;
+package com.products_management.infraestructure.output.persistence.mapper.interfaces;
 
 import com.products_management.domain.model.Product;
 import com.products_management.infraestructure.output.persistence.entity.ProductEntity;

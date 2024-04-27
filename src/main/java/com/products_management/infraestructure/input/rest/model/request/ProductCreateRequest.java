@@ -1,5 +1,6 @@
 package com.products_management.infraestructure.input.rest.model.request;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
@@ -11,6 +12,9 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ProductCreateRequest {
+
+    @JsonIgnore
+    private Long id;
 
     @NotBlank(message = "Codigo es requerido")
     private String code;
@@ -33,15 +37,21 @@ public class ProductCreateRequest {
     @NotNull(message = "Fecha de creacion es requerida")
     private Date creationDate;
 
-    @NotBlank(message = "Unidad de medida es requerida")
-    private String unitOfMeasure;
+    @NotNull(message = "Id Unidad de medida es requerida")
+    private Long unitOfMeasureId;
 
-    @NotBlank(message = "Proveedor es requerido")
-    private String supplier;
+    @NotNull(message = "Id Proveedor es requerido")
+    private Long supplierId;
 
-    @NotBlank(message = "Categoria es requerida")
-    private String category;
+    @NotNull(message = "Id Categoria es requerida")
+    private Long categoryId;
+
+    @NotNull(message = "Id Empresa es requerido")
+    private Long enterpriseId;
 
     @NotNull(message = "Precio es requerido")
     private double price;
+
+    @JsonIgnore
+    private String state;
 }

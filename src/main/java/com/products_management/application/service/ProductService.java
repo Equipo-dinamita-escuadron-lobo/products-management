@@ -26,10 +26,11 @@ public class ProductService implements IProductServicePort {
     }
 
     @Override
-    public List<Product> findActivated(Boolean state) {
+    public List<Product> findActivated(String state) {
+        System.out.println("****************** Estado del producto: "+state);
         List<Product> allProducts = productPersistencePort.findAll();
         return allProducts.stream()
-                .filter(product -> product.isState() == state)
+                .filter(product -> product.getState() .equals(state))
                 .collect(Collectors.toList());
     }
 
@@ -47,23 +48,22 @@ public class ProductService implements IProductServicePort {
                     create.setMinQuantity(product.getMinQuantity());
                     create.setMaxQuantity(product.getMaxQuantity());
                     create.setTaxPercentage(product.getTaxPercentage());
-                    create.setUnitOfMeasure(product.getUnitOfMeasure());
-                    create.setSupplier(product.getSupplier());
-                    create.setCategory(product.getCategory());
+                    create.setUnitOfMeasureId(product.getUnitOfMeasureId());
+                    create.setSupplierId(product.getSupplierId());
+                    create.setCategoryId(product.getCategoryId());
+                    create.setEnterpriseId(product.getEnterpriseId());
                     create.setPrice(product.getPrice());
                     return productPersistencePort.create(create);
                 })
                 .orElseThrow(ProductNotFoundException::new);
     }
 
-    @Override
     public void deleteById(Long id) {
-        if(productPersistencePort.findById(id).isEmpty()){
-            throw new ProductNotFoundException();
-        }
-        productPersistencePort.deleteById(id);
+        Product product = productPersistencePort.findById(id)
+                .orElseThrow(() -> new ProductNotFoundException());
+    
+        product.setState("false"); 
+        productPersistencePort.create(product);
     }
 
-
-    
 }

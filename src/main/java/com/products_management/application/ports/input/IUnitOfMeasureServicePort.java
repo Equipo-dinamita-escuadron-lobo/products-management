@@ -1,7 +1,6 @@
 package com.products_management.application.ports.input;
 
 import com.products_management.domain.model.UnitOfMeasure;
-
 import java.util.List;
 
 public interface IUnitOfMeasureServicePort {

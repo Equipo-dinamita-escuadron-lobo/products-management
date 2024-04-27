@@ -1,6 +1,8 @@
 package com.products_management.infraestructure.input.rest;
 
+import com.products_management.domain.exception.CategoryNotFoundException;
 import com.products_management.domain.exception.UnitOfMeasureNotFoundException;
+import com.products_management.domain.model.Category;
 import com.products_management.domain.model.ErrorResponse;
 import com.products_management.domain.model.Product;
 import com.products_management.domain.model.UnitOfMeasure;
@@ -39,6 +41,15 @@ public class GlobalControllerAdvice {
                 .timestamp(LocalDateTime.now())
                 .build();
     }
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(CategoryNotFoundException.class)
+    public ErrorResponse handlerCategoryNotFoundException() {
+        return ErrorResponse.builder()
+                .code(CATEGORY_NOT_FOUND.getCode())
+                .message(CATEGORY_NOT_FOUND.getMessage())
+                .timestamp(LocalDateTime.now())
+                .build();
+    }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -46,7 +57,6 @@ public class GlobalControllerAdvice {
             MethodArgumentNotValidException exception) {
         BindingResult bindingResult = exception.getBindingResult();
 
-        // Verificar si la excepción se refiere a un producto o una unidad de medida
         if (exception.getBindingResult().getTarget() instanceof Product) {
             return ErrorResponse.builder()
                     .code(INVALID_PRODUCT.getCode())
@@ -67,7 +77,17 @@ public class GlobalControllerAdvice {
                             .collect(Collectors.toList()))
                     .timestamp(LocalDateTime.now())
                     .build();
-        } else {
+            }else if (exception.getBindingResult().getTarget() instanceof Category) {
+            return ErrorResponse.builder()
+                    .code(INVALID_CATEGORY.getCode())
+                    .message(INVALID_CATEGORY.getMessage())
+                    .details(bindingResult.getFieldErrors()
+                            .stream()
+                            .map(DefaultMessageSourceResolvable::getDefaultMessage)
+                            .collect(Collectors.toList()))
+                    .timestamp(LocalDateTime.now())
+                    .build();
+        }else {
             return ErrorResponse.builder()
                     .code(GENERIC_ERROR.getCode())
                     .message(GENERIC_ERROR.getMessage())

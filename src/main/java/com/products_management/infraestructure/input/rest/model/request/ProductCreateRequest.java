@@ -1,7 +1,6 @@
 package com.products_management.infraestructure.input.rest.model.request;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.products_management.domain.model.UnitOfMeasure;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;

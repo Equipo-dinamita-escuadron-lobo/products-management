@@ -11,7 +11,7 @@ import lombok.Setter;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "UnitOfMeasure")
+@Table(name = "unitOfMeasure")
 public class UnitOfMeasureEntity {
 
     @Id

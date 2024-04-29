@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.TenantId;
 
 @Getter
 @Setter
@@ -21,4 +22,6 @@ public class UnitOfMeasureEntity {
     private String description;
     private String abbreviation;
     private String state;
+    @TenantId
+    private String tenantId;
 }

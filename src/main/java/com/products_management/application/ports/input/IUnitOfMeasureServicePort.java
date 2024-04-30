@@ -6,6 +6,7 @@ import java.util.List;
 public interface IUnitOfMeasureServicePort {
     UnitOfMeasure findById(Long id);
     List<UnitOfMeasure> findAll();
+    List<UnitOfMeasure> findActivated();
     UnitOfMeasure create(UnitOfMeasure unitOfMeasure);
     UnitOfMeasure update(Long id, UnitOfMeasure unitOfMeasure);
     void deleteById(Long id);

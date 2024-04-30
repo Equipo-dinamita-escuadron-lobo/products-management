@@ -4,6 +4,8 @@ import com.products_management.application.ports.input.ICategoryServicePort;
 import com.products_management.infraestructure.input.rest.mapper.impl.CategoryRestMapperImpl;
 import com.products_management.infraestructure.input.rest.model.request.CategoryCreateRequest;
 import com.products_management.infraestructure.input.rest.model.response.CategoryResponse;
+import com.products_management.infraestructure.input.rest.model.response.ProductResponse;
+
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -28,6 +30,11 @@ public class CategoryRestController {
     @GetMapping("/findById/{id}")
     public CategoryResponse findById(@PathVariable Long id) {
         return categoryRestMapper.toCategoryResponse(categoryServicePort.findById(id));
+    }
+
+    @GetMapping("/findActivate")
+    public List<CategoryResponse>  findActivate() {
+        return categoryRestMapper.toCategoryResponseList(categoryServicePort.findActivated());
     }
 
     @PostMapping("/create")

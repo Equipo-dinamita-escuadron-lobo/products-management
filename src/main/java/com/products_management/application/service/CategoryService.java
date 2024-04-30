@@ -4,10 +4,13 @@ import com.products_management.application.ports.input.ICategoryServicePort;
 import com.products_management.application.ports.output.ICategoryPersistencePort;
 import com.products_management.domain.exception.CategoryNotFoundException;
 import com.products_management.domain.model.Category;
+import com.products_management.domain.model.Product;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -23,6 +26,14 @@ public class CategoryService implements ICategoryServicePort {
     @Override
     public List<Category> findAll() {
         return categoryPersistencePort.findAll();
+    }
+
+    @Override
+    public List<Category> findActivated() {
+        List<Category> allCategorys = categoryPersistencePort.findAll();
+        return allCategorys.stream()
+                .filter(category -> category.getState() .equals("true"))
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -47,10 +58,27 @@ public class CategoryService implements ICategoryServicePort {
     }
 
     @Override
+    public void changeState(Long id) {
+    Category category = categoryPersistencePort.findById(id)
+                .orElseThrow(() -> new CategoryNotFoundException());
+        if ("true".equals(category.getState())) {
+            category.setState("false"); 
+        } else {
+            category.setState("true"); 
+        }
+        categoryPersistencePort.create(category);
+    }
+
+    @Override
     public void deleteById(Long id) {
         if(categoryPersistencePort.findById(id).isEmpty()){
             throw new CategoryNotFoundException();
         }
         categoryPersistencePort.deleteById(id);
+    }
+
+    @Override
+    public void deleteAll() {
+        categoryPersistencePort.deleteAll();
     }
 }

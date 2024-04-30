@@ -28,4 +28,7 @@ public class CategoryCreateRequest {
     private Long saleId;
     @NotNull(message = "Id de la devolución es requerido")
     private Long returnId;
+
+    @JsonIgnore
+    private String state;
 }

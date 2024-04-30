@@ -26,10 +26,10 @@ public class ProductService implements IProductServicePort {
     }
 
     @Override
-    public List<Product> findActivated(String state) {
+    public List<Product> findActivated() {
         List<Product> allProducts = productPersistencePort.findAll();
         return allProducts.stream()
-                .filter(product -> product.getState() == state)
+                .filter(product -> product.getState() .equals("true"))
                 .collect(Collectors.toList());
     }
 
@@ -58,6 +58,18 @@ public class ProductService implements IProductServicePort {
     }
 
     @Override
+    public void changeState(Long id) {
+    Product product = productPersistencePort.findById(id)
+                .orElseThrow(() -> new ProductNotFoundException());
+        if ("true".equals(product.getState())) {
+            product.setState("false"); 
+        } else {
+            product.setState("true"); 
+        }
+        productPersistencePort.create(product);
+    }
+
+    @Override
     public void deleteById(Long id) {
         if(productPersistencePort.findById(id).isEmpty()){
             throw new ProductNotFoundException();
@@ -65,6 +77,9 @@ public class ProductService implements IProductServicePort {
         productPersistencePort.deleteById(id);
     }
 
+    @Override
+    public void deleteAll() {
+        productPersistencePort.deleteAll();
+    }
 
-    
 }

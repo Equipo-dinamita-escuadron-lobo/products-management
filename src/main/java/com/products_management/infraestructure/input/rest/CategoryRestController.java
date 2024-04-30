@@ -4,6 +4,8 @@ import com.products_management.application.ports.input.ICategoryServicePort;
 import com.products_management.infraestructure.input.rest.mapper.impl.CategoryRestMapperImpl;
 import com.products_management.infraestructure.input.rest.model.request.CategoryCreateRequest;
 import com.products_management.infraestructure.input.rest.model.response.CategoryResponse;
+import com.products_management.infraestructure.input.rest.model.response.ProductResponse;
+
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -30,6 +32,11 @@ public class CategoryRestController {
         return categoryRestMapper.toCategoryResponse(categoryServicePort.findById(id));
     }
 
+    @GetMapping("/findActivate")
+    public List<CategoryResponse>  findActivate() {
+        return categoryRestMapper.toCategoryResponseList(categoryServicePort.findActivated());
+    }
+
     @PostMapping("/create")
     public ResponseEntity<CategoryResponse> create(@Valid @RequestBody CategoryCreateRequest categoryCreateRequest) {
         return ResponseEntity.status(HttpStatus.CREATED)
@@ -41,8 +48,18 @@ public class CategoryRestController {
         return categoryRestMapper.toCategoryResponse(
                 categoryServicePort.update(id, categoryRestMapper.toCategory(categoryCreateRequest)));
     }
+    @PutMapping("/changeState/{id}")
+    public void changeState(@PathVariable Long id) {
+        categoryServicePort.changeState(id);
+    }
+
     @DeleteMapping("/delete/{id}")
     public void deleteById(@PathVariable Long id) {
         categoryServicePort.deleteById(id);
+    }
+
+    @DeleteMapping("/deleteAll")
+    public void deleteAll() {
+        categoryServicePort.deleteAll();
     }
 }

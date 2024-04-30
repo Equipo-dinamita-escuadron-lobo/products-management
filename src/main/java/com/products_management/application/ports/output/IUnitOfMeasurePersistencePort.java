@@ -9,4 +9,5 @@ public interface IUnitOfMeasurePersistencePort {
     List<UnitOfMeasure> findAll();
     UnitOfMeasure create(UnitOfMeasure unitOfMeasure);
     void deleteById(Long id);
+    void deleteAll();
 }

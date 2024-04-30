@@ -37,4 +37,9 @@ public class UnitOfMeasurePersistenceAdapter implements IUnitOfMeasurePersistenc
         unitOfMeasureRepository.deleteById(Long.valueOf(id));
 
     }
+
+    @Override
+    public void deleteAll() {
+        unitOfMeasureRepository.deleteAll();
+    }
 }

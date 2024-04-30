@@ -21,7 +21,9 @@ public class UnitOfMeasurePersistenceMapperImpl implements IUnitOfMeasurePersist
         unitOfMeasureEntity.setName(unitOfMeasure.getName());
         unitOfMeasureEntity.setDescription(unitOfMeasure.getDescription());
         unitOfMeasureEntity.setAbbreviation(unitOfMeasure.getAbbreviation());
-
+        if(unitOfMeasure.getState()==null)
+        unitOfMeasure.setState("true");
+        unitOfMeasureEntity.setState(unitOfMeasure.getState());
         return unitOfMeasureEntity;
     }
 
@@ -37,6 +39,7 @@ public class UnitOfMeasurePersistenceMapperImpl implements IUnitOfMeasurePersist
         unitOfMeasureBuilder.name(unitOfMeasureEntity.getName());
         unitOfMeasureBuilder.description(unitOfMeasureEntity.getDescription());
         unitOfMeasureBuilder.abbreviation(unitOfMeasureEntity.getAbbreviation());
+        unitOfMeasureBuilder.state(unitOfMeasureEntity.getState());
 
         return unitOfMeasureBuilder.build();
     }

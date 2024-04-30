@@ -28,11 +28,6 @@ public class ProductPersistenceAdapter implements IProductPersistencePort {
     }
 
     @Override
-    public List<Product> findActivated(String state) {
-        return productPersistenceMapper.toProductList(productRepository.findByState(state));
-    }
-
-    @Override
     public Product create(Product product) {
         return productPersistenceMapper.toProduct(productRepository.save(productPersistenceMapper.toProductEntity(product)));
     }
@@ -42,5 +37,9 @@ public class ProductPersistenceAdapter implements IProductPersistencePort {
         productRepository.deleteById(Long.valueOf(id));
     }
 
-    
+    @Override
+    public void deleteAll() {
+        productRepository.deleteAll();
+    }
+ 
 }

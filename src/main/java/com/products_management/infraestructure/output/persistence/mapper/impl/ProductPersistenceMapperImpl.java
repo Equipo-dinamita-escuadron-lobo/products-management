@@ -5,6 +5,7 @@ import com.products_management.infraestructure.output.persistence.entity.Product
 import java.util.ArrayList;
 import java.util.List;
 import com.products_management.infraestructure.output.persistence.mapper.interfaces.IProductPersistenceMapper;
+
 import org.springframework.stereotype.Component;
 
 
@@ -32,8 +33,9 @@ public class ProductPersistenceMapperImpl implements IProductPersistenceMapper {
         productEntity.setCategoryId(product.getCategoryId());
         productEntity.setEnterpriseId(product.getEnterpriseId());        
         productEntity.setPrice(product.getPrice());
-        productEntity.setState("true");
-
+        if(product.getState()==null)
+            product.setState("true");
+        productEntity.setState(product.getState());
         return productEntity;
     }
 

@@ -30,9 +30,9 @@ public class ProductRestController {
         return productRestMapper.toProductResponse(productServicePort.findById(id));
     }
 
-    @GetMapping("/findActivate/{state}")
-    public List<ProductResponse>  findActivate(@PathVariable String state) {
-        return productRestMapper.toProductResponseList(productServicePort.findActivated(state));
+    @GetMapping("/findActivate")
+    public List<ProductResponse>  findActivate() {
+        return productRestMapper.toProductResponseList(productServicePort.findActivated());
     }
 
     @PostMapping("/create")
@@ -46,8 +46,20 @@ public class ProductRestController {
         return productRestMapper.toProductResponse(
                 productServicePort.update(id, productRestMapper.toProduct(productCreateRequest)));
     }
+
+    @PutMapping("/changeState/{id}")
+    public void changeState(@PathVariable Long id) {
+        productServicePort.changeState(id);
+    }
+
     @DeleteMapping("/delete/{id}")
     public void deleteById(@PathVariable Long id) {
         productServicePort.deleteById(id);
     }
+
+    @DeleteMapping("/deleteAll")
+    public void deleteAll() {
+        productServicePort.deleteAll();
+    }
+
 }

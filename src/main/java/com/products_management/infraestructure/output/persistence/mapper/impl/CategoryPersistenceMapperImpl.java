@@ -25,9 +25,10 @@ public class CategoryPersistenceMapperImpl implements ICategoryPersistenceMapper
         categoryEntityBuilder.setCostId(category.getCostId());
         categoryEntityBuilder.setSaleId(category.getSaleId());
         categoryEntityBuilder.setReturnId(category.getReturnId());
-
+        if(category.getState()==null)
+        category.setState("true");
+        categoryEntityBuilder.setState(category.getState());
         return categoryEntityBuilder;
-
     }
 
     @Override
@@ -46,6 +47,7 @@ public class CategoryPersistenceMapperImpl implements ICategoryPersistenceMapper
         categoryBuilder.costId(categoryEntity.getCostId());
         categoryBuilder.saleId(categoryEntity.getSaleId());
         categoryBuilder.returnId(categoryEntity.getReturnId());
+        categoryBuilder.state(categoryEntity.getState());
 
         return categoryBuilder.build();
     }

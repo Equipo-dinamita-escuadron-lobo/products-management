@@ -7,9 +7,11 @@ public interface IProductServicePort {
 
   Product findById(Long id);
   List<Product> findAll();
-  List<Product> findActivated(String state);
+  List<Product> findActivated();
   Product create(Product product);
   Product update(Long id, Product product);
   void deleteById(Long id);
+  void changeState(Long id);
+  void deleteAll();
   
 }

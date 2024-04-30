@@ -36,5 +36,10 @@ public class ProductPersistenceAdapter implements IProductPersistencePort {
     public void deleteById(Long id) {
         productRepository.deleteById(Long.valueOf(id));
     }
+
+    @Override
+    public void deleteAll() {
+        productRepository.deleteAll();
+    }
  
 }

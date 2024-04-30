@@ -10,5 +10,6 @@ public interface ICategoryPersistencePort {
     List<Category> findAll();
     Category create(Category unitOfMeasure);
     void deleteById(Long id);
+    void deleteAll();
 
 }

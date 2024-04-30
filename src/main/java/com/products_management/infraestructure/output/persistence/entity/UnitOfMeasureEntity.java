@@ -20,4 +20,5 @@ public class UnitOfMeasureEntity {
     private String name;
     private String description;
     private String abbreviation;
+    private String state;
 }

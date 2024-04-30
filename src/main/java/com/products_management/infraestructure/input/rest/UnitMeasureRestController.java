@@ -3,7 +3,6 @@ package com.products_management.infraestructure.input.rest;
 import com.products_management.application.ports.input.IUnitOfMeasureServicePort;
 import com.products_management.infraestructure.input.rest.mapper.impl.UnitOfMeasureRestMapperImpl;
 import com.products_management.infraestructure.input.rest.model.request.UnitOfMeasureCreateRequest;
-import com.products_management.infraestructure.input.rest.model.response.ProductResponse;
 import com.products_management.infraestructure.input.rest.model.response.UnitOfMeasureResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

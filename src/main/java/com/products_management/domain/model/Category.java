@@ -13,7 +13,7 @@ public class Category {
     private Long id;
     private String name;
     private String description;
-    private Long enterpriseId;
+    private String enterpriseId;
     private Long inventoryId;
     private Long costId;
     private Long saleId;

@@ -19,7 +19,7 @@ public class CategoryCreateRequest {
     @NotBlank(message = "Descripción es requerida")
     private String description;
     @NotNull(message = "Id de la empresa es requerido")
-    private Long enterpriseId;
+    private String enterpriseId;
     @NotNull(message = "Id del inventario es requerido")
     private Long inventoryId;
     @NotNull(message = "Id del costo es requerido")

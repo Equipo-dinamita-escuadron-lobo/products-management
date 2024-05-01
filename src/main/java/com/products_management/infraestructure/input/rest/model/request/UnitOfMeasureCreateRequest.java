@@ -3,6 +3,7 @@ package com.products_management.infraestructure.input.rest.model.request;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 @Builder
@@ -19,6 +20,8 @@ public class UnitOfMeasureCreateRequest {
     private String description;
     @NotBlank(message = "Abreviacion es requerida")
     private String abbreviation;
+    @NotNull(message = "Id Empresa es requerido")
+    private String enterpriseId;
     @JsonIgnore
     private String state;
 }

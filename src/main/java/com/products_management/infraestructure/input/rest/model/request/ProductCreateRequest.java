@@ -47,7 +47,7 @@ public class ProductCreateRequest {
     private Long categoryId;
 
     @NotNull(message = "Id Empresa es requerido")
-    private Long enterpriseId;
+    private String enterpriseId;
 
     @NotNull(message = "Precio es requerido")
     private double price;

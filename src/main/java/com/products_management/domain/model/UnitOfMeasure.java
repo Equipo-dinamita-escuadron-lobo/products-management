@@ -12,5 +12,6 @@ public class UnitOfMeasure {
     private String name;
     private String description;
     private String abbreviation;
+    private String enterpriseId;
     private String state;
 }

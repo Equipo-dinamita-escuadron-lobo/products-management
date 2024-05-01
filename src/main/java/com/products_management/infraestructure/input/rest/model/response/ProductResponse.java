@@ -22,7 +22,7 @@ public class ProductResponse {
     private Long unitOfMeasureId;
     private Long supplierId;
     private Long categoryId;
-    private Long enterpriseId;
+    private String enterpriseId;
     private double price;
     private String state;
 }

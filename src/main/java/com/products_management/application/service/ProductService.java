@@ -85,4 +85,20 @@ public class ProductService implements IProductServicePort {
         productPersistencePort.deleteAll();
     }
 
+    @Override
+    public List<Product> findAllByCategory(Long categoryId) {
+      List<Product> allProducts = productPersistencePort.findAll();
+        return allProducts.stream()
+                .filter(product -> product.getCategoryId().equals(categoryId))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Product> findAllByUnitOfMeasure(Long unitOfMeasureId) {
+      List<Product> allProducts = productPersistencePort.findAll();
+        return allProducts.stream()
+                .filter(product -> product.getUnitOfMeasureId().equals(unitOfMeasureId))
+                .collect(Collectors.toList());
+    }
+
 }

@@ -22,7 +22,15 @@ public class ProductRestController {
 
     @GetMapping("/findAll/{enterpriseId}")
     public List<ProductResponse> findAll(@PathVariable String enterpriseId) {
-        return productRestMapper.toProductResponseList(productServicePort.findAll(enterpriseId));
+      return productRestMapper.toProductResponseList(productServicePort.findAll(enterpriseId));
+    }
+    @GetMapping("/findAllByUnitOfMeasure/{unitOfMeasureId}")
+    public List<ProductResponse> findAllByUnitOfMeasure(@PathVariable Long unitOfMeasureId) {
+      return productRestMapper.toProductResponseList(productServicePort.findAllByUnitOfMeasure(unitOfMeasureId));
+    }
+    @GetMapping("/findAllByCategoryId/{categoryId}")
+    public List<ProductResponse> findAllByCategory(@PathVariable Long categoryId) {
+        return productRestMapper.toProductResponseList(productServicePort.findAllByCategory(categoryId));
     }
 
     @GetMapping("/findById/{id}")

@@ -27,15 +27,19 @@ public class CategoryService implements ICategoryServicePort {
     }
 
     @Override
-    public List<Category> findAll() {
-        return categoryPersistencePort.findAll();
+    public List<Category> findAll(String enterpriseId) {
+        List<Category> allCategorys = categoryPersistencePort.findAll();
+        return allCategorys.stream()
+                .filter(category -> category.getEnterpriseId().equals(enterpriseId))
+                .collect(Collectors.toList());
     }
 
     @Override
-    public List<Category> findActivated() {
+    public List<Category> findActivated(String enterpriseId) {
         List<Category> allCategorys = categoryPersistencePort.findAll();
         return allCategorys.stream()
                 .filter(category -> category.getState() .equals("true"))
+                .filter(category -> category.getEnterpriseId().equals(enterpriseId))
                 .collect(Collectors.toList());
     }
 

@@ -21,9 +21,9 @@ public class CategoryRestController {
     private final ICategoryServicePort categoryServicePort;
     private final CategoryRestMapperImpl categoryRestMapper;
 
-    @GetMapping("/findAll")
-    public List<CategoryResponse> findAll() {
-        return categoryRestMapper.toCategoryResponseList(categoryServicePort.findAll());
+    @GetMapping("/findAll/{enterpriseId}")
+    public List<CategoryResponse> findAll(@PathVariable String enterpriseId) {
+        return categoryRestMapper.toCategoryResponseList(categoryServicePort.findAll(enterpriseId));
     }
 
     @GetMapping("/findById/{id}")
@@ -31,9 +31,9 @@ public class CategoryRestController {
         return categoryRestMapper.toCategoryResponse(categoryServicePort.findById(id));
     }
 
-    @GetMapping("/findActivate")
-    public List<CategoryResponse>  findActivate() {
-        return categoryRestMapper.toCategoryResponseList(categoryServicePort.findActivated());
+    @GetMapping("/findActivate/{enterpriseId}")
+    public List<CategoryResponse>  findActivate(@PathVariable String enterpriseId) {
+        return categoryRestMapper.toCategoryResponseList(categoryServicePort.findActivated(enterpriseId));
     }
 
     @PostMapping("/create")

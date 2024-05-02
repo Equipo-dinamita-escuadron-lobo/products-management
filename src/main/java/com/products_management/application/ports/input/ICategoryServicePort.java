@@ -7,8 +7,8 @@ import java.util.List;
 public interface ICategoryServicePort {
 
     Category findById(Long id);
-    List<Category> findAll();
-    List<Category> findActivated();
+    List<Category> findAll(String enterpriseId);
+    List<Category> findActivated(String enterpriseId);
     Category create(Category category);
     Category update(Long id, Category category);
     void deleteById(Long id);

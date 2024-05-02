@@ -28,7 +28,7 @@ public class GlobalControllerAdvice {
 
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(ProductNotFoundException.class)
-    public ErrorResponse handlerProductNotFoundException() {
+    public ErrorResponse handleProductNotFoundException() {
       return ErrorResponse.builder()
           .code(PRODUCT_NOT_FOUND.getCode())
           .message(PRODUCT_NOT_FOUND.getMessage())
@@ -37,7 +37,7 @@ public class GlobalControllerAdvice {
     }
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(UnitOfMeasureAssociatedException.class)
-    public ErrorResponse handlerUnitOfMeasureAssociatedException(UnitOfMeasureAssociatedException exception) {
+    public ErrorResponse handleUnitOfMeasureAssociatedException(UnitOfMeasureAssociatedException exception) {
       return ErrorResponse.builder()
           .code(UNITOFMEASURE_ASSOCIATED.getCode())
           .message(UNITOFMEASURE_ASSOCIATED.getMessage())
@@ -57,7 +57,7 @@ public class GlobalControllerAdvice {
 
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(UnitOfMeasureNotFoundException.class)
-    public ErrorResponse handlerUnitOfMeasureNotFoundException() {
+    public ErrorResponse handleUnitOfMeasureNotFoundException() {
         return ErrorResponse.builder()
                 .code(UNITOFMEASURE_NOT_FOUND.getCode())
                 .message(UNITOFMEASURE_NOT_FOUND.getMessage())
@@ -66,7 +66,7 @@ public class GlobalControllerAdvice {
     }
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(CategoryNotFoundException.class)
-    public ErrorResponse handlerCategoryNotFoundException() {
+    public ErrorResponse handleCategoryNotFoundException() {
         return ErrorResponse.builder()
                 .code(CATEGORY_NOT_FOUND.getCode())
                 .message(CATEGORY_NOT_FOUND.getMessage())
@@ -76,7 +76,7 @@ public class GlobalControllerAdvice {
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ErrorResponse handlerValidationException(
+    public ErrorResponse handleValidationException(
             MethodArgumentNotValidException exception) {
         BindingResult bindingResult = exception.getBindingResult();
 
@@ -122,7 +122,7 @@ public class GlobalControllerAdvice {
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(Exception.class)
-    public ErrorResponse handlerGenericException(Exception exception) {
+    public ErrorResponse handleGenericException(Exception exception) {
         return ErrorResponse.builder()
                 .code(GENERIC_ERROR.getCode())
                 .message(GENERIC_ERROR.getMessage())

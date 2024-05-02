@@ -2,8 +2,9 @@ package com.products_management.application.service;
 
 import com.products_management.application.ports.input.IUnitOfMeasureServicePort;
 import com.products_management.application.ports.output.IUnitOfMeasurePersistencePort;
+import com.products_management.domain.exception.UnitOfMeasureAssociatedException;
 import com.products_management.domain.exception.UnitOfMeasureNotFoundException;
-import com.products_management.domain.model.Category;
+import com.products_management.domain.model.Product;
 import com.products_management.domain.model.UnitOfMeasure;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -14,7 +15,10 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class UnitOfMeasureService implements IUnitOfMeasureServicePort {
+
     private final IUnitOfMeasurePersistencePort unitMeasurePersistencePort;
+    private final ProductService productServicePort;    
+    
 
 
     @Override
@@ -68,6 +72,10 @@ public class UnitOfMeasureService implements IUnitOfMeasureServicePort {
     public void deleteById(Long id) {
         if(unitMeasurePersistencePort.findById(id).isEmpty()){
             throw new UnitOfMeasureNotFoundException();
+        }
+        List<Product> products = productServicePort.findAllByUnitOfMeasure(id);
+        if(!products.isEmpty()){
+            throw new UnitOfMeasureAssociatedException();
         }
         unitMeasurePersistencePort.deleteById(id);
     }

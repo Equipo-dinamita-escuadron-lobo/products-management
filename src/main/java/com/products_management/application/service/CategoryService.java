@@ -2,7 +2,9 @@ package com.products_management.application.service;
 
 import com.products_management.application.ports.input.ICategoryServicePort;
 import com.products_management.application.ports.output.ICategoryPersistencePort;
+import com.products_management.domain.exception.CategoryAssociatedException;
 import com.products_management.domain.exception.CategoryNotFoundException;
+import com.products_management.domain.exception.UnitOfMeasureAssociatedException;
 import com.products_management.domain.model.Category;
 import com.products_management.domain.model.Product;
 
@@ -16,7 +18,8 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class CategoryService implements ICategoryServicePort {
 
-    private final ICategoryPersistencePort categoryPersistencePort;
+  private final ICategoryPersistencePort categoryPersistencePort;
+  private final ProductService productServicePort;
 
     @Override
     public Category findById(Long id) {
@@ -71,8 +74,12 @@ public class CategoryService implements ICategoryServicePort {
 
     @Override
     public void deleteById(Long id) {
-        if(categoryPersistencePort.findById(id).isEmpty()){
-            throw new CategoryNotFoundException();
+      if (categoryPersistencePort.findById(id).isEmpty()) {
+        throw new CategoryNotFoundException();
+      }
+        List<Product> products = productServicePort.findAllByCategory(id);
+        if(!products.isEmpty()){
+            throw new CategoryAssociatedException();
         }
         categoryPersistencePort.deleteById(id);
     }

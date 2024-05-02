@@ -13,5 +13,9 @@ public interface IProductServicePort {
   void deleteById(Long id);
   void changeState(Long id);
   void deleteAll();
+
+  List<Product> findAllByCategory(Long categoryId);
+  List<Product> findAllByUnitOfMeasure(Long unitOfMeasureId);
+
   
 }

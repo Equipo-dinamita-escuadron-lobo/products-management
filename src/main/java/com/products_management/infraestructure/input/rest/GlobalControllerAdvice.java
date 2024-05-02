@@ -1,5 +1,6 @@
 package com.products_management.infraestructure.input.rest;
 
+import com.products_management.domain.exception.CategoryAssociatedException;
 import com.products_management.domain.exception.CategoryNotFoundException;
 import com.products_management.domain.exception.UnitOfMeasureNotFoundException;
 import com.products_management.domain.model.Category;
@@ -7,6 +8,8 @@ import com.products_management.domain.model.ErrorResponse;
 import com.products_management.domain.model.Product;
 import com.products_management.domain.model.UnitOfMeasure;
 import com.products_management.domain.exception.ProductNotFoundException;
+import com.products_management.domain.exception.UnitOfMeasureAssociatedException;
+
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindingResult;
@@ -25,16 +28,36 @@ public class GlobalControllerAdvice {
 
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(ProductNotFoundException.class)
-    public ErrorResponse handlerProductNotFoundException() {
-        return ErrorResponse.builder()
-                .code(PRODUCT_NOT_FOUND.getCode())
-                .message(PRODUCT_NOT_FOUND.getMessage())
-                .timestamp(LocalDateTime.now())
-                .build();
+    public ErrorResponse handleProductNotFoundException() {
+      return ErrorResponse.builder()
+          .code(PRODUCT_NOT_FOUND.getCode())
+          .message(PRODUCT_NOT_FOUND.getMessage())
+          .timestamp(LocalDateTime.now())
+          .build();
     }
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(UnitOfMeasureAssociatedException.class)
+    public ErrorResponse handleUnitOfMeasureAssociatedException(UnitOfMeasureAssociatedException exception) {
+      return ErrorResponse.builder()
+          .code(UNITOFMEASURE_ASSOCIATED.getCode())
+          .message(UNITOFMEASURE_ASSOCIATED.getMessage())
+          .timestamp(LocalDateTime.now())
+          .build();
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(CategoryAssociatedException.class)
+    public ErrorResponse handleCategoryAssociatedException(CategoryAssociatedException exception) {
+      return ErrorResponse.builder()
+          .code(CATEGORY_ASSOCIATED.getCode())
+          .message(CATEGORY_ASSOCIATED.getMessage())
+          .timestamp(LocalDateTime.now())
+          .build();
+    }
+
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(UnitOfMeasureNotFoundException.class)
-    public ErrorResponse handlerUnitOfMeasureNotFoundException() {
+    public ErrorResponse handleUnitOfMeasureNotFoundException() {
         return ErrorResponse.builder()
                 .code(UNITOFMEASURE_NOT_FOUND.getCode())
                 .message(UNITOFMEASURE_NOT_FOUND.getMessage())
@@ -43,7 +66,7 @@ public class GlobalControllerAdvice {
     }
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(CategoryNotFoundException.class)
-    public ErrorResponse handlerCategoryNotFoundException() {
+    public ErrorResponse handleCategoryNotFoundException() {
         return ErrorResponse.builder()
                 .code(CATEGORY_NOT_FOUND.getCode())
                 .message(CATEGORY_NOT_FOUND.getMessage())

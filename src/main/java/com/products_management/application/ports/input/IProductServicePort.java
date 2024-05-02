@@ -6,8 +6,8 @@ import com.products_management.domain.model.Product;
 public interface IProductServicePort {
 
   Product findById(Long id);
-  List<Product> findAll();
-  List<Product> findActivated();
+  List<Product> findAll(String enterpriseId);
+  List<Product> findActivated(String enterpriseId);
   Product create(Product product);
   Product update(Long id, Product product);
   void deleteById(Long id);

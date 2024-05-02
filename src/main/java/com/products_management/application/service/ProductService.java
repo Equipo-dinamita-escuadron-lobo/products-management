@@ -21,15 +21,19 @@ public class ProductService implements IProductServicePort {
     }
 
     @Override
-    public List<Product> findAll() {
-        return productPersistencePort.findAll();
+    public List<Product> findAll(String enterpriseId) {
+        List<Product> allProducts = productPersistencePort.findAll();
+        return allProducts.stream()
+                .filter(product -> product.getEnterpriseId().equals(enterpriseId))
+                .collect(Collectors.toList());
     }
 
     @Override
-    public List<Product> findActivated() {
+    public List<Product> findActivated(String enterpriseId) {
         List<Product> allProducts = productPersistencePort.findAll();
         return allProducts.stream()
                 .filter(product -> product.getState() .equals("true"))
+                .filter(product -> product.getEnterpriseId().equals(enterpriseId))
                 .collect(Collectors.toList());
     }
 
@@ -50,7 +54,6 @@ public class ProductService implements IProductServicePort {
                     create.setUnitOfMeasureId(product.getUnitOfMeasureId());
                     create.setSupplierId(product.getSupplierId());
                     create.setCategoryId(product.getCategoryId());
-                    create.setEnterpriseId(product.getEnterpriseId());
                     create.setPrice(product.getPrice());
                     return productPersistencePort.create(create);
                 })

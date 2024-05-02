@@ -20,9 +20,9 @@ public class ProductRestController {
     private final IProductServicePort productServicePort;
     private final ProductRestMapperImpl productRestMapper;
 
-    @GetMapping("/findAll")
-    public List<ProductResponse> findAll() {
-        return productRestMapper.toProductResponseList(productServicePort.findAll());
+    @GetMapping("/findAll/{enterpriseId}")
+    public List<ProductResponse> findAll(@PathVariable String enterpriseId) {
+        return productRestMapper.toProductResponseList(productServicePort.findAll(enterpriseId));
     }
 
     @GetMapping("/findById/{id}")
@@ -30,9 +30,9 @@ public class ProductRestController {
         return productRestMapper.toProductResponse(productServicePort.findById(id));
     }
 
-    @GetMapping("/findActivate")
-    public List<ProductResponse>  findActivate() {
-        return productRestMapper.toProductResponseList(productServicePort.findActivated());
+    @GetMapping("/findActivate/{enterpriseId}")
+    public List<ProductResponse>  findActivate(@PathVariable String enterpriseId) {
+        return productRestMapper.toProductResponseList(productServicePort.findActivated(enterpriseId));
     }
 
     @PostMapping("/create")

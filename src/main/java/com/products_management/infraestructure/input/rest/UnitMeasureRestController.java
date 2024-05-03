@@ -20,14 +20,14 @@ public class UnitMeasureRestController {
     private final IUnitOfMeasureServicePort unitOfMeasureServicePort;
     private final UnitOfMeasureRestMapperImpl unitOfMeasureRestMapper;
 
-    @GetMapping("/findAll")
-    public List<UnitOfMeasureResponse> findAll() {
-        return unitOfMeasureRestMapper.toUnitOfMeasureResponseList(unitOfMeasureServicePort.findAll());
+    @GetMapping("/findAll/{enterpriseId}")
+    public List<UnitOfMeasureResponse> findAll(@PathVariable String enterpriseId) {
+        return unitOfMeasureRestMapper.toUnitOfMeasureResponseList(unitOfMeasureServicePort.findAll(enterpriseId));
     }
 
-    @GetMapping("/findActivate")
-    public List<UnitOfMeasureResponse>  findActivate() {
-        return unitOfMeasureRestMapper.toUnitOfMeasureResponseList(unitOfMeasureServicePort.findActivated());
+    @GetMapping("/findActivate/{enterpriseId}")
+    public List<UnitOfMeasureResponse>  findActivate(@PathVariable String enterpriseId) {
+        return unitOfMeasureRestMapper.toUnitOfMeasureResponseList(unitOfMeasureServicePort.findActivated(enterpriseId));
     }
 
     @GetMapping("/findById/{id}")

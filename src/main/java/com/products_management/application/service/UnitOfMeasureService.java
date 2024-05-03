@@ -27,15 +27,20 @@ public class UnitOfMeasureService implements IUnitOfMeasureServicePort {
     }
 
     @Override
-    public List<UnitOfMeasure> findAll() {
-        return unitMeasurePersistencePort.findAll();
+    public List<UnitOfMeasure> findAll(String enterpriseId) {
+        List<UnitOfMeasure> allUnitOfMeasure = unitMeasurePersistencePort.findAll();
+        return allUnitOfMeasure.stream()
+                .filter(unitOfMeasure -> unitOfMeasure.getEnterpriseId().equals(enterpriseId))
+                .collect(Collectors.toList());
+
     }
 
     @Override
-    public List<UnitOfMeasure> findActivated() {
+    public List<UnitOfMeasure> findActivated(String enterpriseId) {
         List<UnitOfMeasure> allUnitOfMeasure = unitMeasurePersistencePort.findAll();
         return allUnitOfMeasure.stream()
                 .filter(unitOfMeasure -> unitOfMeasure.getState() .equals("true"))
+                .filter(unitOfMeasure -> unitOfMeasure.getEnterpriseId().equals(enterpriseId))
                 .collect(Collectors.toList());
     }
 

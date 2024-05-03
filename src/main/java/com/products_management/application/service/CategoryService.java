@@ -4,7 +4,6 @@ import com.products_management.application.ports.input.ICategoryServicePort;
 import com.products_management.application.ports.output.ICategoryPersistencePort;
 import com.products_management.domain.exception.CategoryAssociatedException;
 import com.products_management.domain.exception.CategoryNotFoundException;
-import com.products_management.domain.exception.UnitOfMeasureAssociatedException;
 import com.products_management.domain.model.Category;
 import com.products_management.domain.model.Product;
 
@@ -27,15 +26,19 @@ public class CategoryService implements ICategoryServicePort {
     }
 
     @Override
-    public List<Category> findAll() {
-        return categoryPersistencePort.findAll();
+    public List<Category> findAll(String enterpriseId) {
+        List<Category> allCategorys = categoryPersistencePort.findAll();
+        return allCategorys.stream()
+                .filter(category -> category.getEnterpriseId().equals(enterpriseId))
+                .collect(Collectors.toList());
     }
 
     @Override
-    public List<Category> findActivated() {
+    public List<Category> findActivated(String enterpriseId) {
         List<Category> allCategorys = categoryPersistencePort.findAll();
         return allCategorys.stream()
                 .filter(category -> category.getState() .equals("true"))
+                .filter(category -> category.getEnterpriseId().equals(enterpriseId))
                 .collect(Collectors.toList());
     }
 

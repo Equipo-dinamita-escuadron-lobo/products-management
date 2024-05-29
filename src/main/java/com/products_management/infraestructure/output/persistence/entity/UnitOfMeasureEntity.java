@@ -1,5 +1,7 @@
 package com.products_management.infraestructure.output.persistence.entity;
 
+import org.hibernate.annotations.TenantId;
+
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -22,4 +24,7 @@ public class UnitOfMeasureEntity {
     private String abbreviation;
     private String enterpriseId;
     private String state;
+
+    @TenantId
+    private String tenantId;
 }

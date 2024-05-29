@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.TenantId;
 
 @Getter
 @Setter
@@ -24,5 +25,7 @@ public class CategoryEntity {
     private Long saleId;
     private Long returnId;
     private String state;
+    @TenantId
+    private String tenantId;
 
 }

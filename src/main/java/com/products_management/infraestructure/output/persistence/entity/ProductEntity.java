@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.TenantId;
+
 import java.util.Date;
 
 @Getter
@@ -31,4 +33,6 @@ public class ProductEntity {
     private String enterpriseId;
     private double price;
     private String state;
+    @TenantId
+    private String tenantId;
 }

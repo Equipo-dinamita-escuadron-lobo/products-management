@@ -12,79 +12,126 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Servicio que implementa la lógica de negocio para las unidades de medida.
+ * Esta clase interactúa con los puertos de persistencia y realiza las operaciones
+ * necesarias para gestionar las unidades de medida.
+ */
 @Service
 @RequiredArgsConstructor
 public class UnitOfMeasureService implements IUnitOfMeasureServicePort {
 
     private final IUnitOfMeasurePersistencePort unitMeasurePersistencePort;
-    private final ProductService productServicePort;    
-    
+    private final ProductService productServicePort;
 
-
+    /**
+     * Busca una unidad de medida por su ID.
+     *
+     * @param id el ID de la unidad de medida a buscar.
+     * @return la unidad de medida encontrada.
+     * @throws UnitOfMeasureNotFoundException si la unidad de medida no se encuentra.
+     */
     @Override
     public UnitOfMeasure findById(Long id) {
         return unitMeasurePersistencePort.findById(id).orElseThrow(UnitOfMeasureNotFoundException::new);
     }
 
+    /**
+     * Obtiene una lista de todas las unidades de medida asociadas a una empresa.
+     *
+     * @param enterpriseId el ID de la empresa.
+     * @return una lista de todas las unidades de medida de la empresa.
+     */
     @Override
     public List<UnitOfMeasure> findAll(String enterpriseId) {
         List<UnitOfMeasure> allUnitOfMeasure = unitMeasurePersistencePort.findAll();
         return allUnitOfMeasure.stream()
                 .filter(unitOfMeasure -> unitOfMeasure.getEnterpriseId().equals(enterpriseId))
                 .collect(Collectors.toList());
-
     }
 
+    /**
+     * Obtiene una lista de todas las unidades de medida activadas asociadas a una empresa.
+     *
+     * @param enterpriseId el ID de la empresa.
+     * @return una lista de todas las unidades de medida activadas de la empresa.
+     */
     @Override
     public List<UnitOfMeasure> findActivated(String enterpriseId) {
         List<UnitOfMeasure> allUnitOfMeasure = unitMeasurePersistencePort.findAll();
         return allUnitOfMeasure.stream()
-                .filter(unitOfMeasure -> unitOfMeasure.getState() .equals("true"))
+                .filter(unitOfMeasure -> "true".equals(unitOfMeasure.getState()))
                 .filter(unitOfMeasure -> unitOfMeasure.getEnterpriseId().equals(enterpriseId))
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Crea una nueva unidad de medida.
+     *
+     * @param unitOfMeasure la unidad de medida a crear.
+     * @return la unidad de medida creada.
+     */
     @Override
     public UnitOfMeasure create(UnitOfMeasure unitOfMeasure) {
         return unitMeasurePersistencePort.create(unitOfMeasure);
     }
 
+    /**
+     * Actualiza una unidad de medida existente.
+     *
+     * @param id el ID de la unidad de medida a actualizar.
+     * @param unitOfMeasure los datos de la unidad de medida actualizada.
+     * @return la unidad de medida actualizada.
+     * @throws UnitOfMeasureNotFoundException si la unidad de medida no se encuentra.
+     */
     @Override
     public UnitOfMeasure update(Long id, UnitOfMeasure unitOfMeasure) {
         return unitMeasurePersistencePort.findById(id)
-                .map(create ->{
-                    create.setName(unitOfMeasure.getName());
-                    create.setDescription(unitOfMeasure.getDescription());
-                    create.setAbbreviation(unitOfMeasure.getAbbreviation());
-                    return unitMeasurePersistencePort.create(create);
+                .map(existingUnit -> {
+                    existingUnit.setName(unitOfMeasure.getName());
+                    existingUnit.setDescription(unitOfMeasure.getDescription());
+                    existingUnit.setAbbreviation(unitOfMeasure.getAbbreviation());
+                    return unitMeasurePersistencePort.create(existingUnit);
                 })
                 .orElseThrow(UnitOfMeasureNotFoundException::new);
     }
 
+    /**
+     * Cambia el estado de una unidad de medida (activado/desactivado).
+     *
+     * @param id el ID de la unidad de medida cuyo estado se va a cambiar.
+     * @throws UnitOfMeasureNotFoundException si la unidad de medida no se encuentra.
+     */
     @Override
     public void changeState(Long id) {
-    UnitOfMeasure unitOfMeasure = unitMeasurePersistencePort.findById(id)
+        UnitOfMeasure unitOfMeasure = unitMeasurePersistencePort.findById(id)
                 .orElseThrow(() -> new UnitOfMeasureNotFoundException());
-        if ("true".equals(unitOfMeasure.getState())) {
-            unitOfMeasure.setState("false"); 
-        } else {
-            unitOfMeasure.setState("true"); 
-        }
+        unitOfMeasure.setState("true".equals(unitOfMeasure.getState()) ? "false" : "true");
         unitMeasurePersistencePort.create(unitOfMeasure);
     }
 
+    /**
+     * Elimina una unidad de medida por su ID.
+     *
+     * @param id el ID de la unidad de medida a eliminar.
+     * @throws UnitOfMeasureNotFoundException si la unidad de medida no se encuentra.
+     * @throws UnitOfMeasureAssociatedException si la unidad de medida está asociada a productos.
+     */
     @Override
     public void deleteById(Long id) {
-        if(unitMeasurePersistencePort.findById(id).isEmpty()){
+        if (unitMeasurePersistencePort.findById(id).isEmpty()) {
             throw new UnitOfMeasureNotFoundException();
         }
         List<Product> products = productServicePort.findAllByUnitOfMeasure(id);
-        if(!products.isEmpty()){
+        if (!products.isEmpty()) {
             throw new UnitOfMeasureAssociatedException();
         }
         unitMeasurePersistencePort.deleteById(id);
     }
 
+    /**
+     * Elimina todas las unidades de medida.
+     */
     @Override
     public void deleteAll() {
         unitMeasurePersistencePort.deleteAll();

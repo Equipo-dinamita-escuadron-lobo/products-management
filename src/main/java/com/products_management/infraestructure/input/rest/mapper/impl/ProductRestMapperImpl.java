@@ -8,72 +8,91 @@ import java.util.ArrayList;
 import java.util.List;
 import org.springframework.stereotype.Component;
 
+/**
+ * Implementación de {@link IProductRestMapper} que realiza la conversión entre entidades de producto y sus representaciones REST.
+ */
 @Component
 public class ProductRestMapperImpl implements IProductRestMapper {
 
+    /**
+     * Convierte una solicitud de creación de producto ({@link ProductCreateRequest}) en una entidad de producto ({@link Product}).
+     *
+     * @param productCreateRequest la solicitud de creación de producto.
+     * @return la entidad de producto convertida.
+     */
     @Override
     public Product toProduct(ProductCreateRequest productCreateRequest) {
-        if ( productCreateRequest == null ) {
+        if (productCreateRequest == null) {
             return null;
         }
 
-        Product.ProductBuilder product = Product.builder();
-        
-        product.id( productCreateRequest.getId() );
-        product.code(productCreateRequest.getCode());
-        product.itemType(productCreateRequest.getItemType());
-        product.description( productCreateRequest.getDescription() );
-        product.minQuantity( productCreateRequest.getMinQuantity() );
-        product.maxQuantity(productCreateRequest.getMaxQuantity());
-        product.taxPercentage( productCreateRequest.getTaxPercentage() );
-        product.creationDate(productCreateRequest.getCreationDate());
-        product.unitOfMeasureId( productCreateRequest.getUnitOfMeasureId() );
-        product.supplierId(productCreateRequest.getSupplierId());
-        product.categoryId(productCreateRequest.getCategoryId());
-        product.enterpriseId(productCreateRequest.getEnterpriseId());
-        product.price(productCreateRequest.getPrice());
-        product.state(productCreateRequest.getState());
-        
-        return product.build();
+        Product.ProductBuilder productBuilder = Product.builder();
+        productBuilder.id(productCreateRequest.getId());
+        productBuilder.code(productCreateRequest.getCode());
+        productBuilder.itemType(productCreateRequest.getItemType());
+        productBuilder.description(productCreateRequest.getDescription());
+        productBuilder.minQuantity(productCreateRequest.getMinQuantity());
+        productBuilder.maxQuantity(productCreateRequest.getMaxQuantity());
+        productBuilder.taxPercentage(productCreateRequest.getTaxPercentage());
+        productBuilder.creationDate(productCreateRequest.getCreationDate());
+        productBuilder.unitOfMeasureId(productCreateRequest.getUnitOfMeasureId());
+        productBuilder.supplierId(productCreateRequest.getSupplierId());
+        productBuilder.categoryId(productCreateRequest.getCategoryId());
+        productBuilder.enterpriseId(productCreateRequest.getEnterpriseId());
+        productBuilder.price(productCreateRequest.getPrice());
+        productBuilder.state(productCreateRequest.getState());
+
+        return productBuilder.build();
     }
 
+    /**
+     * Convierte una entidad de producto ({@link Product}) en una respuesta de producto ({@link ProductResponse}).
+     *
+     * @param product la entidad de producto.
+     * @return la respuesta de producto convertida.
+     */
     @Override
     public ProductResponse toProductResponse(Product product) {
-        if ( product == null ) {
+        if (product == null) {
             return null;
         }
 
-        ProductResponse.ProductResponseBuilder productResponse = ProductResponse.builder();
+        ProductResponse.ProductResponseBuilder productResponseBuilder = ProductResponse.builder();
+        productResponseBuilder.id(product.getId());
+        productResponseBuilder.code(product.getCode());
+        productResponseBuilder.itemType(product.getItemType());
+        productResponseBuilder.description(product.getDescription());
+        productResponseBuilder.minQuantity(product.getMinQuantity());
+        productResponseBuilder.maxQuantity(product.getMaxQuantity());
+        productResponseBuilder.taxPercentage(product.getTaxPercentage());
+        productResponseBuilder.creationDate(product.getCreationDate());
+        productResponseBuilder.unitOfMeasureId(product.getUnitOfMeasureId());
+        productResponseBuilder.supplierId(product.getSupplierId());
+        productResponseBuilder.categoryId(product.getCategoryId());
+        productResponseBuilder.enterpriseId(product.getEnterpriseId());
+        productResponseBuilder.price(product.getPrice());
+        productResponseBuilder.state(product.getState());
 
-        productResponse.id( product.getId() );
-        productResponse.code(product.getCode());
-        productResponse.itemType(product.getItemType());
-        productResponse.description(product.getDescription());
-        productResponse.minQuantity(product.getMinQuantity());
-        productResponse.maxQuantity( product.getMaxQuantity() );
-        productResponse.taxPercentage(product.getTaxPercentage());
-        productResponse.creationDate(product.getCreationDate());
-        productResponse.unitOfMeasureId(product.getUnitOfMeasureId());
-        productResponse.supplierId(product.getSupplierId());
-        productResponse.categoryId(product.getCategoryId());
-        productResponse.enterpriseId(product.getEnterpriseId());
-        productResponse.price(product.getPrice());
-        productResponse.state(product.getState());
-        
-        return productResponse.build();
+        return productResponseBuilder.build();
     }
 
+    /**
+     * Convierte una lista de entidades de producto ({@link Product}) en una lista de respuestas de producto ({@link ProductResponse}).
+     *
+     * @param productList la lista de entidades de producto.
+     * @return la lista de respuestas de producto convertida.
+     */
     @Override
     public List<ProductResponse> toProductResponseList(List<Product> productList) {
-        if ( productList == null ) {
+        if (productList == null) {
             return null;
         }
 
-        List<ProductResponse> list = new ArrayList<ProductResponse>( productList.size() );
-        for ( Product product : productList ) {
-            list.add( toProductResponse( product ) );
+        List<ProductResponse> productResponseList = new ArrayList<>(productList.size());
+        for (Product product : productList) {
+            productResponseList.add(toProductResponse(product));
         }
 
-        return list;
+        return productResponseList;
     }
 }

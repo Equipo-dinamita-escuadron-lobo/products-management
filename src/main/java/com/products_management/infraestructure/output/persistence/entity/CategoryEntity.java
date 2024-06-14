@@ -8,6 +8,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/**
+ * Entidad que representa una categoría en la base de datos.
+ */
 @Getter
 @Setter
 @Entity
@@ -15,9 +18,11 @@ import lombok.Setter;
 @NoArgsConstructor
 @Table(name = "category")
 public class CategoryEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String name;
     private String description;
     private String enterpriseId;

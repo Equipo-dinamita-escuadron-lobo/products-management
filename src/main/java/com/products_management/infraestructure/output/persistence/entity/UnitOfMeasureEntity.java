@@ -8,6 +8,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/**
+ * Entidad que representa una unidad de medida en la base de datos.
+ */
 @Getter
 @Setter
 @Entity
@@ -19,6 +22,7 @@ public class UnitOfMeasureEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String name;
     private String description;
     private String abbreviation;

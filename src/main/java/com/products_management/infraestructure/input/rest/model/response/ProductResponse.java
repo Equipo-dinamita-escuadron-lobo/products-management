@@ -4,6 +4,9 @@ import lombok.*;
 
 import java.util.Date;
 
+/**
+ * Clase de respuesta que representa un producto en la API REST.
+ */
 @Builder
 @Getter
 @Setter
@@ -11,18 +14,73 @@ import java.util.Date;
 @NoArgsConstructor
 public class ProductResponse {
 
+    /**
+     * Identificador único del producto.
+     */
     private Long id;
+
+    /**
+     * Código del producto.
+     */
     private String code;
+
+    /**
+     * Tipo de ítem del producto.
+     */
     private String itemType;
+
+    /**
+     * Descripción del producto.
+     */
     private String description;
+
+    /**
+     * Cantidad mínima del producto.
+     */
     private Integer minQuantity;
+
+    /**
+     * Cantidad máxima del producto.
+     */
     private Integer maxQuantity;
+
+    /**
+     * Porcentaje de impuesto aplicado al producto.
+     */
     private Integer taxPercentage;
+
+    /**
+     * Fecha de creación del producto.
+     */
     private Date creationDate;
+
+    /**
+     * Identificador de la unidad de medida del producto.
+     */
     private Long unitOfMeasureId;
+
+    /**
+     * Identificador del proveedor del producto.
+     */
     private Long supplierId;
+
+    /**
+     * Identificador de la categoría del producto.
+     */
     private Long categoryId;
+
+    /**
+     * Identificador de la empresa a la que pertenece el producto.
+     */
     private String enterpriseId;
+
+    /**
+     * Precio del producto.
+     */
     private double price;
+
+    /**
+     * Estado del producto (activo/inactivo).
+     */
     private String state;
 }

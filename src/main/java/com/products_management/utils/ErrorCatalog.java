@@ -2,19 +2,21 @@ package com.products_management.utils;
 
 import lombok.Getter;
 
+/**
+ * Catálogo de errores utilizado para identificar y describir errores comunes.
+ */
 @Getter
 public enum ErrorCatalog {
 
-    PRODUCT_NOT_FOUND("PRODUCT_NOT_FOUND", "Product not found"),
-    INVALID_PRODUCT("INVALID_PRODUCT", "Invalid product"),
-    GENERIC_ERROR("GENERIC_ERROR", "An error occurred"),
-    UNITOFMEASURE_NOT_FOUND("UNITOFMEASURE_NOT_FOUND", "Unit of measure not found"),
-    INVALID_UNITOFMEASURE("INVALID_UNITOFMEASURE", "Invalid unit of measure"),
-    CATEGORY_NOT_FOUND("CATEGORY_NOT_FOUND", "Category not found"),
-    INVALID_CATEGORY("INVALID_CATEGORY", "Invalid category"),
-  UNITOFMEASURE_ASSOCIATED("UNITOFMEASURE_ASSOCIATED_WITH_PRODUCT", "Unit of measure is associated with a product"),
-    CATEGORY_ASSOCIATED("CATEGORY_ASSOCIATED_WITH_PRODUCT", "Category is associated with a product");
-
+    PRODUCT_NOT_FOUND("PRODUCT_NOT_FOUND", "Producto no encontrado"),
+    INVALID_PRODUCT("INVALID_PRODUCT", "Producto inválido"),
+    GENERIC_ERROR("GENERIC_ERROR", "Ha ocurrido un error"),
+    UNITOFMEASURE_NOT_FOUND("UNITOFMEASURE_NOT_FOUND", "Unidad de medida no encontrada"),
+    INVALID_UNITOFMEASURE("INVALID_UNITOFMEASURE", "Unidad de medida inválida"),
+    CATEGORY_NOT_FOUND("CATEGORY_NOT_FOUND", "Categoría no encontrada"),
+    INVALID_CATEGORY("INVALID_CATEGORY", "Categoría inválida"),
+    UNITOFMEASURE_ASSOCIATED("UNITOFMEASURE_ASSOCIATED_WITH_PRODUCT", "La unidad de medida está asociada con un producto"),
+    CATEGORY_ASSOCIATED("CATEGORY_ASSOCIATED_WITH_PRODUCT", "La categoría está asociada con un producto");
 
     private final String code;
     private final String message;

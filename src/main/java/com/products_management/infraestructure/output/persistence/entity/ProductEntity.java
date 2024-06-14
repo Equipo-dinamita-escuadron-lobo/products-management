@@ -5,10 +5,14 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import java.util.Date;
 
 import org.hibernate.annotations.TenantId;
 
+import java.util.Date;
+
+/**
+ * Entidad que representa un producto en la base de datos.
+ */
 @Getter
 @Setter
 @Entity
@@ -20,6 +24,7 @@ public class ProductEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String code;
     private String itemType;
     private String description;

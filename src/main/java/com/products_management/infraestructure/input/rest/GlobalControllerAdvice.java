@@ -23,38 +23,64 @@ import java.util.stream.Collectors;
 
 import static com.products_management.utils.ErrorCatalog.*;
 
+/**
+ * Clase global para manejar excepciones en los controladores REST.
+ */
 @RestControllerAdvice
 public class GlobalControllerAdvice {
 
+    /**
+     * Maneja la excepción ProductNotFoundException.
+     *
+     * @return ErrorResponse con detalles de la excepción.
+     */
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(ProductNotFoundException.class)
     public ErrorResponse handleProductNotFoundException() {
-      return ErrorResponse.builder()
-          .code(PRODUCT_NOT_FOUND.getCode())
-          .message(PRODUCT_NOT_FOUND.getMessage())
-          .timestamp(LocalDateTime.now())
-          .build();
+        return ErrorResponse.builder()
+                .code(PRODUCT_NOT_FOUND.getCode())
+                .message(PRODUCT_NOT_FOUND.getMessage())
+                .timestamp(LocalDateTime.now())
+                .build();
     }
+
+    /**
+     * Maneja la excepción UnitOfMeasureAssociatedException.
+     *
+     * @param exception Excepción lanzada.
+     * @return ErrorResponse con detalles de la excepción.
+     */
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(UnitOfMeasureAssociatedException.class)
     public ErrorResponse handleUnitOfMeasureAssociatedException(UnitOfMeasureAssociatedException exception) {
-      return ErrorResponse.builder()
-          .code(UNITOFMEASURE_ASSOCIATED.getCode())
-          .message(UNITOFMEASURE_ASSOCIATED.getMessage())
-          .timestamp(LocalDateTime.now())
-          .build();
+        return ErrorResponse.builder()
+                .code(UNITOFMEASURE_ASSOCIATED.getCode())
+                .message(UNITOFMEASURE_ASSOCIATED.getMessage())
+                .timestamp(LocalDateTime.now())
+                .build();
     }
 
+    /**
+     * Maneja la excepción CategoryAssociatedException.
+     *
+     * @param exception Excepción lanzada.
+     * @return ErrorResponse con detalles de la excepción.
+     */
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(CategoryAssociatedException.class)
     public ErrorResponse handleCategoryAssociatedException(CategoryAssociatedException exception) {
-      return ErrorResponse.builder()
-          .code(CATEGORY_ASSOCIATED.getCode())
-          .message(CATEGORY_ASSOCIATED.getMessage())
-          .timestamp(LocalDateTime.now())
-          .build();
+        return ErrorResponse.builder()
+                .code(CATEGORY_ASSOCIATED.getCode())
+                .message(CATEGORY_ASSOCIATED.getMessage())
+                .timestamp(LocalDateTime.now())
+                .build();
     }
 
+    /**
+     * Maneja la excepción UnitOfMeasureNotFoundException.
+     *
+     * @return ErrorResponse con detalles de la excepción.
+     */
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(UnitOfMeasureNotFoundException.class)
     public ErrorResponse handleUnitOfMeasureNotFoundException() {
@@ -64,6 +90,12 @@ public class GlobalControllerAdvice {
                 .timestamp(LocalDateTime.now())
                 .build();
     }
+
+    /**
+     * Maneja la excepción CategoryNotFoundException.
+     *
+     * @return ErrorResponse con detalles de la excepción.
+     */
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(CategoryNotFoundException.class)
     public ErrorResponse handleCategoryNotFoundException() {
@@ -74,10 +106,15 @@ public class GlobalControllerAdvice {
                 .build();
     }
 
+    /**
+     * Maneja la excepción MethodArgumentNotValidException.
+     *
+     * @param exception Excepción lanzada.
+     * @return ErrorResponse con detalles de la excepción de validación.
+     */
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ErrorResponse handleValidationException(
-            MethodArgumentNotValidException exception) {
+    public ErrorResponse handleValidationException(MethodArgumentNotValidException exception) {
         BindingResult bindingResult = exception.getBindingResult();
 
         if (exception.getBindingResult().getTarget() instanceof Product) {
@@ -100,7 +137,7 @@ public class GlobalControllerAdvice {
                             .collect(Collectors.toList()))
                     .timestamp(LocalDateTime.now())
                     .build();
-            }else if (exception.getBindingResult().getTarget() instanceof Category) {
+        } else if (exception.getBindingResult().getTarget() instanceof Category) {
             return ErrorResponse.builder()
                     .code(INVALID_CATEGORY.getCode())
                     .message(INVALID_CATEGORY.getMessage())
@@ -110,7 +147,7 @@ public class GlobalControllerAdvice {
                             .collect(Collectors.toList()))
                     .timestamp(LocalDateTime.now())
                     .build();
-        }else {
+        } else {
             return ErrorResponse.builder()
                     .code(GENERIC_ERROR.getCode())
                     .message(GENERIC_ERROR.getMessage())
@@ -120,6 +157,12 @@ public class GlobalControllerAdvice {
         }
     }
 
+    /**
+     * Maneja cualquier otra excepción no especificada.
+     *
+     * @param exception Excepción lanzada.
+     * @return ErrorResponse con detalles de la excepción.
+     */
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(Exception.class)
     public ErrorResponse handleGenericException(Exception exception) {
@@ -130,5 +173,4 @@ public class GlobalControllerAdvice {
                 .timestamp(LocalDateTime.now())
                 .build();
     }
-
 }

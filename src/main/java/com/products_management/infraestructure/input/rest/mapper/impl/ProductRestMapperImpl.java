@@ -1,12 +1,14 @@
 package com.products_management.infraestructure.input.rest.mapper.impl;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.springframework.stereotype.Component;
+
 import com.products_management.domain.model.Product;
 import com.products_management.infraestructure.input.rest.mapper.interfaces.IProductRestMapper;
 import com.products_management.infraestructure.input.rest.model.request.ProductCreateRequest;
 import com.products_management.infraestructure.input.rest.model.response.ProductResponse;
-import java.util.ArrayList;
-import java.util.List;
-import org.springframework.stereotype.Component;
 
 /**
  * Implementación de {@link IProductRestMapper} que realiza la conversión entre entidades de producto y sus representaciones REST.
@@ -36,7 +38,7 @@ public class ProductRestMapperImpl implements IProductRestMapper {
         productBuilder.taxPercentage(productCreateRequest.getTaxPercentage());
         productBuilder.creationDate(productCreateRequest.getCreationDate());
         productBuilder.unitOfMeasureId(productCreateRequest.getUnitOfMeasureId());
-        productBuilder.supplierId(productCreateRequest.getSupplierId());
+        //productBuilder.supplierId(productCreateRequest.getSupplierId());
         productBuilder.categoryId(productCreateRequest.getCategoryId());
         productBuilder.enterpriseId(productCreateRequest.getEnterpriseId());
         productBuilder.price(productCreateRequest.getPrice());
@@ -67,7 +69,7 @@ public class ProductRestMapperImpl implements IProductRestMapper {
         productResponseBuilder.taxPercentage(product.getTaxPercentage());
         productResponseBuilder.creationDate(product.getCreationDate());
         productResponseBuilder.unitOfMeasureId(product.getUnitOfMeasureId());
-        productResponseBuilder.supplierId(product.getSupplierId());
+        //productResponseBuilder.supplierId(product.getSupplierId());
         productResponseBuilder.categoryId(product.getCategoryId());
         productResponseBuilder.enterpriseId(product.getEnterpriseId());
         productResponseBuilder.price(product.getPrice());

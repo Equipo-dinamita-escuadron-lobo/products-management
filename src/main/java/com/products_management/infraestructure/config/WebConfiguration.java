@@ -1,10 +1,12 @@
 package com.products_management.infraestructure.config;
 
-import com.products_management.infraestructure.output.persistence.multitenancy.interceptor.TenantInterceptor;
-import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+import com.products_management.infraestructure.output.persistence.multitenancy.interceptor.TenantInterceptor;
+
+import lombok.RequiredArgsConstructor;
 
 /**
  * Clase de configuración para la configuración web MVC.
@@ -22,7 +24,7 @@ public class WebConfiguration implements WebMvcConfigurer {
      * @param registry el registro de interceptores de la configuración web MVC.
      */
     @Override
-    public void addInterceptors(InterceptorRegistry registry) {
+    public void addInterceptors(@SuppressWarnings("null") InterceptorRegistry registry) {
         registry.addWebRequestInterceptor(tenantInterceptor);
     }
 

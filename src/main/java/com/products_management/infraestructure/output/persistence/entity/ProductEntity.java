@@ -1,14 +1,18 @@
 package com.products_management.infraestructure.output.persistence.entity;
 
-import jakarta.persistence.*;
+import java.util.Date;
+
+import org.hibernate.annotations.TenantId;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import org.hibernate.annotations.TenantId;
-
-import java.util.Date;
 
 /**
  * Entidad que representa un producto en la base de datos.
@@ -33,7 +37,6 @@ public class ProductEntity {
     private Integer taxPercentage;
     private Date creationDate;
     private Long unitOfMeasureId;
-    private Long supplierId;
     private Long categoryId;
     private String enterpriseId;
     private double price;

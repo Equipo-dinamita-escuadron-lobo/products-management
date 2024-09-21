@@ -1,12 +1,13 @@
 package com.products_management.infraestructure.output.persistence.mapper.impl;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.springframework.stereotype.Component;
+
 import com.products_management.domain.model.Product;
 import com.products_management.infraestructure.output.persistence.entity.ProductEntity;
 import com.products_management.infraestructure.output.persistence.mapper.interfaces.IProductPersistenceMapper;
-import org.springframework.stereotype.Component;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Implementación del mapper de persistencia para la entidad Product.
@@ -35,7 +36,6 @@ public class ProductPersistenceMapperImpl implements IProductPersistenceMapper {
         productEntity.setTaxPercentage(product.getTaxPercentage());
         productEntity.setCreationDate(product.getCreationDate());
         productEntity.setUnitOfMeasureId(product.getUnitOfMeasureId());
-        productEntity.setSupplierId(product.getSupplierId());
         productEntity.setCategoryId(product.getCategoryId());
         productEntity.setEnterpriseId(product.getEnterpriseId());
         productEntity.setPrice(product.getPrice());
@@ -65,7 +65,6 @@ public class ProductPersistenceMapperImpl implements IProductPersistenceMapper {
                 .taxPercentage(productEntity.getTaxPercentage())
                 .creationDate(productEntity.getCreationDate())
                 .unitOfMeasureId(productEntity.getUnitOfMeasureId())
-                .supplierId(productEntity.getSupplierId())
                 .categoryId(productEntity.getCategoryId())
                 .enterpriseId(productEntity.getEnterpriseId())
                 .price(productEntity.getPrice())

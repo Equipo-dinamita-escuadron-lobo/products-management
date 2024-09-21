@@ -1,11 +1,11 @@
 package com.products_management.domain.model;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.time.LocalDateTime;
-import java.util.List;
 
 /**
  * Clase que representa una respuesta de error utilizada para comunicar errores o excepciones en la aplicación.
@@ -34,5 +34,4 @@ public class ErrorResponse {
      * Fecha y hora en la que ocurrió el error.
      */
     private LocalDateTime timestamp;
-
 }

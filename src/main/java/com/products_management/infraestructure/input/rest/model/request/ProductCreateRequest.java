@@ -1,11 +1,16 @@
 package com.products_management.infraestructure.input.rest.model.request;
 
+import java.util.Date;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import lombok.*;
-
-import java.util.Date;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /**
  * Clase de solicitud utilizada para crear un producto en el sistema.
@@ -44,8 +49,8 @@ public class ProductCreateRequest {
     @NotNull(message = "Id de la unidad de medida es requerido")
     private Long unitOfMeasureId;
 
-    @NotNull(message = "Id del proveedor es requerido")
-    private Long supplierId;
+    //@NotNull(message = "Id del proveedor es requerido")
+   // private Long supplierId;
 
     @NotNull(message = "Id de la categoría es requerido")
     private Long categoryId;

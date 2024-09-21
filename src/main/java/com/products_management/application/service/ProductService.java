@@ -1,14 +1,16 @@
 package com.products_management.application.service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.springframework.stereotype.Service;
+
 import com.products_management.application.ports.input.IProductServicePort;
 import com.products_management.application.ports.output.IProductPersistencePort;
 import com.products_management.domain.exception.ProductNotFoundException;
 import com.products_management.domain.model.Product;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import lombok.RequiredArgsConstructor;
 
 /**
  * Servicio que implementa la lógica de negocio para los productos.
@@ -91,7 +93,6 @@ public class ProductService implements IProductServicePort {
                     existingProduct.setMaxQuantity(product.getMaxQuantity());
                     existingProduct.setTaxPercentage(product.getTaxPercentage());
                     existingProduct.setUnitOfMeasureId(product.getUnitOfMeasureId());
-                    existingProduct.setSupplierId(product.getSupplierId());
                     existingProduct.setCategoryId(product.getCategoryId());
                     existingProduct.setPrice(product.getPrice());
                     return productPersistencePort.create(existingProduct);

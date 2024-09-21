@@ -1,8 +1,12 @@
 package com.products_management.infraestructure.input.rest.model.response;
 
-import lombok.*;
-
 import java.util.Date;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /**
  * Clase de respuesta que representa un producto en la API REST.
@@ -62,7 +66,7 @@ public class ProductResponse {
     /**
      * Identificador del proveedor del producto.
      */
-    private Long supplierId;
+    //private Long supplierId;
 
     /**
      * Identificador de la categoría del producto.

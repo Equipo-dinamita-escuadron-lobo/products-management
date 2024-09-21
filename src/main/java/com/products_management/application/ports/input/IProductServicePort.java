@@ -1,6 +1,7 @@
 package com.products_management.application.ports.input;
 
 import java.util.List;
+
 import com.products_management.domain.model.Product;
 
 /**
@@ -35,16 +36,14 @@ public interface IProductServicePort {
   List<Product> findActivated(String enterpriseId);
 
   /**
-   * Crea un nuevo producto.
-   *
+   * @brief Crea un nuevo producto.
    * @param product el producto a crear.
    * @return el producto creado.
    */
   Product create(Product product);
 
   /**
-   * Actualiza un producto existente.
-   *
+   * @brief Actualiza un producto existente.
    * @param id el ID del producto a actualizar.
    * @param product los datos del producto actualizado.
    * @return el producto actualizado.
@@ -52,7 +51,7 @@ public interface IProductServicePort {
   Product update(Long id, Product product);
 
   /**
-   * Elimina un producto por su ID.
+   * @brief Elimina un producto por su ID.
    *
    * @param id el ID del producto a eliminar.
    */

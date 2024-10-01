@@ -70,6 +70,7 @@ public class ProductService implements IProductServicePort {
      */
     @Override
     public Product create(Product product) {
+        product.generateCode();
         return productPersistencePort.create(product);
     }
 
@@ -84,19 +85,27 @@ public class ProductService implements IProductServicePort {
     @Override
     public Product update(Long id, Product product) {
         return productPersistencePort.findById(id)
-                .map(existingProduct -> {
-                    existingProduct.setItemType(product.getItemType());
-                    existingProduct.setDescription(product.getDescription());
-                    existingProduct.setMinQuantity(product.getMinQuantity());
-                    existingProduct.setMaxQuantity(product.getMaxQuantity());
-                    existingProduct.setTaxPercentage(product.getTaxPercentage());
-                    existingProduct.setUnitOfMeasureId(product.getUnitOfMeasureId());
-                    existingProduct.setSupplierId(product.getSupplierId());
-                    existingProduct.setCategoryId(product.getCategoryId());
-                    existingProduct.setPrice(product.getPrice());
-                    return productPersistencePort.create(existingProduct);
-                })
-                .orElseThrow(ProductNotFoundException::new);
+            .map(existingProduct -> {
+                boolean shouldRegenerateCode = !existingProduct.getItemType().equals(product.getItemType()) || 
+                                               !existingProduct.getCategoryId().equals(product.getCategoryId()) || 
+                                               !existingProduct.getId().equals(product.getId());
+
+                existingProduct.setItemType(product.getItemType());
+                existingProduct.setDescription(product.getDescription());
+                existingProduct.setMinQuantity(product.getMinQuantity());
+                existingProduct.setMaxQuantity(product.getMaxQuantity());
+                existingProduct.setTaxPercentage(product.getTaxPercentage());
+                existingProduct.setUnitOfMeasureId(product.getUnitOfMeasureId());
+                existingProduct.setCategoryId(product.getCategoryId());
+                existingProduct.setPrice(product.getPrice());
+
+                if (shouldRegenerateCode) {
+                    existingProduct.generateCode();
+                }
+
+                return productPersistencePort.create(existingProduct);
+            })
+            .orElseThrow(ProductNotFoundException::new);
     }
 
     /**

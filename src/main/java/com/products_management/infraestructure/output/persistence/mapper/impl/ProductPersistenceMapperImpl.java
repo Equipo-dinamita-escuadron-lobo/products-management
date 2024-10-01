@@ -35,7 +35,6 @@ public class ProductPersistenceMapperImpl implements IProductPersistenceMapper {
         productEntity.setTaxPercentage(product.getTaxPercentage());
         productEntity.setCreationDate(product.getCreationDate());
         productEntity.setUnitOfMeasureId(product.getUnitOfMeasureId());
-        productEntity.setSupplierId(product.getSupplierId());
         productEntity.setCategoryId(product.getCategoryId());
         productEntity.setEnterpriseId(product.getEnterpriseId());
         productEntity.setPrice(product.getPrice());
@@ -65,7 +64,6 @@ public class ProductPersistenceMapperImpl implements IProductPersistenceMapper {
                 .taxPercentage(productEntity.getTaxPercentage())
                 .creationDate(productEntity.getCreationDate())
                 .unitOfMeasureId(productEntity.getUnitOfMeasureId())
-                .supplierId(productEntity.getSupplierId())
                 .categoryId(productEntity.getCategoryId())
                 .enterpriseId(productEntity.getEnterpriseId())
                 .price(productEntity.getPrice())

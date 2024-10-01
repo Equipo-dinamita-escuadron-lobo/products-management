@@ -63,11 +63,6 @@ public class Product {
     private Long unitOfMeasureId;
 
     /**
-     * Identificador del proveedor del producto.
-     */
-    private Long supplierId;
-
-    /**
      * Identificador de la categoría del producto.
      */
     private Long categoryId;
@@ -86,4 +81,12 @@ public class Product {
      * Estado del producto ("true" si está activo, "false" si está inactivo).
      */
     private String state;
+
+    /**
+     * Genera un código único basado en el tipo de ítem, categoría y ID del producto.
+     */
+    public void generateCode() {
+        String itemTypePrefix = itemType != null && itemType.length() >= 3 ? itemType.substring(0, 3).toUpperCase() : "UNK";
+        this.code = String.format("%s-%d-%d", itemTypePrefix, categoryId, id);
+    }
 }

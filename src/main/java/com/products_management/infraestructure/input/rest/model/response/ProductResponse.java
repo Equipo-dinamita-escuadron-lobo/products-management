@@ -60,11 +60,6 @@ public class ProductResponse {
     private Long unitOfMeasureId;
 
     /**
-     * Identificador del proveedor del producto.
-     */
-    private Long supplierId;
-
-    /**
      * Identificador de la categoría del producto.
      */
     private Long categoryId;

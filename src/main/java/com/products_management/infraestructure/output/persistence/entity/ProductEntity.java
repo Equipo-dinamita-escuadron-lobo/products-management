@@ -33,7 +33,6 @@ public class ProductEntity {
     private Integer taxPercentage;
     private Date creationDate;
     private Long unitOfMeasureId;
-    private Long supplierId;
     private Long categoryId;
     private String enterpriseId;
     private double price;

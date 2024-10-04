@@ -36,7 +36,6 @@ public class ProductRestMapperImpl implements IProductRestMapper {
         productBuilder.taxPercentage(productCreateRequest.getTaxPercentage());
         productBuilder.creationDate(productCreateRequest.getCreationDate());
         productBuilder.unitOfMeasureId(productCreateRequest.getUnitOfMeasureId());
-        productBuilder.supplierId(productCreateRequest.getSupplierId());
         productBuilder.categoryId(productCreateRequest.getCategoryId());
         productBuilder.enterpriseId(productCreateRequest.getEnterpriseId());
         productBuilder.price(productCreateRequest.getPrice());
@@ -58,6 +57,8 @@ public class ProductRestMapperImpl implements IProductRestMapper {
             return null;
         }
 
+        product.generateCode();
+
         ProductResponse.ProductResponseBuilder productResponseBuilder = ProductResponse.builder();
         productResponseBuilder.id(product.getId());
         productResponseBuilder.code(product.getCode());
@@ -68,7 +69,6 @@ public class ProductRestMapperImpl implements IProductRestMapper {
         productResponseBuilder.taxPercentage(product.getTaxPercentage());
         productResponseBuilder.creationDate(product.getCreationDate());
         productResponseBuilder.unitOfMeasureId(product.getUnitOfMeasureId());
-        productResponseBuilder.supplierId(product.getSupplierId());
         productResponseBuilder.categoryId(product.getCategoryId());
         productResponseBuilder.enterpriseId(product.getEnterpriseId());
         productResponseBuilder.price(product.getPrice());

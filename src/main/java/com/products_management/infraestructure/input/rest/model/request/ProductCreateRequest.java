@@ -58,4 +58,6 @@ public class ProductCreateRequest {
 
     @JsonIgnore
     private String state;
+
+    private String reference;
 }

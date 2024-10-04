@@ -38,6 +38,7 @@ public class ProductEntity {
     private String enterpriseId;
     private double price;
     private String state;
+    private String reference;
 
     @TenantId
     private String tenantId;

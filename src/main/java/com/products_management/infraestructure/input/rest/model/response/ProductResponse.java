@@ -83,4 +83,9 @@ public class ProductResponse {
      * Estado del producto (activo/inactivo).
      */
     private String state;
+
+    /**
+     * Referencia del producto.
+     */
+    private String reference;
 }

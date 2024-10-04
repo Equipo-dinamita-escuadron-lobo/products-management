@@ -94,6 +94,7 @@ public class ProductService implements IProductServicePort {
                     existingProduct.setSupplierId(product.getSupplierId());
                     existingProduct.setCategoryId(product.getCategoryId());
                     existingProduct.setPrice(product.getPrice());
+                    existingProduct.setReference(product.getReference());
                     return productPersistencePort.create(existingProduct);
                 })
                 .orElseThrow(ProductNotFoundException::new);

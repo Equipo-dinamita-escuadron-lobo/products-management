@@ -40,6 +40,7 @@ public class ProductPersistenceMapperImpl implements IProductPersistenceMapper {
         productEntity.setEnterpriseId(product.getEnterpriseId());
         productEntity.setPrice(product.getPrice());
         productEntity.setState(product.getState() == null ? "true" : product.getState());
+        productEntity.setReference(product.getReference());
 
         return productEntity;
     }

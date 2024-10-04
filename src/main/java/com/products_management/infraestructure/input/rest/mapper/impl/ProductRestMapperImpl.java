@@ -41,6 +41,7 @@ public class ProductRestMapperImpl implements IProductRestMapper {
         productBuilder.enterpriseId(productCreateRequest.getEnterpriseId());
         productBuilder.price(productCreateRequest.getPrice());
         productBuilder.state(productCreateRequest.getState());
+        productBuilder.reference(productCreateRequest.getReference());
 
         return productBuilder.build();
     }
@@ -72,6 +73,7 @@ public class ProductRestMapperImpl implements IProductRestMapper {
         productResponseBuilder.enterpriseId(product.getEnterpriseId());
         productResponseBuilder.price(product.getPrice());
         productResponseBuilder.state(product.getState());
+        productResponseBuilder.reference(product.getReference());
 
         return productResponseBuilder.build();
     }

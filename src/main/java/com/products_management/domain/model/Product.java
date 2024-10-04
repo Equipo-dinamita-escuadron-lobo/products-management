@@ -86,4 +86,9 @@ public class Product {
      * Estado del producto ("true" si está activo, "false" si está inactivo).
      */
     private String state;
+
+    /**
+     * Referencia opcional del producto.
+     */
+    private String reference;
 }

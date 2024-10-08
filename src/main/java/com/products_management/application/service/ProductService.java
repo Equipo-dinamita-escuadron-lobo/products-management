@@ -94,12 +94,11 @@ public class ProductService implements IProductServicePort {
 
                 existingProduct.setItemType(product.getItemType());
                 existingProduct.setDescription(product.getDescription());
-                existingProduct.setMinQuantity(product.getMinQuantity());
-                existingProduct.setMaxQuantity(product.getMaxQuantity());
+                existingProduct.setQuantity(product.getQuantity());
                 existingProduct.setTaxPercentage(product.getTaxPercentage());
                 existingProduct.setUnitOfMeasureId(product.getUnitOfMeasureId());
                 existingProduct.setCategoryId(product.getCategoryId());
-                existingProduct.setPrice(product.getPrice());
+                existingProduct.setCost(product.getCost());
                 existingProduct.setReference(product.getReference());
 
                 if (shouldRegenerateCode) {

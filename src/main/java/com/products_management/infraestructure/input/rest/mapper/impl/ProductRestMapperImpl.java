@@ -33,14 +33,13 @@ public class ProductRestMapperImpl implements IProductRestMapper {
         productBuilder.code(productCreateRequest.getCode());
         productBuilder.itemType(productCreateRequest.getItemType());
         productBuilder.description(productCreateRequest.getDescription());
-        productBuilder.minQuantity(productCreateRequest.getMinQuantity());
-        productBuilder.maxQuantity(productCreateRequest.getMaxQuantity());
+        productBuilder.quantity(productCreateRequest.getQuantity());
         productBuilder.taxPercentage(productCreateRequest.getTaxPercentage());
         productBuilder.creationDate(productCreateRequest.getCreationDate());
         productBuilder.unitOfMeasureId(productCreateRequest.getUnitOfMeasureId());
         productBuilder.categoryId(productCreateRequest.getCategoryId());
         productBuilder.enterpriseId(productCreateRequest.getEnterpriseId());
-        productBuilder.price(productCreateRequest.getPrice());
+        productBuilder.cost(productCreateRequest.getCost());
         productBuilder.state(productCreateRequest.getState());
         productBuilder.reference(productCreateRequest.getReference());
 
@@ -66,14 +65,13 @@ public class ProductRestMapperImpl implements IProductRestMapper {
         productResponseBuilder.code(product.getCode());
         productResponseBuilder.itemType(product.getItemType());
         productResponseBuilder.description(product.getDescription());
-        productResponseBuilder.minQuantity(product.getMinQuantity());
-        productResponseBuilder.maxQuantity(product.getMaxQuantity());
+        productResponseBuilder.quantity(product.getQuantity());
         productResponseBuilder.taxPercentage(product.getTaxPercentage());
         productResponseBuilder.creationDate(product.getCreationDate());
         productResponseBuilder.unitOfMeasureId(product.getUnitOfMeasureId());
         productResponseBuilder.categoryId(product.getCategoryId());
         productResponseBuilder.enterpriseId(product.getEnterpriseId());
-        productResponseBuilder.price(product.getPrice());
+        productResponseBuilder.cost(product.getCost());
         productResponseBuilder.state(product.getState());
         productResponseBuilder.reference(product.getReference());
 

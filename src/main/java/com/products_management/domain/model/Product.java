@@ -39,14 +39,9 @@ public class Product {
     private String description;
 
     /**
-     * @brief Cantidad mínima requerida del producto.
+     * Cantidad permitida del producto.
      */
-    private Integer minQuantity;
-
-    /**
-     *  @brief Cantidad máxima permitida del producto.
-     */
-    private Integer maxQuantity;
+    private Integer quantity;
 
     /**
      * @brief Porcentaje de impuestos aplicable al producto.
@@ -74,9 +69,9 @@ public class Product {
     private String enterpriseId;
 
     /**
-     * @brief Precio del producto.
+     * Costo del producto.
      */
-    private double price;
+    private double cost;
 
     /**
      * @brief Estado del producto ("true" si está activo, "false" si está inactivo).

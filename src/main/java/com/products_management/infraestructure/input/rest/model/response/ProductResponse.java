@@ -64,11 +64,6 @@ public class ProductResponse {
     private Long unitOfMeasureId;
 
     /**
-     * Identificador del proveedor del producto.
-     */
-    //private Long supplierId;
-
-    /**
      * Identificador de la categoría del producto.
      */
     private Long categoryId;
@@ -87,4 +82,9 @@ public class ProductResponse {
      * Estado del producto (activo/inactivo).
      */
     private String state;
+
+    /**
+     * Referencia del producto.
+     */
+    private String reference;
 }

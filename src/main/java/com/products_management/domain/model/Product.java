@@ -82,4 +82,18 @@ public class Product {
      * @brief Estado del producto ("true" si está activo, "false" si está inactivo).
      */
     private String state;
+    /**
+
+     * Campo de referencia opcional
+     */
+    private String reference;
+
+    /**
+
+     * Genera un código único basado en el tipo de ítem, categoría y ID del producto.
+     */
+    public void generateCode() {
+        String itemTypePrefix = itemType != null && itemType.length() >= 3 ? itemType.substring(0, 3).toUpperCase() : "UNK";
+        this.code = String.format("%s-%d-%d", itemTypePrefix, categoryId, id);
+    }
 }

@@ -25,7 +25,7 @@ public class ProductCreateRequest {
     @JsonIgnore
     private Long id;
 
-    @NotBlank(message = "Código es requerido")
+    @JsonIgnore
     private String code;
 
     @NotBlank(message = "Tipo de ítem es requerido")
@@ -49,9 +49,6 @@ public class ProductCreateRequest {
     @NotNull(message = "Id de la unidad de medida es requerido")
     private Long unitOfMeasureId;
 
-    //@NotNull(message = "Id del proveedor es requerido")
-   // private Long supplierId;
-
     @NotNull(message = "Id de la categoría es requerido")
     private Long categoryId;
 
@@ -63,4 +60,6 @@ public class ProductCreateRequest {
 
     @JsonIgnore
     private String state;
+
+    private String reference;
 }

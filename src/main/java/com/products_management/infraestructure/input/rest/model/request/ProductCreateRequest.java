@@ -29,11 +29,8 @@ public class ProductCreateRequest {
     @NotBlank(message = "Descripción es requerida")
     private String description;
 
-    @NotNull(message = "Cantidad mínima es requerida")
-    private Integer minQuantity;
-
-    @NotNull(message = "Cantidad máxima es requerida")
-    private Integer maxQuantity;
+    @NotNull(message = "Cantidad es requerida")
+    private Integer quantity;
 
     @NotNull(message = "Porcentaje de impuesto es requerido")
     private Integer taxPercentage;
@@ -53,8 +50,8 @@ public class ProductCreateRequest {
     @NotNull(message = "Id de la empresa es requerido")
     private String enterpriseId;
 
-    @NotNull(message = "Precio es requerido")
-    private double price;
+    @NotNull(message = "Costo es requerido")
+    private double cost;
 
     @JsonIgnore
     private String state;

@@ -35,14 +35,9 @@ public class ProductResponse {
     private String description;
 
     /**
-     * Cantidad mínima del producto.
+     * Cantidad del producto.
      */
-    private Integer minQuantity;
-
-    /**
-     * Cantidad máxima del producto.
-     */
-    private Integer maxQuantity;
+    private Integer quantity;
 
     /**
      * Porcentaje de impuesto aplicado al producto.
@@ -75,9 +70,9 @@ public class ProductResponse {
     private String enterpriseId;
 
     /**
-     * Precio del producto.
+     * Costo del producto.
      */
-    private double price;
+    private double cost;
 
     /**
      * Estado del producto (activo/inactivo).

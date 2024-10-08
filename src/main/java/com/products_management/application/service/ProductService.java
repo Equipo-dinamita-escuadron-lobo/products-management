@@ -87,13 +87,12 @@ public class ProductService implements IProductServicePort {
                 .map(existingProduct -> {
                     existingProduct.setItemType(product.getItemType());
                     existingProduct.setDescription(product.getDescription());
-                    existingProduct.setMinQuantity(product.getMinQuantity());
-                    existingProduct.setMaxQuantity(product.getMaxQuantity());
+                    existingProduct.setQuantity(product.getQuantity());
                     existingProduct.setTaxPercentage(product.getTaxPercentage());
                     existingProduct.setUnitOfMeasureId(product.getUnitOfMeasureId());
                     existingProduct.setSupplierId(product.getSupplierId());
                     existingProduct.setCategoryId(product.getCategoryId());
-                    existingProduct.setPrice(product.getPrice());
+                    existingProduct.setCost(product.getCost());
                     return productPersistencePort.create(existingProduct);
                 })
                 .orElseThrow(ProductNotFoundException::new);

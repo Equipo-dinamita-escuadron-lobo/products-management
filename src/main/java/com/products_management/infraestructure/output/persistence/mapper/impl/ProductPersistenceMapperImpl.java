@@ -30,15 +30,14 @@ public class ProductPersistenceMapperImpl implements IProductPersistenceMapper {
         productEntity.setCode(product.getCode());
         productEntity.setItemType(product.getItemType());
         productEntity.setDescription(product.getDescription());
-        productEntity.setMinQuantity(product.getMinQuantity());
-        productEntity.setMaxQuantity(product.getMaxQuantity());
+        productEntity.setQuantity(product.getQuantity());
         productEntity.setTaxPercentage(product.getTaxPercentage());
         productEntity.setCreationDate(product.getCreationDate());
         productEntity.setUnitOfMeasureId(product.getUnitOfMeasureId());
         productEntity.setSupplierId(product.getSupplierId());
         productEntity.setCategoryId(product.getCategoryId());
         productEntity.setEnterpriseId(product.getEnterpriseId());
-        productEntity.setPrice(product.getPrice());
+        productEntity.setCost(product.getCost());
         productEntity.setState(product.getState() == null ? "true" : product.getState());
 
         return productEntity;
@@ -60,15 +59,14 @@ public class ProductPersistenceMapperImpl implements IProductPersistenceMapper {
                 .code(productEntity.getCode())
                 .itemType(productEntity.getItemType())
                 .description(productEntity.getDescription())
-                .minQuantity(productEntity.getMinQuantity())
-                .maxQuantity(productEntity.getMaxQuantity())
+                .quantity(productEntity.getQuantity())
                 .taxPercentage(productEntity.getTaxPercentage())
                 .creationDate(productEntity.getCreationDate())
                 .unitOfMeasureId(productEntity.getUnitOfMeasureId())
                 .supplierId(productEntity.getSupplierId())
                 .categoryId(productEntity.getCategoryId())
                 .enterpriseId(productEntity.getEnterpriseId())
-                .price(productEntity.getPrice())
+                .cost(productEntity.getCost())
                 .state(productEntity.getState())
                 .build();
     }

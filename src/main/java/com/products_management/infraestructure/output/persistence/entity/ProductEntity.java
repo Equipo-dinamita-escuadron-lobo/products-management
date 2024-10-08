@@ -28,15 +28,14 @@ public class ProductEntity {
     private String code;
     private String itemType;
     private String description;
-    private Integer minQuantity;
-    private Integer maxQuantity;
+    private Integer quantity;
     private Integer taxPercentage;
     private Date creationDate;
     private Long unitOfMeasureId;
     private Long supplierId;
     private Long categoryId;
     private String enterpriseId;
-    private double price;
+    private double cost;
     private String state;
 
     @TenantId

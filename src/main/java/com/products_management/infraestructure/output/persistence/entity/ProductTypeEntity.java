@@ -28,5 +28,5 @@ public class ProductTypeEntity {
 
     private String name;    
     private String description;
-    private Long enterpriseId;
+    private String enterpriseId;
 }

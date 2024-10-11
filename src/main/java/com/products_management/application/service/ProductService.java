@@ -99,6 +99,7 @@ public class ProductService implements IProductServicePort {
                 existingProduct.setUnitOfMeasureId(product.getUnitOfMeasureId());
                 existingProduct.setCategoryId(product.getCategoryId());
                 existingProduct.setCost(product.getCost());
+                existingProduct.setProductType(product.getProductType());
                 existingProduct.setReference(product.getReference());
 
                 if (shouldRegenerateCode) {

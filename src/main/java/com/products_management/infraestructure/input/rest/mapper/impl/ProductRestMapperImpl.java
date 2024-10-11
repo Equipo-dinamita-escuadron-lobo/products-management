@@ -3,12 +3,15 @@ package com.products_management.infraestructure.input.rest.mapper.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.products_management.domain.model.Product;
+import com.products_management.domain.model.ProductType;
 import com.products_management.infraestructure.input.rest.mapper.interfaces.IProductRestMapper;
 import com.products_management.infraestructure.input.rest.model.request.ProductCreateRequest;
 import com.products_management.infraestructure.input.rest.model.response.ProductResponse;
+import com.products_management.infraestructure.output.persistence.ProductTypePersistenceAdapter;
 
 /**
  * Implementación de {@link IProductRestMapper} que realiza la conversión entre entidades de producto y sus representaciones REST.
@@ -16,6 +19,8 @@ import com.products_management.infraestructure.input.rest.model.response.Product
 @Component
 public class ProductRestMapperImpl implements IProductRestMapper {
 
+    @Autowired
+    private ProductTypePersistenceAdapter productTypeRepository; // Inyección del repositorio
     /**
      * Convierte una solicitud de creación de producto ({@link ProductCreateRequest}) en una entidad de producto ({@link Product}).
      *
@@ -42,6 +47,13 @@ public class ProductRestMapperImpl implements IProductRestMapper {
         productBuilder.cost(productCreateRequest.getCost());
         productBuilder.state(productCreateRequest.getState());
         productBuilder.reference(productCreateRequest.getReference());
+
+        
+        if (productCreateRequest.getProductTypeId() != null) {
+            ProductType productType = productTypeRepository.findById(productCreateRequest.getProductTypeId())
+                .orElse(null);
+            productBuilder.productType(productType); 
+        }
 
         return productBuilder.build();
     }
@@ -74,6 +86,11 @@ public class ProductRestMapperImpl implements IProductRestMapper {
         productResponseBuilder.cost(product.getCost());
         productResponseBuilder.state(product.getState());
         productResponseBuilder.reference(product.getReference());
+
+         // Incluir el ProductType en la respuesta si no es nulo
+        if (product.getProductType() != null) {
+            productResponseBuilder.productType(product.getProductType());
+        }
 
         return productResponseBuilder.build();
     }

@@ -31,6 +31,6 @@ public class ProductType {
     /**
      * Identificador de la empresa a la que pertenece el tipo de producto.
      */
-    private Long enterpriseId;
+    private String enterpriseId;
 
 }

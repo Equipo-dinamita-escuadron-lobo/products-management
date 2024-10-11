@@ -8,7 +8,7 @@ public interface  IProductTypePersistencePort {
 
     ProductType save(ProductType productType);
 
-    List<ProductType> findByEnterpriseId(Long enterpriseId);
+    List<ProductType> findByEnterpriseId(String enterpriseId);
     
     List<ProductType> findAll();
 

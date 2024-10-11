@@ -2,6 +2,8 @@ package com.products_management.infraestructure.input.rest.model.response;
 
 import java.util.Date;
 
+import com.products_management.domain.model.ProductType;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -82,4 +84,11 @@ public class ProductResponse {
      * Referencia del producto.
      */
     private String reference;
+
+    /**
+     * Tipo de producto relacionado.
+     */
+    private ProductType productType;
+
+
 }

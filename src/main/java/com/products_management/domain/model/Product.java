@@ -83,6 +83,8 @@ public class Product {
      */
     private String reference;
 
+    private ProductType productType;
+ 
     /**
 
      * Genera un código único basado en el tipo de ítem, categoría y ID del producto.

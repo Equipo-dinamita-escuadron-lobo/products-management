@@ -26,7 +26,7 @@ public class ProductTypePersistenceAdapter implements IProductTypePersistencePor
     }
 
     @Override
-    public List<ProductType> findByEnterpriseId(Long enterpriseId) {
+    public List<ProductType> findByEnterpriseId(String enterpriseId) {
         return productTypePersistenceMapper.toProductTypeList(productTypeRepository.findByEnterpriseId(enterpriseId));
     }
 

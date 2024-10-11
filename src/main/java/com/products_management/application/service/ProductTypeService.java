@@ -23,7 +23,7 @@ public class ProductTypeService implements IProductTypeServicePort {
     }
 
     @Override
-    public List<ProductType> getProductTypesByEnterpriseId(Long enterpriseId) {
+    public List<ProductType> getProductTypesByEnterpriseId(String enterpriseId) {
         return productTypeOutputPort.findByEnterpriseId(enterpriseId);
     }
 

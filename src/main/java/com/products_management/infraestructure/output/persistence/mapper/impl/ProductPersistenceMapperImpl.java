@@ -6,7 +6,9 @@ import java.util.List;
 import org.springframework.stereotype.Component;
 
 import com.products_management.domain.model.Product;
+import com.products_management.domain.model.ProductType;
 import com.products_management.infraestructure.output.persistence.entity.ProductEntity;
+import com.products_management.infraestructure.output.persistence.entity.ProductTypeEntity;
 import com.products_management.infraestructure.output.persistence.mapper.interfaces.IProductPersistenceMapper;
 
 /**
@@ -41,6 +43,12 @@ public class ProductPersistenceMapperImpl implements IProductPersistenceMapper {
         productEntity.setState(product.getState() == null ? "true" : product.getState());
         productEntity.setReference(product.getReference());
 
+        if (product.getProductType() != null) {
+            ProductTypeEntity productTypeEntity = new ProductTypeEntity();
+            productTypeEntity.setId(product.getProductType().getId());
+            productEntity.setProductType(productTypeEntity);
+        }
+
         return productEntity;
     }
 
@@ -55,7 +63,7 @@ public class ProductPersistenceMapperImpl implements IProductPersistenceMapper {
             return null;
         }
 
-        return Product.builder()
+        Product product = Product.builder()
                 .id(productEntity.getId())
                 .code(productEntity.getCode())
                 .itemType(productEntity.getItemType())
@@ -69,8 +77,16 @@ public class ProductPersistenceMapperImpl implements IProductPersistenceMapper {
                 .cost(productEntity.getCost())
                 .state(productEntity.getState())
                 .build();
-    }
 
+        // Establecer la relación con ProductType
+        if (productEntity.getProductType() != null) {
+            ProductType productTypeTmp = new ProductType(productEntity.getProductType().getId(), 
+                productEntity.getProductType().getName(), productEntity.getProductType().getDescription(), productEntity.getProductType().getEnterpriseId());
+            product.setProductType(productTypeTmp); 
+        }
+
+        return product;
+    }
     /**
      * Convierte una lista de ProductEntity de persistencia en una lista de objetos Product del dominio.
      * @param productList Lista de ProductEntity de persistencia.

@@ -12,7 +12,7 @@ public interface IProductTypeServicePort {
 
     Optional<ProductType> findById(Long id);
 
-    List<ProductType> getProductTypesByEnterpriseId(Long enterpriseId);
+    List<ProductType> getProductTypesByEnterpriseId(String enterpriseId);
 
     List<ProductType> listAllProductTypes();
 

@@ -29,6 +29,4 @@ public class UnitOfMeasureEntity {
     private String enterpriseId;
     private String state;
 
-    @TenantId
-    private String tenantId;
 }

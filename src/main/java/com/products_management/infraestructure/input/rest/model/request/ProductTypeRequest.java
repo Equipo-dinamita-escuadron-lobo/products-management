@@ -11,5 +11,5 @@ import lombok.Setter;
 public class ProductTypeRequest {
     private String name;
     private String description;
-    private long enterpriseId;
+    private String enterpriseId;
 }

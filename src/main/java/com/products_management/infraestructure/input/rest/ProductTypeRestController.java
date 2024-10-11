@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
  */
 @CrossOrigin("*") // Allow cross-origin requests
 @RestController
-@RequestMapping("/product-types")
+@RequestMapping("/api/product-types")
 @RequiredArgsConstructor // Use constructor injection
 public class ProductTypeRestController {
 
@@ -37,6 +37,15 @@ public class ProductTypeRestController {
     @GetMapping
     public ResponseEntity<List<ProductTypeResponse>> getAllProductTypes() {
         List<ProductType> productTypes = productTypeService.listAllProductTypes();
+        List<ProductTypeResponse> responses = productTypes.stream()
+                .map(productTypeMapper::toProductTypeResponse)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(responses);
+    }
+
+    @GetMapping("/enterprise/{enterpriseId}")
+    public ResponseEntity<List<ProductTypeResponse>> getProductTypesByEnterpriseId(@PathVariable String enterpriseId) {
+        List<ProductType> productTypes = productTypeService.getProductTypesByEnterpriseId(enterpriseId);
         List<ProductTypeResponse> responses = productTypes.stream()
                 .map(productTypeMapper::toProductTypeResponse)
                 .collect(Collectors.toList());

@@ -12,5 +12,5 @@ public class ProductTypeResponse {
     private Long id;
     private String name;
     private String description;
-    private long enterpriseId;
+    private String enterpriseId;
 }

@@ -46,7 +46,7 @@ public class UnitOfMeasureService implements IUnitOfMeasureServicePort {
     public List<UnitOfMeasure> findAll(String enterpriseId) {
         List<UnitOfMeasure> allUnitOfMeasure = unitMeasurePersistencePort.findAll();
         return allUnitOfMeasure.stream()
-                .filter(unitOfMeasure -> unitOfMeasure.getEnterpriseId().equals(enterpriseId))
+                .filter(unitOfMeasure -> unitOfMeasure.getEnterpriseId().equals(enterpriseId)||unitOfMeasure.getEnterpriseId().equals("standart"))
                 .collect(Collectors.toList());
     }
 
@@ -61,7 +61,7 @@ public class UnitOfMeasureService implements IUnitOfMeasureServicePort {
         List<UnitOfMeasure> allUnitOfMeasure = unitMeasurePersistencePort.findAll();
         return allUnitOfMeasure.stream()
                 .filter(unitOfMeasure -> "true".equals(unitOfMeasure.getState()))
-                .filter(unitOfMeasure -> unitOfMeasure.getEnterpriseId().equals(enterpriseId))
+                .filter(unitOfMeasure -> unitOfMeasure.getEnterpriseId().equals(enterpriseId) || unitOfMeasure.getEnterpriseId().equals("standart"))
                 .collect(Collectors.toList());
     }
 

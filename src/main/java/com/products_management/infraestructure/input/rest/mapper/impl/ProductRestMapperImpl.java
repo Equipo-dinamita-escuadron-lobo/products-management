@@ -1,12 +1,17 @@
 package com.products_management.infraestructure.input.rest.mapper.impl;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 import com.products_management.domain.model.Product;
+import com.products_management.domain.model.ProductType;
 import com.products_management.infraestructure.input.rest.mapper.interfaces.IProductRestMapper;
 import com.products_management.infraestructure.input.rest.model.request.ProductCreateRequest;
 import com.products_management.infraestructure.input.rest.model.response.ProductResponse;
-import java.util.ArrayList;
-import java.util.List;
-import org.springframework.stereotype.Component;
+import com.products_management.infraestructure.output.persistence.ProductTypePersistenceAdapter;
 
 /**
  * Implementación de {@link IProductRestMapper} que realiza la conversión entre entidades de producto y sus representaciones REST.
@@ -14,6 +19,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class ProductRestMapperImpl implements IProductRestMapper {
 
+    @Autowired
+    private ProductTypePersistenceAdapter productTypeRepository; // Inyección del repositorio
     /**
      * Convierte una solicitud de creación de producto ({@link ProductCreateRequest}) en una entidad de producto ({@link Product}).
      *
@@ -31,16 +38,22 @@ public class ProductRestMapperImpl implements IProductRestMapper {
         productBuilder.code(productCreateRequest.getCode());
         productBuilder.itemType(productCreateRequest.getItemType());
         productBuilder.description(productCreateRequest.getDescription());
-        productBuilder.minQuantity(productCreateRequest.getMinQuantity());
-        productBuilder.maxQuantity(productCreateRequest.getMaxQuantity());
+        productBuilder.quantity(productCreateRequest.getQuantity());
         productBuilder.taxPercentage(productCreateRequest.getTaxPercentage());
         productBuilder.creationDate(productCreateRequest.getCreationDate());
         productBuilder.unitOfMeasureId(productCreateRequest.getUnitOfMeasureId());
-        productBuilder.supplierId(productCreateRequest.getSupplierId());
         productBuilder.categoryId(productCreateRequest.getCategoryId());
         productBuilder.enterpriseId(productCreateRequest.getEnterpriseId());
-        productBuilder.price(productCreateRequest.getPrice());
+        productBuilder.cost(productCreateRequest.getCost());
         productBuilder.state(productCreateRequest.getState());
+        productBuilder.reference(productCreateRequest.getReference());
+
+        
+        if (productCreateRequest.getProductTypeId() != null) {
+            ProductType productType = productTypeRepository.findById(productCreateRequest.getProductTypeId())
+                .orElse(null);
+            productBuilder.productType(productType); 
+        }
 
         return productBuilder.build();
     }
@@ -57,21 +70,27 @@ public class ProductRestMapperImpl implements IProductRestMapper {
             return null;
         }
 
+        product.generateCode();
+
         ProductResponse.ProductResponseBuilder productResponseBuilder = ProductResponse.builder();
         productResponseBuilder.id(product.getId());
         productResponseBuilder.code(product.getCode());
         productResponseBuilder.itemType(product.getItemType());
         productResponseBuilder.description(product.getDescription());
-        productResponseBuilder.minQuantity(product.getMinQuantity());
-        productResponseBuilder.maxQuantity(product.getMaxQuantity());
+        productResponseBuilder.quantity(product.getQuantity());
         productResponseBuilder.taxPercentage(product.getTaxPercentage());
         productResponseBuilder.creationDate(product.getCreationDate());
         productResponseBuilder.unitOfMeasureId(product.getUnitOfMeasureId());
-        productResponseBuilder.supplierId(product.getSupplierId());
         productResponseBuilder.categoryId(product.getCategoryId());
         productResponseBuilder.enterpriseId(product.getEnterpriseId());
-        productResponseBuilder.price(product.getPrice());
+        productResponseBuilder.cost(product.getCost());
         productResponseBuilder.state(product.getState());
+        productResponseBuilder.reference(product.getReference());
+
+         // Incluir el ProductType en la respuesta si no es nulo
+        if (product.getProductType() != null) {
+            productResponseBuilder.productType(product.getProductType());
+        }
 
         return productResponseBuilder.build();
     }

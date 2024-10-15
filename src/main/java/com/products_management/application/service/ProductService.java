@@ -1,14 +1,16 @@
 package com.products_management.application.service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.springframework.stereotype.Service;
+
 import com.products_management.application.ports.input.IProductServicePort;
 import com.products_management.application.ports.output.IProductPersistencePort;
 import com.products_management.domain.exception.ProductNotFoundException;
 import com.products_management.domain.model.Product;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import lombok.RequiredArgsConstructor;
 
 /**
  * Servicio que implementa la lógica de negocio para los productos.
@@ -70,6 +72,7 @@ public class ProductService implements IProductServicePort {
      */
     @Override
     public Product create(Product product) {
+        product.generateCode();
         return productPersistencePort.create(product);
     }
 
@@ -84,19 +87,28 @@ public class ProductService implements IProductServicePort {
     @Override
     public Product update(Long id, Product product) {
         return productPersistencePort.findById(id)
-                .map(existingProduct -> {
-                    existingProduct.setItemType(product.getItemType());
-                    existingProduct.setDescription(product.getDescription());
-                    existingProduct.setMinQuantity(product.getMinQuantity());
-                    existingProduct.setMaxQuantity(product.getMaxQuantity());
-                    existingProduct.setTaxPercentage(product.getTaxPercentage());
-                    existingProduct.setUnitOfMeasureId(product.getUnitOfMeasureId());
-                    existingProduct.setSupplierId(product.getSupplierId());
-                    existingProduct.setCategoryId(product.getCategoryId());
-                    existingProduct.setPrice(product.getPrice());
-                    return productPersistencePort.create(existingProduct);
-                })
-                .orElseThrow(ProductNotFoundException::new);
+            .map(existingProduct -> {
+                boolean shouldRegenerateCode = !existingProduct.getItemType().equals(product.getItemType()) || 
+                                               !existingProduct.getCategoryId().equals(product.getCategoryId()) || 
+                                               !existingProduct.getId().equals(product.getId());
+
+                existingProduct.setItemType(product.getItemType());
+                existingProduct.setDescription(product.getDescription());
+                existingProduct.setQuantity(product.getQuantity());
+                existingProduct.setTaxPercentage(product.getTaxPercentage());
+                existingProduct.setUnitOfMeasureId(product.getUnitOfMeasureId());
+                existingProduct.setCategoryId(product.getCategoryId());
+                existingProduct.setCost(product.getCost());
+                existingProduct.setProductType(product.getProductType());
+                existingProduct.setReference(product.getReference());
+
+                if (shouldRegenerateCode) {
+                    existingProduct.generateCode();
+                }
+
+                return productPersistencePort.create(existingProduct);
+            })
+            .orElseThrow(ProductNotFoundException::new);
     }
 
     /**

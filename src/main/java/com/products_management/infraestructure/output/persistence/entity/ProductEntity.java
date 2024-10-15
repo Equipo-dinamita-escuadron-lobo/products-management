@@ -1,14 +1,21 @@
 package com.products_management.infraestructure.output.persistence.entity;
 
-import jakarta.persistence.*;
+import java.util.Date;
+
+import org.hibernate.annotations.TenantId;
+
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import org.hibernate.annotations.TenantId;
-
-import java.util.Date;
 
 /**
  * Entidad que representa un producto en la base de datos.
@@ -28,17 +35,20 @@ public class ProductEntity {
     private String code;
     private String itemType;
     private String description;
-    private Integer minQuantity;
-    private Integer maxQuantity;
+    private Integer quantity;
     private Integer taxPercentage;
     private Date creationDate;
     private Long unitOfMeasureId;
-    private Long supplierId;
     private Long categoryId;
     private String enterpriseId;
-    private double price;
+    private double cost;
     private String state;
+    private String reference;
 
     @TenantId
     private String tenantId;
+
+    @ManyToOne(optional = true)
+    @JoinColumn(name = "product_type_id", referencedColumnName = "id", nullable = true)
+    private ProductTypeEntity productType;
 }

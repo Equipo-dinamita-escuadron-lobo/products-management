@@ -1,11 +1,16 @@
 package com.products_management.infraestructure.input.rest.model.request;
 
+import java.util.Date;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import lombok.*;
-
-import java.util.Date;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /**
  * Clase de solicitud utilizada para crear un producto en el sistema.
@@ -20,7 +25,7 @@ public class ProductCreateRequest {
     @JsonIgnore
     private Long id;
 
-    @NotBlank(message = "Código es requerido")
+    @JsonIgnore
     private String code;
 
     @NotBlank(message = "Tipo de ítem es requerido")
@@ -29,11 +34,8 @@ public class ProductCreateRequest {
     @NotBlank(message = "Descripción es requerida")
     private String description;
 
-    @NotNull(message = "Cantidad mínima es requerida")
-    private Integer minQuantity;
-
-    @NotNull(message = "Cantidad máxima es requerida")
-    private Integer maxQuantity;
+    @NotNull(message = "Cantidad es requerida")
+    private Integer quantity;
 
     @NotNull(message = "Porcentaje de impuesto es requerido")
     private Integer taxPercentage;
@@ -44,18 +46,21 @@ public class ProductCreateRequest {
     @NotNull(message = "Id de la unidad de medida es requerido")
     private Long unitOfMeasureId;
 
-    @NotNull(message = "Id del proveedor es requerido")
-    private Long supplierId;
-
     @NotNull(message = "Id de la categoría es requerido")
     private Long categoryId;
 
     @NotNull(message = "Id de la empresa es requerido")
     private String enterpriseId;
 
-    @NotNull(message = "Precio es requerido")
-    private double price;
+    @NotNull(message = "Costo es requerido")
+    private double cost;
 
     @JsonIgnore
     private String state;
+
+    private String reference;
+    
+    // Campo opcional para la relación con ProductType
+    private Long productTypeId; // Este campo es opcional
+
 }

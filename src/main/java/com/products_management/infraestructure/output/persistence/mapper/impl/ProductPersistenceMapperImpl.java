@@ -1,12 +1,15 @@
 package com.products_management.infraestructure.output.persistence.mapper.impl;
 
-import com.products_management.domain.model.Product;
-import com.products_management.infraestructure.output.persistence.entity.ProductEntity;
-import com.products_management.infraestructure.output.persistence.mapper.interfaces.IProductPersistenceMapper;
-import org.springframework.stereotype.Component;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import org.springframework.stereotype.Component;
+
+import com.products_management.domain.model.Product;
+import com.products_management.domain.model.ProductType;
+import com.products_management.infraestructure.output.persistence.entity.ProductEntity;
+import com.products_management.infraestructure.output.persistence.entity.ProductTypeEntity;
+import com.products_management.infraestructure.output.persistence.mapper.interfaces.IProductPersistenceMapper;
 
 /**
  * Implementación del mapper de persistencia para la entidad Product.
@@ -30,16 +33,21 @@ public class ProductPersistenceMapperImpl implements IProductPersistenceMapper {
         productEntity.setCode(product.getCode());
         productEntity.setItemType(product.getItemType());
         productEntity.setDescription(product.getDescription());
-        productEntity.setMinQuantity(product.getMinQuantity());
-        productEntity.setMaxQuantity(product.getMaxQuantity());
+        productEntity.setQuantity(product.getQuantity());
         productEntity.setTaxPercentage(product.getTaxPercentage());
         productEntity.setCreationDate(product.getCreationDate());
         productEntity.setUnitOfMeasureId(product.getUnitOfMeasureId());
-        productEntity.setSupplierId(product.getSupplierId());
         productEntity.setCategoryId(product.getCategoryId());
         productEntity.setEnterpriseId(product.getEnterpriseId());
-        productEntity.setPrice(product.getPrice());
+        productEntity.setCost(product.getCost());
         productEntity.setState(product.getState() == null ? "true" : product.getState());
+        productEntity.setReference(product.getReference());
+
+        if (product.getProductType() != null) {
+            ProductTypeEntity productTypeEntity = new ProductTypeEntity();
+            productTypeEntity.setId(product.getProductType().getId());
+            productEntity.setProductType(productTypeEntity);
+        }
 
         return productEntity;
     }
@@ -55,24 +63,30 @@ public class ProductPersistenceMapperImpl implements IProductPersistenceMapper {
             return null;
         }
 
-        return Product.builder()
+        Product product = Product.builder()
                 .id(productEntity.getId())
                 .code(productEntity.getCode())
                 .itemType(productEntity.getItemType())
                 .description(productEntity.getDescription())
-                .minQuantity(productEntity.getMinQuantity())
-                .maxQuantity(productEntity.getMaxQuantity())
+                .quantity(productEntity.getQuantity())
                 .taxPercentage(productEntity.getTaxPercentage())
                 .creationDate(productEntity.getCreationDate())
                 .unitOfMeasureId(productEntity.getUnitOfMeasureId())
-                .supplierId(productEntity.getSupplierId())
                 .categoryId(productEntity.getCategoryId())
                 .enterpriseId(productEntity.getEnterpriseId())
-                .price(productEntity.getPrice())
+                .cost(productEntity.getCost())
                 .state(productEntity.getState())
                 .build();
-    }
 
+        // Establecer la relación con ProductType
+        if (productEntity.getProductType() != null) {
+            ProductType productTypeTmp = new ProductType(productEntity.getProductType().getId(), 
+                productEntity.getProductType().getName(), productEntity.getProductType().getDescription(), productEntity.getProductType().getEnterpriseId());
+            product.setProductType(productTypeTmp); 
+        }
+
+        return product;
+    }
     /**
      * Convierte una lista de ProductEntity de persistencia en una lista de objetos Product del dominio.
      * @param productList Lista de ProductEntity de persistencia.

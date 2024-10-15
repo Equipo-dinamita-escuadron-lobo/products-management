@@ -1,8 +1,14 @@
 package com.products_management.infraestructure.input.rest.model.response;
 
-import lombok.*;
-
 import java.util.Date;
+
+import com.products_management.domain.model.ProductType;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /**
  * Clase de respuesta que representa un producto en la API REST.
@@ -35,14 +41,9 @@ public class ProductResponse {
     private String description;
 
     /**
-     * Cantidad mínima del producto.
+     * Cantidad del producto.
      */
-    private Integer minQuantity;
-
-    /**
-     * Cantidad máxima del producto.
-     */
-    private Integer maxQuantity;
+    private Integer quantity;
 
     /**
      * Porcentaje de impuesto aplicado al producto.
@@ -60,11 +61,6 @@ public class ProductResponse {
     private Long unitOfMeasureId;
 
     /**
-     * Identificador del proveedor del producto.
-     */
-    private Long supplierId;
-
-    /**
      * Identificador de la categoría del producto.
      */
     private Long categoryId;
@@ -75,12 +71,24 @@ public class ProductResponse {
     private String enterpriseId;
 
     /**
-     * Precio del producto.
+     * Costo del producto.
      */
-    private double price;
+    private double cost;
 
     /**
      * Estado del producto (activo/inactivo).
      */
     private String state;
+
+    /**
+     * Referencia del producto.
+     */
+    private String reference;
+
+    /**
+     * Tipo de producto relacionado.
+     */
+    private ProductType productType;
+
+
 }

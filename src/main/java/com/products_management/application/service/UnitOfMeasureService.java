@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.Comparator;
 
 /**
  * Servicio que implementa la lógica de negocio para las unidades de medida.
@@ -46,7 +47,8 @@ public class UnitOfMeasureService implements IUnitOfMeasureServicePort {
     public List<UnitOfMeasure> findAll(String enterpriseId) {
         List<UnitOfMeasure> allUnitOfMeasure = unitMeasurePersistencePort.findAll();
         return allUnitOfMeasure.stream()
-                .filter(unitOfMeasure -> unitOfMeasure.getEnterpriseId().equals(enterpriseId)||unitOfMeasure.getEnterpriseId().equals("standart"))
+                .filter(unitOfMeasure -> unitOfMeasure.getEnterpriseId().equals(enterpriseId) || unitOfMeasure.getEnterpriseId().equals("standart"))
+                .sorted(Comparator.comparing(UnitOfMeasure::getName)) // Ordenar alfabéticamente por nombre
                 .collect(Collectors.toList());
     }
 

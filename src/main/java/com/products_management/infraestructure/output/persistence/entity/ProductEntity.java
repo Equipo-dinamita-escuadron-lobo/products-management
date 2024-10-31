@@ -4,13 +4,10 @@ import java.util.Date;
 
 import org.hibernate.annotations.TenantId;
 
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -44,11 +41,8 @@ public class ProductEntity {
     private double cost;
     private String state;
     private String reference;
-
+    private Long productTypeId;
     @TenantId
     private String tenantId;
 
-    @ManyToOne(optional = true)
-    @JoinColumn(name = "product_type_id", referencedColumnName = "id", nullable = true)
-    private ProductTypeEntity productType;
 }

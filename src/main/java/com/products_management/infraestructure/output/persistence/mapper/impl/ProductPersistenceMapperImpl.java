@@ -6,9 +6,7 @@ import java.util.List;
 import org.springframework.stereotype.Component;
 
 import com.products_management.domain.model.Product;
-import com.products_management.domain.model.ProductType;
 import com.products_management.infraestructure.output.persistence.entity.ProductEntity;
-import com.products_management.infraestructure.output.persistence.entity.ProductTypeEntity;
 import com.products_management.infraestructure.output.persistence.mapper.interfaces.IProductPersistenceMapper;
 
 /**
@@ -42,12 +40,7 @@ public class ProductPersistenceMapperImpl implements IProductPersistenceMapper {
         productEntity.setCost(product.getCost());
         productEntity.setState(product.getState() == null ? "true" : product.getState());
         productEntity.setReference(product.getReference());
-
-        if (product.getProductType() != null) {
-            ProductTypeEntity productTypeEntity = new ProductTypeEntity();
-            productTypeEntity.setId(product.getProductType().getId());
-            productEntity.setProductType(productTypeEntity);
-        }
+        productEntity.setProductTypeId(product.getProductTypeId());
 
         return productEntity;
     }
@@ -76,14 +69,9 @@ public class ProductPersistenceMapperImpl implements IProductPersistenceMapper {
                 .enterpriseId(productEntity.getEnterpriseId())
                 .cost(productEntity.getCost())
                 .state(productEntity.getState())
+                .reference(productEntity.getReference())
+                .productTypeId(productEntity.getProductTypeId())
                 .build();
-
-        // Establecer la relación con ProductType
-        if (productEntity.getProductType() != null) {
-            ProductType productTypeTmp = new ProductType(productEntity.getProductType().getId(), 
-                productEntity.getProductType().getName(), productEntity.getProductType().getDescription(), productEntity.getProductType().getEnterpriseId());
-            product.setProductType(productTypeTmp); 
-        }
 
         return product;
     }

@@ -83,7 +83,7 @@ public class Product {
      */
     private String reference;
 
-    private ProductType productType;
+    private Long productTypeId;
  
     /**
 

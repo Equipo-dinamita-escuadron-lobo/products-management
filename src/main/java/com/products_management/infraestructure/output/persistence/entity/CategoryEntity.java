@@ -34,4 +34,6 @@ public class CategoryEntity {
 
     @TenantId
     private String tenantId;
+
+    private Long taxId;
 }

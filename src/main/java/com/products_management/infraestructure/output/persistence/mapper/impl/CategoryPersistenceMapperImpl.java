@@ -34,6 +34,7 @@ public class CategoryPersistenceMapperImpl implements ICategoryPersistenceMapper
         categoryEntity.setCostId(category.getCostId());
         categoryEntity.setSaleId(category.getSaleId());
         categoryEntity.setReturnId(category.getReturnId());
+        categoryEntity.setTaxId(category.getTaxId());
         categoryEntity.setState(category.getState() == null ? "true" : category.getState());
 
         return categoryEntity;

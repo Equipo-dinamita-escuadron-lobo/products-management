@@ -8,4 +8,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
  * Proporciona métodos para realizar operaciones CRUD en UnitOfMeasureEntity.
  */
 public interface IUnitOfMeasureRepository extends JpaRepository<UnitOfMeasureEntity, Long> {
+    
 }

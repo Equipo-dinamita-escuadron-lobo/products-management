@@ -60,6 +60,7 @@ public class CategoryPersistenceMapperImpl implements ICategoryPersistenceMapper
                 .costId(categoryEntity.getCostId())
                 .saleId(categoryEntity.getSaleId())
                 .returnId(categoryEntity.getReturnId())
+                .taxId(categoryEntity.getTaxId())
                 .state(categoryEntity.getState())
                 .build();
     }

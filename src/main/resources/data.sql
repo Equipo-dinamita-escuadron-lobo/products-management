@@ -1,4 +1,5 @@
-INSERT IGNORE INTO unit_of_measure (id, abbreviation, description, enterprise_id, name, state) 
+MERGE INTO unit_of_measure (id, abbreviation, description, enterprise_id, name, state) 
+KEY(id) 
 VALUES 
 (1, 'U', 'Unidad General', 'standart', 'Unidad General', 'true'),
 (2, 'kg', 'Kilogramos', 'standart', 'Kilogramos', 'true'),

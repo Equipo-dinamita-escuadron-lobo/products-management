@@ -56,4 +56,11 @@ public class CategoryResponse {
      * Estado de la categoría (activo/inactivo).
      */
     private String state;
+
+
+    
+     /**
+     * ID de impuesto a la categoria
+     */
+    private Long taxId;
 }

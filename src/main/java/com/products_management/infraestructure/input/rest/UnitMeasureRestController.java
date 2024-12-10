@@ -27,6 +27,7 @@ public class UnitMeasureRestController {
 
     private final IUnitOfMeasureServicePort unitOfMeasureServicePort;
     private final UnitOfMeasureRestMapperImpl unitOfMeasureRestMapper;
+    private static boolean unitsInserted = false; 
 
     @Operation(summary = "Obtener todas las unidades de medida de una empresa", description = "Este endpoint devuelve una lista de todas las unidades de medida asociadas a una empresa específica.", responses = {
             @ApiResponse(responseCode = "200", description = "Unidades de medida obtenidas con éxito", content = @Content(mediaType = "application/json")),
@@ -107,6 +108,66 @@ public class UnitMeasureRestController {
     @DeleteMapping("/deleteAll")
     public void deleteAll() {
         unitOfMeasureServicePort.deleteAll();
+    }
+
+
+    /**
+     * Método para insertar las unidades de medida solo una vez.
+     * Este método solo puede ser ejecutado una vez, asegurando que no se inserten nuevamente.
+     * @return Respuesta con el estado HTTP 200 si se realizó correctamente.
+     */
+    @PostMapping("/insertDefaults")
+    public ResponseEntity<String> insertDefaultUnits() {
+        if (unitsInserted) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("Las unidades de medida ya han sido insertadas.");
+        }
+
+        // Definir las unidades de medida predeterminadas
+        List<UnitOfMeasureCreateRequest> defaultUnits = List.of(
+            new UnitOfMeasureCreateRequest("U", "Unidad General", "standart", "Unidad General", "true"),
+            new UnitOfMeasureCreateRequest("kg", "Kilogramos", "standart", "Kilogramos", "true"),
+            new UnitOfMeasureCreateRequest("g", "Gramos", "standart", "Gramos", "true"),
+            new UnitOfMeasureCreateRequest("mg", "Miligramos", "standart", "Miligramos", "true"),
+            new UnitOfMeasureCreateRequest("lb", "Libras", "standart", "Libras", "true"),
+            new UnitOfMeasureCreateRequest("oz", "Onzas", "standart", "Onzas", "true"),
+            new UnitOfMeasureCreateRequest("l", "Litros", "standart", "Litros", "true"),
+            new UnitOfMeasureCreateRequest("ml", "Mililitros", "standart", "Mililitros", "true"),
+            new UnitOfMeasureCreateRequest("m³", "Metros cúbicos", "standart", "Metros cúbicos", "true"),
+            new UnitOfMeasureCreateRequest("cm³", "Centímetros cúbicos", "standart", "Centímetros cúbicos", "true"),
+            new UnitOfMeasureCreateRequest("gal", "Galones", "standart", "Galones", "true"),
+            new UnitOfMeasureCreateRequest("fl_oz", "Onzas fluidas", "standart", "Onzas fluidas", "true"),
+            new UnitOfMeasureCreateRequest("m", "Metros", "standart", "Metros", "true"),
+            new UnitOfMeasureCreateRequest("cm", "Centímetros", "standart", "Centímetros", "true"),
+            new UnitOfMeasureCreateRequest("mm", "Milímetros", "standart", "Milímetros", "true"),
+            new UnitOfMeasureCreateRequest("km", "Kilómetros", "standart", "Kilómetros", "true"),
+            new UnitOfMeasureCreateRequest("in", "Pulgadas", "standart", "Pulgadas", "true"),
+            new UnitOfMeasureCreateRequest("ft", "Pies", "standart", "Pies", "true"),
+            new UnitOfMeasureCreateRequest("yd", "Yardas", "standart", "Yardas", "true"),
+            new UnitOfMeasureCreateRequest("mi", "Millas", "standart", "Millas", "true"),
+            new UnitOfMeasureCreateRequest("m²", "Metros cuadrados", "standart", "Metros cuadrados", "true"),
+            new UnitOfMeasureCreateRequest("cm²", "Centímetros cuadrados", "standart", "Centímetros cuadrados", "true"),
+            new UnitOfMeasureCreateRequest("km²", "Kilómetros cuadrados", "standart", "Kilómetros cuadrados", "true"),
+            new UnitOfMeasureCreateRequest("in²", "Pulgadas cuadradas", "standart", "Pulgadas cuadradas", "true"),
+            new UnitOfMeasureCreateRequest("ft²", "Pies cuadrados", "standart", "Pies cuadrados", "true"),
+            new UnitOfMeasureCreateRequest("yd²", "Yardas cuadradas", "standart", "Yardas cuadradas", "true"),
+            new UnitOfMeasureCreateRequest("mi²", "Millas cuadradas", "standart", "Millas cuadradas", "true"),
+            new UnitOfMeasureCreateRequest("m³", "Metros cúbicos", "standart", "Metros cúbicos", "true"),
+            new UnitOfMeasureCreateRequest("cm³", "Centímetros cúbicos", "standart", "Centímetros cúbicos", "true"),
+            new UnitOfMeasureCreateRequest("km³", "Kilómetros cúbicos", "standart", "Kilómetros cúbicos", "true"),
+            new UnitOfMeasureCreateRequest("in³", "Pulgadas cúbicas", "standart", "Pulgadas cúbicas", "true"),
+            new UnitOfMeasureCreateRequest("ft³", "Pies cúbicos", "standart", "Pies cúbicos", "true"),
+            new UnitOfMeasureCreateRequest("yd³", "Yardas cúbicas", "standart", "Yardas cúbicas", "true"),
+            new UnitOfMeasureCreateRequest("mi³", "Millas cúbicas", "standart", "Millas cúbicas", "true")
+        );
+        // Insertar las unidades predeterminadas
+        defaultUnits.forEach(unit -> unitOfMeasureServicePort.create(unitOfMeasureRestMapper.toUnitOfMeasure(unit)));
+
+        // Marcar como insertadas
+        unitsInserted = true;
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body("Unidades de medida predeterminadas insertadas exitosamente.");
     }
 
 }

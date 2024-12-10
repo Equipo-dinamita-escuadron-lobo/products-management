@@ -57,4 +57,9 @@ public class Category {
      */
     private String state;
 
+     /**
+     * ID de impuesto a la categoria
+     */
+    private Long taxId;
+
 }

@@ -1,14 +1,20 @@
 package com.products_management.application.service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.springframework.stereotype.Service;
+
 import com.products_management.application.ports.input.IProductServicePort;
 import com.products_management.application.ports.output.IProductPersistencePort;
 import com.products_management.domain.exception.ProductNotFoundException;
 import com.products_management.domain.model.Product;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import lombok.RequiredArgsConstructor;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 
 /**
  * Servicio que implementa la lógica de negocio para los productos.
@@ -28,6 +34,12 @@ public class ProductService implements IProductServicePort {
      * @return el producto encontrado.
      * @throws ProductNotFoundException si el producto no se encuentra.
      */
+    @Operation(summary = "Busca un producto por su ID")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Producto encontrado"),
+        @ApiResponse(responseCode = "404", description = "Producto no encontrado")
+    })
+    @Parameter(name = "id", description = "El ID del producto a buscar", required = true)
     @Override
     public Product findById(Long id) {
         return productPersistencePort.findById(id).orElseThrow(ProductNotFoundException::new);
@@ -39,6 +51,11 @@ public class ProductService implements IProductServicePort {
      * @param enterpriseId el ID de la empresa.
      * @return una lista de todos los productos de la empresa.
      */
+    @Operation(summary = "Obtiene una lista de todos los productos asociados a una empresa")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Lista de productos encontrada")
+    })
+    @Parameter(name = "enterpriseId", description = "El ID de la empresa", required = true)
     @Override
     public List<Product> findAll(String enterpriseId) {
         List<Product> allProducts = productPersistencePort.findAll();
@@ -53,6 +70,11 @@ public class ProductService implements IProductServicePort {
      * @param enterpriseId el ID de la empresa.
      * @return una lista de todos los productos activados de la empresa.
      */
+    @Operation(summary = "Obtiene una lista de todos los productos activados asociados a una empresa")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Lista de productos activados encontrada")
+    })
+    @Parameter(name = "enterpriseId", description = "El ID de la empresa", required = true)
     @Override
     public List<Product> findActivated(String enterpriseId) {
         List<Product> allProducts = productPersistencePort.findAll();
@@ -68,8 +90,14 @@ public class ProductService implements IProductServicePort {
      * @param product el producto a crear.
      * @return el producto creado.
      */
+    @Operation(summary = "Crea un nuevo producto")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Producto creado")
+    })
+    @Parameter(name = "product", description = "El producto a crear", required = true)
     @Override
     public Product create(Product product) {
+        product.generateCode();
         return productPersistencePort.create(product);
     }
 
@@ -81,22 +109,38 @@ public class ProductService implements IProductServicePort {
      * @return el producto actualizado.
      * @throws ProductNotFoundException si el producto no se encuentra.
      */
+    @Operation(summary = "Actualiza un producto existente")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Producto actualizado"),
+        @ApiResponse(responseCode = "404", description = "Producto no encontrado")
+    })
+    @Parameter(name = "id", description = "El ID del producto a actualizar", required = true)
+    @Parameter(name = "product", description = "Los datos del producto actualizado", required = true)
     @Override
     public Product update(Long id, Product product) {
         return productPersistencePort.findById(id)
-                .map(existingProduct -> {
-                    existingProduct.setItemType(product.getItemType());
-                    existingProduct.setDescription(product.getDescription());
-                    existingProduct.setMinQuantity(product.getMinQuantity());
-                    existingProduct.setMaxQuantity(product.getMaxQuantity());
-                    existingProduct.setTaxPercentage(product.getTaxPercentage());
-                    existingProduct.setUnitOfMeasureId(product.getUnitOfMeasureId());
-                    existingProduct.setSupplierId(product.getSupplierId());
-                    existingProduct.setCategoryId(product.getCategoryId());
-                    existingProduct.setPrice(product.getPrice());
-                    return productPersistencePort.create(existingProduct);
-                })
-                .orElseThrow(ProductNotFoundException::new);
+            .map(existingProduct -> {
+                boolean shouldRegenerateCode = !existingProduct.getItemType().equals(product.getItemType()) || 
+                                               !existingProduct.getCategoryId().equals(product.getCategoryId()) || 
+                                               !existingProduct.getId().equals(product.getId());
+
+                existingProduct.setItemType(product.getItemType());
+                existingProduct.setDescription(product.getDescription());
+                existingProduct.setQuantity(product.getQuantity());
+                existingProduct.setTaxPercentage(product.getTaxPercentage());
+                existingProduct.setUnitOfMeasureId(product.getUnitOfMeasureId());
+                existingProduct.setCategoryId(product.getCategoryId());
+                existingProduct.setCost(product.getCost());
+                existingProduct.setProductTypeId(product.getProductTypeId());
+                existingProduct.setReference(product.getReference());
+
+                if (shouldRegenerateCode) {
+                    existingProduct.generateCode();
+                }
+
+                return productPersistencePort.create(existingProduct);
+            })
+            .orElseThrow(ProductNotFoundException::new);
     }
 
     /**
@@ -105,6 +149,12 @@ public class ProductService implements IProductServicePort {
      * @param id el ID del producto cuyo estado se va a cambiar.
      * @throws ProductNotFoundException si el producto no se encuentra.
      */
+    @Operation(summary = "Cambia el estado de un producto (activado/desactivado)")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Estado del producto cambiado"),
+        @ApiResponse(responseCode = "404", description = "Producto no encontrado")
+    })
+    @Parameter(name = "id", description = "El ID del producto cuyo estado se va a cambiar", required = true)
     @Override
     public void changeState(Long id) {
         Product product = productPersistencePort.findById(id)
@@ -119,6 +169,12 @@ public class ProductService implements IProductServicePort {
      * @param id el ID del producto a eliminar.
      * @throws ProductNotFoundException si el producto no se encuentra.
      */
+    @Operation(summary = "Elimina un producto por su ID")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Producto eliminado"),
+        @ApiResponse(responseCode = "404", description = "Producto no encontrado")
+    })
+    @Parameter(name = "id", description = "El ID del producto a eliminar", required = true)
     @Override
     public void deleteById(Long id) {
         if (productPersistencePort.findById(id).isEmpty()) {
@@ -130,6 +186,10 @@ public class ProductService implements IProductServicePort {
     /**
      * Elimina todos los productos.
      */
+    @Operation(summary = "Elimina todos los productos")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Productos eliminados")
+    })
     @Override
     public void deleteAll() {
         productPersistencePort.deleteAll();
@@ -141,6 +201,11 @@ public class ProductService implements IProductServicePort {
      * @param categoryId el ID de la categoría.
      * @return una lista de todos los productos de la categoría.
      */
+    @Operation(summary = "Obtiene una lista de todos los productos asociados a una categoría")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Lista de productos encontrada")
+    })
+    @Parameter(name = "categoryId", description = "El ID de la categoría", required = true)
     @Override
     public List<Product> findAllByCategory(Long categoryId) {
         List<Product> allProducts = productPersistencePort.findAll();
@@ -155,6 +220,11 @@ public class ProductService implements IProductServicePort {
      * @param unitOfMeasureId el ID de la unidad de medida.
      * @return una lista de todos los productos de la unidad de medida.
      */
+    @Operation(summary = "Obtiene una lista de todos los productos asociados a una unidad de medida")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Lista de productos encontrada")
+    })
+    @Parameter(name = "unitOfMeasureId", description = "El ID de la unidad de medida", required = true)
     @Override
     public List<Product> findAllByUnitOfMeasure(Long unitOfMeasureId) {
         List<Product> allProducts = productPersistencePort.findAll();

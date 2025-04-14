@@ -8,7 +8,6 @@ import lombok.*;
 /**
  * Clase de solicitud utilizada para crear una unidad de medida en el sistema.
  */
-@Builder
 @Getter
 @Setter
 @AllArgsConstructor
@@ -27,7 +26,7 @@ public class UnitOfMeasureCreateRequest {
     @NotBlank(message = "Abreviación es requerida")
     private String abbreviation;
 
-    @NotNull(message = "Id de la empresa es requerido")
+    @NotBlank(message = "Id de la empresa es requerido")
     private String enterpriseId;
 
     @JsonIgnore

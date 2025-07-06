@@ -1,4 +1,4 @@
-package com.products_management.infraestructure.output.persistence.multitenancy.utils;
+package com.products_management.infraestructure.output.multitenancy.utils;
 
 import lombok.extern.slf4j.Slf4j;
 

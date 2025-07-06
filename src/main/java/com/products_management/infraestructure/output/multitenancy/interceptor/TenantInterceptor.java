@@ -1,6 +1,6 @@
-package com.products_management.infraestructure.output.persistence.multitenancy.interceptor;
+package com.products_management.infraestructure.output.multitenancy.interceptor;
 
-import com.products_management.infraestructure.output.persistence.multitenancy.utils.TenantContext;
+import com.products_management.infraestructure.output.multitenancy.utils.TenantContext;
 import com.products_management.infraestructure.security.IJwtUtils;
 
 import org.springframework.beans.factory.annotation.Autowired;

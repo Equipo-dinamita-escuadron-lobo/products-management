@@ -4,7 +4,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import com.products_management.infraestructure.output.persistence.multitenancy.interceptor.TenantInterceptor;
+import com.products_management.infraestructure.output.multitenancy.interceptor.TenantInterceptor;
 
 import lombok.RequiredArgsConstructor;
 

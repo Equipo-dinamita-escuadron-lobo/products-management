@@ -1,4 +1,4 @@
-package com.products_management.infraestructure.output.persistence.multitenancy.async;
+package com.products_management.infraestructure.output.multitenancy.async;
 
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Configuration;

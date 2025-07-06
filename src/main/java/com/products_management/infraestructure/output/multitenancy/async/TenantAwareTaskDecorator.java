@@ -1,8 +1,9 @@
-package com.products_management.infraestructure.output.persistence.multitenancy.async;
+package com.products_management.infraestructure.output.multitenancy.async;
 
-import com.products_management.infraestructure.output.persistence.multitenancy.utils.TenantContext;
 import org.springframework.core.task.TaskDecorator;
 import org.springframework.lang.NonNull;
+
+import com.products_management.infraestructure.output.multitenancy.utils.TenantContext;
 
 /**
  * Decorador de tareas que asegura la sensibilidad al tenant durante la ejecución de tareas asíncronas.

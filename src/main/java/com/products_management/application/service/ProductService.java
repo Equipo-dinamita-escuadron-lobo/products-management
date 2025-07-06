@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 
 import com.products_management.application.ports.input.IProductServicePort;
+import com.products_management.application.ports.input.IStockEventPort;
 import com.products_management.application.ports.output.IProductPersistencePort;
 import com.products_management.domain.exception.ProductNotFoundException;
 import com.products_management.domain.model.Product;
@@ -26,6 +27,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 public class ProductService implements IProductServicePort {
 
     private final IProductPersistencePort productPersistencePort;
+    private final IStockEventPort stockEventPort;
 
     /**
      * Busca un producto por su ID.
@@ -98,7 +100,9 @@ public class ProductService implements IProductServicePort {
     @Override
     public Product create(Product product) {
         product.generateCode();
-        return productPersistencePort.create(product);
+        Product createdProduct = productPersistencePort.create(product);
+        stockEventPort.publishCreatedStockEvent(createdProduct.getId());
+        return createdProduct;
     }
 
     /**

@@ -8,3 +8,4 @@ http://localhost:8080/api/categories/test/ping
 ```
 http://localhost:8080/swagger-ui/index.html#/
 ```
+

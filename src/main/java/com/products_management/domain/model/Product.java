@@ -31,7 +31,7 @@ public class Product {
     /**
      * @brief Tipo de artículo del producto.
      */
-    private String itemType;
+    private String name;
 
     /**
      * @brief Descripción del producto.
@@ -90,7 +90,7 @@ public class Product {
      * Genera un código único basado en el tipo de ítem, categoría y ID del producto.
      */
     public void generateCode() {
-        String itemTypePrefix = itemType != null && itemType.length() >= 3 ? itemType.substring(0, 3).toUpperCase() : "UNK";
+        String itemTypePrefix = name != null && name.length() >= 3 ? name.substring(0, 3).toUpperCase() : "UNK";
         this.code = String.format("%s-%d-%d", itemTypePrefix, categoryId, id);
     }
 }

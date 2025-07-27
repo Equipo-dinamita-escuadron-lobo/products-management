@@ -32,7 +32,7 @@ public class ProductEntity {
     @Schema(description = "Código del producto")
     private String code;
     @Schema(description = "Nombre del producto")
-    private String itemType;
+    private String name;
     @Schema(description = "Descripción del producto")
     private String description;
     @Schema(description = "Precio de venta del producto")

@@ -30,7 +30,7 @@ public class ProductRestMapperImpl implements IProductRestMapper {
         Product.ProductBuilder productBuilder = Product.builder();
         productBuilder.id(productCreateRequest.getId());
         productBuilder.code(productCreateRequest.getCode());
-        productBuilder.itemType(productCreateRequest.getItemType());
+        productBuilder.name(productCreateRequest.getName());
         productBuilder.description(productCreateRequest.getDescription());
         productBuilder.quantity(productCreateRequest.getQuantity());
         productBuilder.taxPercentage(productCreateRequest.getTaxPercentage());
@@ -62,7 +62,7 @@ public class ProductRestMapperImpl implements IProductRestMapper {
         ProductResponse.ProductResponseBuilder productResponseBuilder = ProductResponse.builder();
         productResponseBuilder.id(product.getId());
         productResponseBuilder.code(product.getCode());
-        productResponseBuilder.itemType(product.getItemType());
+        productResponseBuilder.name(product.getName());
         productResponseBuilder.description(product.getDescription());
         productResponseBuilder.quantity(product.getQuantity());
         productResponseBuilder.taxPercentage(product.getTaxPercentage());

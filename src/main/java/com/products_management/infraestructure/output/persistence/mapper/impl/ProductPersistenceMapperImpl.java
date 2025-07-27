@@ -29,7 +29,7 @@ public class ProductPersistenceMapperImpl implements IProductPersistenceMapper {
         ProductEntity productEntity = new ProductEntity();
         productEntity.setId(product.getId());
         productEntity.setCode(product.getCode());
-        productEntity.setItemType(product.getItemType());
+        productEntity.setName(product.getName());
         productEntity.setDescription(product.getDescription());
         productEntity.setQuantity(product.getQuantity());
         productEntity.setTaxPercentage(product.getTaxPercentage());
@@ -59,7 +59,7 @@ public class ProductPersistenceMapperImpl implements IProductPersistenceMapper {
         Product product = Product.builder()
                 .id(productEntity.getId())
                 .code(productEntity.getCode())
-                .itemType(productEntity.getItemType())
+                .name(productEntity.getName())
                 .description(productEntity.getDescription())
                 .quantity(productEntity.getQuantity())
                 .taxPercentage(productEntity.getTaxPercentage())

@@ -1,7 +1,5 @@
 package com.products_management.infraestructure.output.persistence.entity;
 
-import org.hibernate.annotations.TenantId;
-
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

@@ -124,11 +124,11 @@ public class ProductService implements IProductServicePort {
     public Product update(Long id, Product product) {
         return productPersistencePort.findById(id)
             .map(existingProduct -> {
-                boolean shouldRegenerateCode = !existingProduct.getItemType().equals(product.getItemType()) || 
+                boolean shouldRegenerateCode = !existingProduct.getName().equals(product.getName()) || 
                                                !existingProduct.getCategoryId().equals(product.getCategoryId()) || 
                                                !existingProduct.getId().equals(product.getId());
 
-                existingProduct.setItemType(product.getItemType());
+                existingProduct.setName(product.getName());
                 existingProduct.setDescription(product.getDescription());
                 existingProduct.setQuantity(product.getQuantity());
                 existingProduct.setTaxPercentage(product.getTaxPercentage());

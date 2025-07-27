@@ -17,11 +17,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 /**
  * Entidad que representa un producto en la base de datos.
  */
-
-import org.hibernate.annotations.TenantId;
-
-import java.util.Date;
-
 @Getter
 @Setter
 @Entity
@@ -63,6 +58,5 @@ public class ProductEntity {
     @Schema(description = "Identificador del inventario del producto")
     @TenantId
     private String tenantId;
-
 
 }

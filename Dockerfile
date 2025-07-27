@@ -4,7 +4,7 @@ COPY . /app
 RUN apk add dos2unix
 RUN dos2unix ./mvnw
 RUN chmod +x ./mvnw
-RUN ./mvnw package -DskipTests
+RUN ./mvnw clean package -DskipTests
 
 FROM eclipse-temurin:17-jre-alpine AS main
 WORKDIR /app

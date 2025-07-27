@@ -8,7 +8,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import io.swagger.v3.oas.annotations.media.Schema;
-import org.hibernate.annotations.TenantId;
 
 /**
  * Entidad que representa una unidad de medida en la base de datos.
@@ -36,6 +35,4 @@ public class UnitOfMeasureEntity {
     @Schema(description = "Estado de la unidad de medida")
     private String state;
 
-    @TenantId
-    private String tenantId;
 }

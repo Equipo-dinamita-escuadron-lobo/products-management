@@ -5,8 +5,9 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
+import com.products_management.application.dto.ProductSyncDto;
+import com.products_management.application.ports.input.IProductEventPort;
 import com.products_management.application.ports.input.IProductServicePort;
-import com.products_management.application.ports.input.IStockEventPort;
 import com.products_management.application.ports.output.IProductPersistencePort;
 import com.products_management.domain.exception.ProductNotFoundException;
 import com.products_management.domain.model.Product;
@@ -27,7 +28,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 public class ProductService implements IProductServicePort {
 
     private final IProductPersistencePort productPersistencePort;
-    private final IStockEventPort stockEventPort;
+    private final IProductEventPort productEventPort;
 
     /**
      * Busca un producto por su ID.
@@ -101,7 +102,17 @@ public class ProductService implements IProductServicePort {
     public Product create(Product product) {
         product.generateCode();
         Product createdProduct = productPersistencePort.create(product);
-        stockEventPort.publishCreatedStockEvent(createdProduct.getId());
+        
+        ProductSyncDto productSyncDto = new ProductSyncDto(
+            createdProduct.getId(),
+            createdProduct.getName(),
+            createdProduct.getReference(),
+            createdProduct.getEnterpriseId(),
+            createdProduct.getPresentation(),
+            createdProduct.getQuantity(),
+            createdProduct.getCost()
+        );
+        productEventPort.publishCreatedStockEvent(productSyncDto);
         return createdProduct;
     }
 

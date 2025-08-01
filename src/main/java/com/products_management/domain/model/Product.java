@@ -84,9 +84,10 @@ public class Product {
     private String reference;
 
     private Long productTypeId;
+
+    private String presentation;
  
     /**
-
      * Genera un código único basado en el tipo de ítem, categoría y ID del producto.
      */
     public void generateCode() {

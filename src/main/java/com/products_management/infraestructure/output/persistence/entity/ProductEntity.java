@@ -56,6 +56,11 @@ public class ProductEntity {
     @Schema(description = "Identificador del tipo de producto")
     private Long productTypeId;
     @Schema(description = "Identificador del inventario del producto")
+    private Long inventoryId;
+
+    @Schema(description = "Presentación del producto")
+    private String presentation;
+    
     @TenantId
     private String tenantId;
 

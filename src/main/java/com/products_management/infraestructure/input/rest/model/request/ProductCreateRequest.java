@@ -59,6 +59,8 @@ public class ProductCreateRequest {
     private String state;
 
     private String reference;
+
+    private String presentation;
     
     // Campo opcional para la relación con ProductType
     private Long productTypeId; // Este campo es opcional

@@ -83,6 +83,8 @@ public class ProductResponse {
      */
     private String reference;
 
+    private String presentation;
+
     /**
      * Tipo de producto relacionado.
      */

@@ -1,24 +1,19 @@
-package com.products_management.infraestructure.input.rest.model.response;
+package com.products_management.application.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+@Getter @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Getter @Setter
 public class ProductSyncDto {
-    private Long id;
-
-    private String reference;
-
+    private Long productId;
     private String name;
-
+    private String reference;
     private String enterpriseId;
-
-    private boolean state;
-
     private String presentation;
-
+    private Integer quantity;
+    private double cost;
 }

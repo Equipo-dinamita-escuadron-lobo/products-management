@@ -6,9 +6,12 @@ import com.products_management.domain.model.Product;
 
 import java.util.List;
 
+import org.mapstruct.Mapper;
+
 /**
  * Interfaz que define métodos para mapear entre entidades de producto y sus representaciones REST.
  */
+@Mapper(componentModel = "spring")
 public interface IProductRestMapper {
 
     /**

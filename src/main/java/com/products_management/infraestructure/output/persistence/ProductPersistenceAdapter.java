@@ -2,7 +2,7 @@ package com.products_management.infraestructure.output.persistence;
 
 import com.products_management.application.ports.output.IProductPersistencePort;
 import com.products_management.domain.model.Product;
-import com.products_management.infraestructure.output.persistence.mapper.impl.ProductPersistenceMapperImpl;
+import com.products_management.infraestructure.output.persistence.mapper.interfaces.IProductPersistenceMapper;
 import com.products_management.infraestructure.output.persistence.repository.IProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -18,7 +18,7 @@ import java.util.Optional;
 public class ProductPersistenceAdapter implements IProductPersistencePort {
 
     private final IProductRepository productRepository;
-    private final ProductPersistenceMapperImpl productPersistenceMapper;
+    private final IProductPersistenceMapper productPersistenceMapper;
 
     /**
      * Busca un producto por su ID.

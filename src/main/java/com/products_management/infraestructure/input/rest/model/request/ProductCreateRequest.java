@@ -28,8 +28,8 @@ public class ProductCreateRequest {
     @JsonIgnore
     private String code;
 
-    @NotBlank(message = "Tipo de ítem es requerido")
-    private String itemType;
+    @NotBlank(message = "Nombre es requerido")
+    private String name;
 
     @NotBlank(message = "Descripción es requerida")
     private String description;
@@ -59,6 +59,8 @@ public class ProductCreateRequest {
     private String state;
 
     private String reference;
+
+    private String presentation;
     
     // Campo opcional para la relación con ProductType
     private Long productTypeId; // Este campo es opcional

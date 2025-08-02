@@ -29,9 +29,9 @@ public class ProductResponse {
     private String code;
 
     /**
-     * Tipo de ítem del producto.
+     * Nombre del producto.
      */
-    private String itemType;
+    private String name;
 
     /**
      * Descripción del producto.
@@ -76,12 +76,14 @@ public class ProductResponse {
     /**
      * Estado del producto (activo/inactivo).
      */
-    private String state;
+    private boolean state;
 
     /**
      * Referencia del producto.
      */
     private String reference;
+
+    private String presentation;
 
     /**
      * Tipo de producto relacionado.

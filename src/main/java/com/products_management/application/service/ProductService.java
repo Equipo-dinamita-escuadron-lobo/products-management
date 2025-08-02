@@ -5,8 +5,9 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
+import com.products_management.application.dto.ProductSyncDto;
+import com.products_management.application.ports.input.IProductEventPort;
 import com.products_management.application.ports.input.IProductServicePort;
-import com.products_management.application.ports.input.IStockEventPort;
 import com.products_management.application.ports.output.IProductPersistencePort;
 import com.products_management.domain.exception.ProductNotFoundException;
 import com.products_management.domain.model.Product;
@@ -27,7 +28,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 public class ProductService implements IProductServicePort {
 
     private final IProductPersistencePort productPersistencePort;
-    private final IStockEventPort stockEventPort;
+    private final IProductEventPort productEventPort;
 
     /**
      * Busca un producto por su ID.
@@ -81,7 +82,7 @@ public class ProductService implements IProductServicePort {
     public List<Product> findActivated(String enterpriseId) {
         List<Product> allProducts = productPersistencePort.findAll();
         return allProducts.stream()
-                .filter(product -> "true".equals(product.getState()))
+                .filter(product -> product.isState())
                 .filter(product -> product.getEnterpriseId().equals(enterpriseId))
                 .collect(Collectors.toList());
     }
@@ -101,7 +102,18 @@ public class ProductService implements IProductServicePort {
     public Product create(Product product) {
         product.generateCode();
         Product createdProduct = productPersistencePort.create(product);
-        stockEventPort.publishCreatedStockEvent(createdProduct.getId());
+        
+        ProductSyncDto productSyncDto = new ProductSyncDto(
+            createdProduct.getId(),
+            createdProduct.getName(),
+            createdProduct.getReference(),
+            createdProduct.getEnterpriseId(),
+            createdProduct.getPresentation(),
+            createdProduct.getQuantity(),
+            createdProduct.getCost(),
+            createdProduct.isState()
+        );
+        productEventPort.publishCreatedStockEvent(productSyncDto);
         return createdProduct;
     }
 
@@ -124,11 +136,11 @@ public class ProductService implements IProductServicePort {
     public Product update(Long id, Product product) {
         return productPersistencePort.findById(id)
             .map(existingProduct -> {
-                boolean shouldRegenerateCode = !existingProduct.getItemType().equals(product.getItemType()) || 
+                boolean shouldRegenerateCode = !existingProduct.getName().equals(product.getName()) || 
                                                !existingProduct.getCategoryId().equals(product.getCategoryId()) || 
                                                !existingProduct.getId().equals(product.getId());
 
-                existingProduct.setItemType(product.getItemType());
+                existingProduct.setName(product.getName());
                 existingProduct.setDescription(product.getDescription());
                 existingProduct.setQuantity(product.getQuantity());
                 existingProduct.setTaxPercentage(product.getTaxPercentage());
@@ -163,7 +175,7 @@ public class ProductService implements IProductServicePort {
     public void changeState(Long id) {
         Product product = productPersistencePort.findById(id)
                 .orElseThrow(() -> new ProductNotFoundException());
-        product.setState("true".equals(product.getState()) ? "false" : "true");
+        product.setState(!product.isState());
         productPersistencePort.create(product);
     }
 

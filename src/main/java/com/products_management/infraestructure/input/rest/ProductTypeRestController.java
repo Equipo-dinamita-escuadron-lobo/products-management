@@ -14,7 +14,6 @@ import com.products_management.application.ports.input.IProductTypeServicePort;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -31,7 +30,6 @@ import java.util.stream.Collectors;
 /**
  * Controlador REST para la gestión de tipos de producto.
  */
-@CrossOrigin("*") // Allow cross-origin requests
 @RestController
 @RequestMapping("/api/product-types")
 @RequiredArgsConstructor // Use constructor injection

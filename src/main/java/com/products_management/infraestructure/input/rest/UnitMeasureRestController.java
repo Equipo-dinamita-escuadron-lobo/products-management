@@ -22,7 +22,6 @@ import java.util.List;
 /**
  * Controlador REST para la gestión de unidades de medida.
  */
-@CrossOrigin("*")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/unit-measures")

@@ -82,7 +82,7 @@ public class ProductService implements IProductServicePort {
     public List<Product> findActivated(String enterpriseId) {
         List<Product> allProducts = productPersistencePort.findAll();
         return allProducts.stream()
-                .filter(product -> "true".equals(product.getState()))
+                .filter(product -> product.isState())
                 .filter(product -> product.getEnterpriseId().equals(enterpriseId))
                 .collect(Collectors.toList());
     }
@@ -110,7 +110,8 @@ public class ProductService implements IProductServicePort {
             createdProduct.getEnterpriseId(),
             createdProduct.getPresentation(),
             createdProduct.getQuantity(),
-            createdProduct.getCost()
+            createdProduct.getCost(),
+            createdProduct.isState()
         );
         productEventPort.publishCreatedStockEvent(productSyncDto);
         return createdProduct;
@@ -174,7 +175,7 @@ public class ProductService implements IProductServicePort {
     public void changeState(Long id) {
         Product product = productPersistencePort.findById(id)
                 .orElseThrow(() -> new ProductNotFoundException());
-        product.setState("true".equals(product.getState()) ? "false" : "true");
+        product.setState(!product.isState());
         productPersistencePort.create(product);
     }
 

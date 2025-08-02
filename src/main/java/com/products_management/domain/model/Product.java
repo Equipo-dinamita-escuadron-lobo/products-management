@@ -76,7 +76,7 @@ public class Product {
     /**
      * @brief Estado del producto ("true" si está activo, "false" si está inactivo).
      */
-    private String state;
+    private boolean state;
     /**
 
      * Campo de referencia opcional

@@ -76,7 +76,7 @@ public class ProductResponse {
     /**
      * Estado del producto (activo/inactivo).
      */
-    private String state;
+    private boolean state;
 
     /**
      * Referencia del producto.

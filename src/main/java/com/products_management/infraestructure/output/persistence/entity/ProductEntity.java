@@ -1,8 +1,10 @@
 package com.products_management.infraestructure.output.persistence.entity;
 
+import java.time.Instant;
 import java.util.Date;
 
 import org.hibernate.annotations.TenantId;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -49,8 +51,10 @@ public class ProductEntity {
     private String enterpriseId;
     @Schema(description = "Costo del producto")
     private double cost;
+
     @Schema(description = "Estado del producto")
-    private String state;
+    private boolean state;
+
     @Schema(description = "Referencia del producto")
     private String reference;
     @Schema(description = "Identificador del tipo de producto")
@@ -61,6 +65,9 @@ public class ProductEntity {
     @Schema(description = "Presentación del producto")
     private String presentation;
     
+    @UpdateTimestamp
+    private Instant lastModifiedDate;
+
     @TenantId
     private String tenantId;
 

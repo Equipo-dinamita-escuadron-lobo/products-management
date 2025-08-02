@@ -16,4 +16,5 @@ public class ProductSyncDto {
     private String presentation;
     private Integer quantity;
     private double cost;
+    private boolean state;
 }

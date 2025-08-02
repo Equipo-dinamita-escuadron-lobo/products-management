@@ -38,7 +38,7 @@ public class ProductPersistenceMapperImpl implements IProductPersistenceMapper {
         productEntity.setCategoryId(product.getCategoryId());
         productEntity.setEnterpriseId(product.getEnterpriseId());
         productEntity.setCost(product.getCost());
-        productEntity.setState(product.getState() == null ? "true" : product.getState());
+        productEntity.setState(product.isState());
         productEntity.setReference(product.getReference());
         productEntity.setProductTypeId(product.getProductTypeId());
 
@@ -68,7 +68,7 @@ public class ProductPersistenceMapperImpl implements IProductPersistenceMapper {
                 .categoryId(productEntity.getCategoryId())
                 .enterpriseId(productEntity.getEnterpriseId())
                 .cost(productEntity.getCost())
-                .state(productEntity.getState())
+                .state(productEntity.isState())
                 .reference(productEntity.getReference())
                 .productTypeId(productEntity.getProductTypeId())
                 .build();

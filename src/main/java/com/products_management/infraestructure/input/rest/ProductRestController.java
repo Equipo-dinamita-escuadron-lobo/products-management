@@ -19,7 +19,6 @@ import java.util.List;
 /**
  * Controlador REST para la gestión de productos.
  */
-@CrossOrigin("*")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/products")

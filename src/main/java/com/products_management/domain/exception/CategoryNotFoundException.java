@@ -3,5 +3,19 @@ package com.products_management.domain.exception;
 /**
  * Excepción lanzada cuando no se encuentra una categoría.
  */
-public class CategoryNotFoundException extends RuntimeException{
+public class CategoryNotFoundException extends BaseBusinessException {
+    
+    public CategoryNotFoundException() {
+        super(ErrorCode.CATEGORY_NOT_FOUND);
+    }
+    
+    public CategoryNotFoundException(Long id) {
+        super(ErrorCode.CATEGORY_NOT_FOUND, 
+              String.format("No se encontró la categoría con ID: %d", id));
+    }
+    
+    public CategoryNotFoundException(String name) {
+        super(ErrorCode.CATEGORY_NOT_FOUND, 
+              String.format("No se encontró la categoría con nombre: %s", name));
+    }
 }

@@ -2,6 +2,7 @@ package com.products_management.application.service;
 
 import com.products_management.application.ports.input.IProductTypeServicePort;
 import com.products_management.application.ports.output.IProductTypePersistencePort;
+import com.products_management.domain.exception.ProductTypeNotFoundException;
 import com.products_management.domain.model.ProductType;
 import org.springframework.stereotype.Service;
 
@@ -24,7 +25,11 @@ public class ProductTypeService implements IProductTypeServicePort {
 
     @Override
     public List<ProductType> getProductTypesByEnterpriseId(String enterpriseId) {
-        return productTypeOutputPort.findByEnterpriseId(enterpriseId);
+        List<ProductType> productTypes = productTypeOutputPort.findByEnterpriseId(enterpriseId);
+        if (productTypes.isEmpty()) {
+            throw new ProductTypeNotFoundException(enterpriseId);
+        }
+        return productTypes;
     }
 
     @Override
@@ -34,16 +39,38 @@ public class ProductTypeService implements IProductTypeServicePort {
 
     @Override
     public ProductType updateProductType(Long id, ProductType productType) {
+        // Verificar que el tipo de producto existe antes de actualizar
+        Optional<ProductType> existingProductType = productTypeOutputPort.findById(id);
+        if (existingProductType.isEmpty()) {
+            throw new ProductTypeNotFoundException(id);
+        }
         return productTypeOutputPort.update(id, productType);
     }
 
     @Override
     public void deleteProductType(Long id) {
+        // Verificar que el tipo de producto existe antes de eliminar
+        Optional<ProductType> existingProductType = productTypeOutputPort.findById(id);
+        if (existingProductType.isEmpty()) {
+            throw new ProductTypeNotFoundException(id);
+        }
         productTypeOutputPort.delete(id);
     }
 
     @Override
     public Optional<ProductType> findById(Long id) {
         return productTypeOutputPort.findById(id);
+    }
+    
+    /**
+     * Busca un tipo de producto por ID y lanza excepción si no se encuentra.
+     * 
+     * @param id el ID del tipo de producto a buscar
+     * @return el tipo de producto encontrado
+     * @throws ProductTypeNotFoundException si no se encuentra el tipo de producto
+     */
+    public ProductType getProductTypeById(Long id) {
+        return productTypeOutputPort.findById(id)
+                .orElseThrow(() -> new ProductTypeNotFoundException(id));
     }
 }

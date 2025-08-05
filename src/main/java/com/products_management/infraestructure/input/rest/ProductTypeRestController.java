@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -61,12 +60,9 @@ public class ProductTypeRestController {
 
     @GetMapping("/{id}")
     public ResponseEntity<ProductTypeResponse> getProductTypeById(@PathVariable Long id) {
-        Optional<ProductType> productTypeOptional = productTypeService.findById(id);
-        if (productTypeOptional.isPresent()) {
-            ProductTypeResponse response = productTypeMapper.toProductTypeResponse(productTypeOptional.get());
-            return ResponseEntity.ok(response);
-        }
-        return ResponseEntity.notFound().build();
+        ProductType productType = productTypeService.getProductTypeById(id);
+        ProductTypeResponse response = productTypeMapper.toProductTypeResponse(productType);
+        return ResponseEntity.ok(response);
     }
 
     @PutMapping("/{id}")

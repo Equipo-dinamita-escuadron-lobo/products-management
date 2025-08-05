@@ -49,9 +49,7 @@ public class UnitOfMeasureService implements IUnitOfMeasureServicePort {
 
     @Override
     public List<UnitOfMeasure> findAll(String enterpriseId) {
-        List<UnitOfMeasure> allUnitOfMeasure = unitMeasurePersistencePort.findAll();
-        return allUnitOfMeasure.stream()
-                .filter(unitOfMeasure -> unitOfMeasure.getEnterpriseId().equals(enterpriseId) || unitOfMeasure.getEnterpriseId().equals("standart"))
+        return unitMeasurePersistencePort.findByEnterpriseId(enterpriseId).stream()
                 .sorted(Comparator.comparing(UnitOfMeasure::getName)) // Ordenar alfabéticamente por nombre
                 .collect(Collectors.toList());
     }
@@ -65,11 +63,7 @@ public class UnitOfMeasureService implements IUnitOfMeasureServicePort {
 
     @Override
     public List<UnitOfMeasure> findActivated(String enterpriseId) {
-        List<UnitOfMeasure> allUnitOfMeasure = unitMeasurePersistencePort.findAll();
-        return allUnitOfMeasure.stream()
-                .filter(unitOfMeasure -> "true".equals(unitOfMeasure.getState()))
-                .filter(unitOfMeasure -> unitOfMeasure.getEnterpriseId().equals(enterpriseId) || unitOfMeasure.getEnterpriseId().equals("standart"))
-                .collect(Collectors.toList());
+        return unitMeasurePersistencePort.findByEnterpriseIdAndState(enterpriseId, "true");
     }
 
     /**

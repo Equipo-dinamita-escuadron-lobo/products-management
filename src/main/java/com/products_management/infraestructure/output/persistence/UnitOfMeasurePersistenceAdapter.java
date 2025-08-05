@@ -70,4 +70,29 @@ public class UnitOfMeasurePersistenceAdapter implements IUnitOfMeasurePersistenc
     public void deleteAll() {
         unitOfMeasureRepository.deleteAll();
     }
+
+    /**
+     * Busca unidades de medida por ID de empresa.
+     *
+     * @param enterpriseId el ID de la empresa
+     * @return una lista de unidades de medida de la empresa
+     */
+    @Override
+    public List<UnitOfMeasure> findByEnterpriseId(String enterpriseId) {
+        return unitOfMeasurePersistenceMapper.toUnitOfMeasureList(
+                unitOfMeasureRepository.findByEnterpriseId(enterpriseId));
+    }
+
+    /**
+     * Busca unidades de medida activas por ID de empresa.
+     *
+     * @param enterpriseId el ID de la empresa
+     * @param state el estado de la unidad de medida
+     * @return una lista de unidades de medida activas de la empresa
+     */
+    @Override
+    public List<UnitOfMeasure> findByEnterpriseIdAndState(String enterpriseId, String state) {
+        return unitOfMeasurePersistenceMapper.toUnitOfMeasureList(
+                unitOfMeasureRepository.findByEnterpriseIdAndState(enterpriseId, state));
+    }
 }

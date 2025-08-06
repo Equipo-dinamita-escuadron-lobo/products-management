@@ -79,4 +79,12 @@ public interface IProductPersistencePort {
      * @return una lista de productos con esa unidad de medida.
      */
     List<Product> findByUnitOfMeasureId(Long unitOfMeasureId);
+    
+    /**
+     * Busca productos por ID de tipo de producto.
+     *
+     * @param productTypeId el ID del tipo de producto.
+     * @return una lista de productos de ese tipo de producto.
+     */
+    List<Product> findByProductTypeId(Long productTypeId);
 }

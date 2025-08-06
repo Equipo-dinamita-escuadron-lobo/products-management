@@ -88,7 +88,7 @@ public class Product {
     private String presentation;
  
     /**
-     * Genera un código único basado en el tipo de ítem, categoría y ID del producto.
+     * Genera un código único basado en el nombre del producto, ID de la categoría y ID del producto.
      */
     public void generateCode() {
         String namePrefix = name != null && name.length() >= 3 ? name.substring(0, 3).toUpperCase() : "UNK";

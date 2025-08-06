@@ -15,4 +15,25 @@ public interface IProductRepository extends JpaRepository<ProductEntity, Long> {
     
     // Search for products from a company modified AFTER the date provided.
     List<ProductEntity> findByEnterpriseIdAndLastModifiedDateAfter(String enterpriseId, Instant lastSyncDate);
+    
+    /**
+     * Busca productos por ID de empresa.
+     */
+    List<ProductEntity> findByEnterpriseId(String enterpriseId);
+    
+    /**
+     * Busca productos activos por ID de empresa.
+     */
+    List<ProductEntity> findByEnterpriseIdAndState(String enterpriseId, boolean state);
+    
+    /**
+     * Busca productos por ID de categoría.
+     */
+    List<ProductEntity> findByCategoryId(Long categoryId);
+    
+    /**
+     * Busca productos por ID de unidad de medida.
+     */
+    List<ProductEntity> findByUnitOfMeasureId(Long unitOfMeasureId);
+    
 }

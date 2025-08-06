@@ -1,7 +1,7 @@
 package com.products_management.application.service;
 
 import java.util.List;
-import java.util.stream.Collectors;
+
 
 import org.springframework.stereotype.Service;
 
@@ -49,10 +49,7 @@ public class ProductService implements IProductServicePort {
 
     @Override
     public List<Product> findAll(String enterpriseId) {
-        List<Product> allProducts = productPersistencePort.findAll();
-        return allProducts.stream()
-                .filter(product -> product.getEnterpriseId().equals(enterpriseId))
-                .collect(Collectors.toList());
+        return productPersistencePort.findByEnterpriseId(enterpriseId);
     }
 
     /**
@@ -64,11 +61,7 @@ public class ProductService implements IProductServicePort {
 
     @Override
     public List<Product> findActivated(String enterpriseId) {
-        List<Product> allProducts = productPersistencePort.findAll();
-        return allProducts.stream()
-                .filter(product -> product.isState())
-                .filter(product -> product.getEnterpriseId().equals(enterpriseId))
-                .collect(Collectors.toList());
+        return productPersistencePort.findByEnterpriseIdAndState(enterpriseId, true);
     }
 
     /**
@@ -181,10 +174,7 @@ public class ProductService implements IProductServicePort {
 
     @Override
     public List<Product> findAllByCategory(Long categoryId) {
-        List<Product> allProducts = productPersistencePort.findAll();
-        return allProducts.stream()
-                .filter(product -> product.getCategoryId().equals(categoryId))
-                .collect(Collectors.toList());
+        return productPersistencePort.findByCategoryId(categoryId);
     }
 
     /**
@@ -196,9 +186,6 @@ public class ProductService implements IProductServicePort {
 
     @Override
     public List<Product> findAllByUnitOfMeasure(Long unitOfMeasureId) {
-        List<Product> allProducts = productPersistencePort.findAll();
-        return allProducts.stream()
-                .filter(product -> product.getUnitOfMeasureId().equals(unitOfMeasureId))
-                .collect(Collectors.toList());
+        return productPersistencePort.findByUnitOfMeasureId(unitOfMeasureId);
     }
 }

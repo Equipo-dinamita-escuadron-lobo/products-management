@@ -70,4 +70,53 @@ public class ProductPersistenceAdapter implements IProductPersistencePort {
     public void deleteAll() {
         productRepository.deleteAll();
     }
+
+    /**
+     * Busca productos por ID de empresa.
+     *
+     * @param enterpriseId el ID de la empresa
+     * @return una lista de productos de la empresa
+     */
+    @Override
+    public List<Product> findByEnterpriseId(String enterpriseId) {
+        return productPersistenceMapper.toProductList(
+                productRepository.findByEnterpriseId(enterpriseId));
+    }
+
+    /**
+     * Busca productos activos por ID de empresa.
+     *
+     * @param enterpriseId el ID de la empresa
+     * @param state el estado del producto
+     * @return una lista de productos activos de la empresa
+     */
+    @Override
+    public List<Product> findByEnterpriseIdAndState(String enterpriseId, boolean state) {
+        return productPersistenceMapper.toProductList(
+                productRepository.findByEnterpriseIdAndState(enterpriseId, state));
+    }
+
+    /**
+     * Busca productos por ID de categoría.
+     *
+     * @param categoryId el ID de la categoría
+     * @return una lista de productos de la categoría
+     */
+    @Override
+    public List<Product> findByCategoryId(Long categoryId) {
+        return productPersistenceMapper.toProductList(
+                productRepository.findByCategoryId(categoryId));
+    }
+
+    /**
+     * Busca productos por ID de unidad de medida.
+     *
+     * @param unitOfMeasureId el ID de la unidad de medida
+     * @return una lista de productos con esa unidad de medida
+     */
+    @Override
+    public List<Product> findByUnitOfMeasureId(Long unitOfMeasureId) {
+        return productPersistenceMapper.toProductList(
+                productRepository.findByUnitOfMeasureId(unitOfMeasureId));
+    }
 }

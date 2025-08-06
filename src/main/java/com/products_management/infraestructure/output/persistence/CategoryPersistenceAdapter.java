@@ -92,7 +92,7 @@ public class CategoryPersistenceAdapter implements ICategoryPersistencePort {
      * @return una lista de categorías activas de la empresa
      */
     @Override
-    public List<Category> findByEnterpriseIdAndState(String enterpriseId, String state) {
+    public List<Category> findByEnterpriseIdAndState(String enterpriseId, boolean state) {
         return categoryPersistenceMapper.toCategoryList(
                 categoryRepository.findByEnterpriseIdAndState(enterpriseId, state));
     }

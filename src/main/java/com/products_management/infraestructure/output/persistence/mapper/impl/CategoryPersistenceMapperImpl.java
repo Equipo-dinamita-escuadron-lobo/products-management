@@ -35,7 +35,7 @@ public class CategoryPersistenceMapperImpl implements ICategoryPersistenceMapper
         categoryEntity.setSaleId(category.getSaleId());
         categoryEntity.setReturnId(category.getReturnId());
         categoryEntity.setTaxId(category.getTaxId());
-        categoryEntity.setState(category.getState() == null ? "true" : category.getState());
+        categoryEntity.setState(category.isState());
 
         return categoryEntity;
     }
@@ -61,7 +61,7 @@ public class CategoryPersistenceMapperImpl implements ICategoryPersistenceMapper
                 .saleId(categoryEntity.getSaleId())
                 .returnId(categoryEntity.getReturnId())
                 .taxId(categoryEntity.getTaxId())
-                .state(categoryEntity.getState())
+                .state(categoryEntity.isState())
                 .build();
     }
 

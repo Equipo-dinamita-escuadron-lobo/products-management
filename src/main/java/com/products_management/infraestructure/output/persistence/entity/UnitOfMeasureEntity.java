@@ -24,6 +24,6 @@ public class UnitOfMeasureEntity {
     private String description;
     private String abbreviation;
     private String enterpriseId;
-    private String state;
+    private boolean state;
 
 }

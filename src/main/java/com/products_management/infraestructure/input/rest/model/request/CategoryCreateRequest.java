@@ -42,7 +42,8 @@ public class CategoryCreateRequest {
     private Long returnId;
 
     @JsonIgnore
-    private String state;
+    @Builder.Default
+    private boolean state = true; // Por defecto activo
 
     
 }

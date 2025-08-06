@@ -19,6 +19,6 @@ public interface ICategoryRepository extends JpaRepository<CategoryEntity, Long>
     /**
      * Busca categorías activas por ID de empresa.
      */
-    List<CategoryEntity> findByEnterpriseIdAndState(String enterpriseId, String state);
+    List<CategoryEntity> findByEnterpriseIdAndState(String enterpriseId, boolean state);
     
 }

@@ -29,7 +29,7 @@ public class CategoryEntity {
     private Long costId;
     private Long saleId;
     private Long returnId;
-    private String state;
+    private boolean state;
 
     @TenantId
     private String tenantId;

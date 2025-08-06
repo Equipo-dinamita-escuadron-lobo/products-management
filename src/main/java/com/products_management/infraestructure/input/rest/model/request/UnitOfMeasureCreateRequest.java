@@ -7,6 +7,7 @@ import lombok.*;
 /**
  * Clase de solicitud utilizada para crear una unidad de medida en el sistema.
  */
+@Builder
 @Getter
 @Setter
 @AllArgsConstructor
@@ -29,9 +30,10 @@ public class UnitOfMeasureCreateRequest {
     private String enterpriseId;
 
     @JsonIgnore
-    private String state;
+    @Builder.Default
+    private boolean state = true; // Por defecto activo
 
-    public UnitOfMeasureCreateRequest(String name, String description, String abbreviation, String enterpriseId, String state) {
+    public UnitOfMeasureCreateRequest(String name, String description, String abbreviation, String enterpriseId, boolean state) {
         this.name = name;
         this.description = description;
         this.abbreviation = abbreviation;

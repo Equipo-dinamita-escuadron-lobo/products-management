@@ -35,7 +35,7 @@ public class CategoryRestMapperImpl implements ICategoryRestMapper {
         categoryBuilder.saleId(categoryCreateRequest.getSaleId());
         categoryBuilder.returnId(categoryCreateRequest.getReturnId());
         categoryBuilder.taxId(categoryCreateRequest.getTaxId());
-        categoryBuilder.state(categoryCreateRequest.getState());
+        categoryBuilder.state(categoryCreateRequest.isState());
 
         return categoryBuilder.build();
     }
@@ -61,7 +61,7 @@ public class CategoryRestMapperImpl implements ICategoryRestMapper {
         categoryResponseBuilder.saleId(category.getSaleId());
         categoryResponseBuilder.returnId(category.getReturnId());
         categoryResponseBuilder.taxId(category.getTaxId());
-        categoryResponseBuilder.state(category.getState());
+        categoryResponseBuilder.state(category.isState());
 
         return categoryResponseBuilder.build();
     }

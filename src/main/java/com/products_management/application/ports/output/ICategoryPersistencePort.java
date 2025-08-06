@@ -61,5 +61,5 @@ public interface ICategoryPersistencePort {
      * @param state el estado de la categoría.
      * @return una lista de categorías activas de la empresa.
      */
-    List<Category> findByEnterpriseIdAndState(String enterpriseId, String state);
+    List<Category> findByEnterpriseIdAndState(String enterpriseId, boolean state);
 }

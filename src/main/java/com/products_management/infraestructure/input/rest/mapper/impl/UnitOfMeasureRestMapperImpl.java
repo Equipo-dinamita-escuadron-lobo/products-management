@@ -32,7 +32,7 @@ public class UnitOfMeasureRestMapperImpl implements IUnitOfMeasureRestMapper {
         unitOfMeasureBuilder.name(unitOfMeasureCreateRequest.getName());
         unitOfMeasureBuilder.description(unitOfMeasureCreateRequest.getDescription());
         unitOfMeasureBuilder.abbreviation(unitOfMeasureCreateRequest.getAbbreviation());
-        unitOfMeasureBuilder.state(unitOfMeasureCreateRequest.getState());
+        unitOfMeasureBuilder.state(unitOfMeasureCreateRequest.isState());
         unitOfMeasureBuilder.enterpriseId(unitOfMeasureCreateRequest.getEnterpriseId());
 
         return unitOfMeasureBuilder.build();
@@ -55,7 +55,7 @@ public class UnitOfMeasureRestMapperImpl implements IUnitOfMeasureRestMapper {
         unitOfMeasureResponseBuilder.name(unitOfMeasure.getName());
         unitOfMeasureResponseBuilder.description(unitOfMeasure.getDescription());
         unitOfMeasureResponseBuilder.abbreviation(unitOfMeasure.getAbbreviation());
-        unitOfMeasureResponseBuilder.state(unitOfMeasure.getState());
+        unitOfMeasureResponseBuilder.state(unitOfMeasure.isState());
         unitOfMeasureResponseBuilder.enterpriseId(unitOfMeasure.getEnterpriseId());
 
         return unitOfMeasureResponseBuilder.build();

@@ -91,7 +91,7 @@ public class UnitOfMeasurePersistenceAdapter implements IUnitOfMeasurePersistenc
      * @return una lista de unidades de medida activas de la empresa
      */
     @Override
-    public List<UnitOfMeasure> findByEnterpriseIdAndState(String enterpriseId, String state) {
+    public List<UnitOfMeasure> findByEnterpriseIdAndState(String enterpriseId, boolean state) {
         return unitOfMeasurePersistenceMapper.toUnitOfMeasureList(
                 unitOfMeasureRepository.findByEnterpriseIdAndState(enterpriseId, state));
     }

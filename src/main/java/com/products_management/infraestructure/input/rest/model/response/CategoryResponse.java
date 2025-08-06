@@ -55,7 +55,7 @@ public class CategoryResponse {
     /**
      * Estado de la categoría (activo/inactivo).
      */
-    private String state;
+    private boolean state;
 
 
     

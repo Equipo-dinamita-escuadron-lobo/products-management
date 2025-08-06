@@ -40,5 +40,5 @@ public class UnitOfMeasureResponse {
     /**
      * Estado de la unidad de medida (activo/inactivo).
      */
-    private String state;
+    private boolean state;
 }

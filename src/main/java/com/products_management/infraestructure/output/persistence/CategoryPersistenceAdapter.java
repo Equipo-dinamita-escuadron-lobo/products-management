@@ -71,4 +71,29 @@ public class CategoryPersistenceAdapter implements ICategoryPersistencePort {
     public void deleteAll() {
         categoryRepository.deleteAll();
     }
+
+    /**
+     * Busca categorías por ID de empresa.
+     *
+     * @param enterpriseId el ID de la empresa
+     * @return una lista de categorías de la empresa
+     */
+    @Override
+    public List<Category> findByEnterpriseId(String enterpriseId) {
+        return categoryPersistenceMapper.toCategoryList(
+                categoryRepository.findByEnterpriseId(enterpriseId));
+    }
+
+    /**
+     * Busca categorías activas por ID de empresa.
+     *
+     * @param enterpriseId el ID de la empresa
+     * @param state el estado de la categoría
+     * @return una lista de categorías activas de la empresa
+     */
+    @Override
+    public List<Category> findByEnterpriseIdAndState(String enterpriseId, String state) {
+        return categoryPersistenceMapper.toCategoryList(
+                categoryRepository.findByEnterpriseIdAndState(enterpriseId, state));
+    }
 }

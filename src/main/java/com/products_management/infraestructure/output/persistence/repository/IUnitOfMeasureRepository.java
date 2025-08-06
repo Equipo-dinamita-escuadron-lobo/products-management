@@ -19,6 +19,6 @@ public interface IUnitOfMeasureRepository extends JpaRepository<UnitOfMeasureEnt
     /**
      * Busca unidades de medida activas por ID de empresa.
      */
-    List<UnitOfMeasureEntity> findByEnterpriseIdAndState(String enterpriseId, String state);
+    List<UnitOfMeasureEntity> findByEnterpriseIdAndState(String enterpriseId, boolean state);
     
 }

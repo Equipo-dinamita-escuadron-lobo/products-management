@@ -59,7 +59,7 @@ public class CategoryService implements ICategoryServicePort {
 
     @Override
     public List<Category> findActivated(String enterpriseId) {
-        return categoryPersistencePort.findByEnterpriseIdAndState(enterpriseId, "true");
+        return categoryPersistencePort.findByEnterpriseIdAndState(enterpriseId, true);
     }
 
     /**
@@ -111,7 +111,7 @@ public class CategoryService implements ICategoryServicePort {
     public void changeState(Long id) {
         Category category = categoryPersistencePort.findById(id)
                 .orElseThrow(CategoryNotFoundException::new);
-        category.setState("true".equals(category.getState()) ? "false" : "true");
+        category.setState(!category.isState());
         categoryPersistencePort.create(category);
     }
 

@@ -53,9 +53,9 @@ public class Category {
     private Long returnId;
 
     /**
-     * Estado de la categoría ("true" si está activa, "false" si está inactiva).
+     * Estado de la categoría (true si está activa, false si está inactiva).
      */
-    private String state;
+    private boolean state;
 
      /**
      * ID de impuesto a la categoria

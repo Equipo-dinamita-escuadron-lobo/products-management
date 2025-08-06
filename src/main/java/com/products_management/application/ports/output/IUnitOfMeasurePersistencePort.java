@@ -41,7 +41,7 @@ public interface IUnitOfMeasurePersistencePort {
      * @param state el estado de la unidad de medida.
      * @return una lista de unidades de medida activas de la empresa.
      */
-    List<UnitOfMeasure> findByEnterpriseIdAndState(String enterpriseId, String state);
+    List<UnitOfMeasure> findByEnterpriseIdAndState(String enterpriseId, boolean state);
 
     /**
      * Crea una nueva unidad de medida.

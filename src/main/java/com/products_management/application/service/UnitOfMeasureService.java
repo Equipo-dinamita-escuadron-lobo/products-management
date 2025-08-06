@@ -63,7 +63,7 @@ public class UnitOfMeasureService implements IUnitOfMeasureServicePort {
 
     @Override
     public List<UnitOfMeasure> findActivated(String enterpriseId) {
-        return unitMeasurePersistencePort.findByEnterpriseIdAndState(enterpriseId, "true");
+        return unitMeasurePersistencePort.findByEnterpriseIdAndState(enterpriseId, true);
     }
 
     /**
@@ -110,7 +110,7 @@ public class UnitOfMeasureService implements IUnitOfMeasureServicePort {
     public void changeState(Long id) {
         UnitOfMeasure unitOfMeasure = unitMeasurePersistencePort.findById(id)
                 .orElseThrow(() -> new UnitOfMeasureNotFoundException());
-        unitOfMeasure.setState("true".equals(unitOfMeasure.getState()) ? "false" : "true");
+        unitOfMeasure.setState(!unitOfMeasure.isState());
         unitMeasurePersistencePort.create(unitOfMeasure);
     }
 

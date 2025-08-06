@@ -38,7 +38,7 @@ public class UnitOfMeasure {
     private String enterpriseId;
 
     /**
-     * Estado de la unidad de medida ("true" si está activa, "false" si está inactiva).
+     * Estado de la unidad de medida (true si está activa, false si está inactiva).
      */
-    private String state;
+    private boolean state;
 }

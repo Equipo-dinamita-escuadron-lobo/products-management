@@ -119,4 +119,16 @@ public class ProductPersistenceAdapter implements IProductPersistencePort {
         return productPersistenceMapper.toProductList(
                 productRepository.findByUnitOfMeasureId(unitOfMeasureId));
     }
+
+    /**
+     * Busca productos por ID de tipo de producto.
+     *
+     * @param productTypeId el ID del tipo de producto
+     * @return una lista de productos de ese tipo de producto
+     */
+    @Override
+    public List<Product> findByProductTypeId(Long productTypeId) {
+        return productPersistenceMapper.toProductList(
+                productRepository.findByProductTypeId(productTypeId));
+    }
 }

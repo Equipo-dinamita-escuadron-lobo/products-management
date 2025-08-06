@@ -84,4 +84,12 @@ public interface IProductServicePort {
    * @return una lista de todos los productos de la unidad de medida.
    */
   List<Product> findAllByUnitOfMeasure(Long unitOfMeasureId);
+
+  /**
+   * Obtiene una lista de todos los productos asociados a un tipo de producto.
+   *
+   * @param productTypeId el ID del tipo de producto.
+   * @return una lista de todos los productos del tipo de producto.
+   */
+  List<Product> findAllByProductType(Long productTypeId);
 }

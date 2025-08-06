@@ -36,4 +36,9 @@ public interface IProductRepository extends JpaRepository<ProductEntity, Long> {
      */
     List<ProductEntity> findByUnitOfMeasureId(Long unitOfMeasureId);
     
+    /**
+     * Busca productos por ID de tipo de producto.
+     */
+    List<ProductEntity> findByProductTypeId(Long productTypeId);
+    
 }

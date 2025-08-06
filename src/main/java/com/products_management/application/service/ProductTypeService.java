@@ -1,8 +1,11 @@
 package com.products_management.application.service;
 
+import com.products_management.application.ports.input.IProductServicePort;
 import com.products_management.application.ports.input.IProductTypeServicePort;
 import com.products_management.application.ports.output.IProductTypePersistencePort;
+import com.products_management.domain.exception.ProductTypeAssociatedException;
 import com.products_management.domain.exception.ProductTypeNotFoundException;
+import com.products_management.domain.model.Product;
 import com.products_management.domain.model.ProductType;
 import org.springframework.stereotype.Service;
 
@@ -13,9 +16,11 @@ import java.util.Optional;
 public class ProductTypeService implements IProductTypeServicePort {
 
     private final IProductTypePersistencePort productTypeOutputPort;
+    private final IProductServicePort productServicePort;
 
-    public ProductTypeService(IProductTypePersistencePort productTypeOutputPort) {
+    public ProductTypeService(IProductTypePersistencePort productTypeOutputPort, IProductServicePort productServicePort) {
         this.productTypeOutputPort = productTypeOutputPort;
+        this.productServicePort = productServicePort;
     }
 
     @Override
@@ -42,7 +47,7 @@ public class ProductTypeService implements IProductTypeServicePort {
         // Verificar que el tipo de producto existe antes de actualizar
         Optional<ProductType> existingProductType = productTypeOutputPort.findById(id);
         if (existingProductType.isEmpty()) {
-            throw new ProductTypeNotFoundException(id);
+            throw new ProductTypeNotFoundException();
         }
         return productTypeOutputPort.update(id, productType);
     }
@@ -52,7 +57,12 @@ public class ProductTypeService implements IProductTypeServicePort {
         // Verificar que el tipo de producto existe antes de eliminar
         Optional<ProductType> existingProductType = productTypeOutputPort.findById(id);
         if (existingProductType.isEmpty()) {
-            throw new ProductTypeNotFoundException(id);
+            throw new ProductTypeNotFoundException();
+        }
+        // Verificar que el tipo de producto no esté asociado a productos
+        List<Product> products = productServicePort.findAllByProductType(id);
+        if (!products.isEmpty()) {
+            throw new ProductTypeAssociatedException();
         }
         productTypeOutputPort.delete(id);
     }
@@ -71,6 +81,6 @@ public class ProductTypeService implements IProductTypeServicePort {
      */
     public ProductType getProductTypeById(Long id) {
         return productTypeOutputPort.findById(id)
-                .orElseThrow(() -> new ProductTypeNotFoundException(id));
+                .orElseThrow(() -> new ProductTypeNotFoundException());
     }
 }

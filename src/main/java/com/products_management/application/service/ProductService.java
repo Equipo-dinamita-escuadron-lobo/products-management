@@ -192,4 +192,16 @@ public class ProductService implements IProductServicePort {
     public List<Product> findAllByUnitOfMeasure(Long unitOfMeasureId) {
         return productPersistencePort.findByUnitOfMeasureId(unitOfMeasureId);
     }
+
+    /**
+     * Obtiene una lista de todos los productos asociados a un tipo de producto.
+     *
+     * @param productTypeId el ID del tipo de producto.
+     * @return una lista de todos los productos del tipo de producto.
+     */
+
+    @Override
+    public List<Product> findAllByProductType(Long productTypeId) {
+        return productPersistencePort.findByProductTypeId(productTypeId);
+    }
 }

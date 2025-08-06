@@ -46,4 +46,37 @@ public interface IProductPersistencePort {
      * Elimina todos los productos.
      */
     void deleteAll();
+    
+    /**
+     * Busca productos por ID de empresa.
+     *
+     * @param enterpriseId el ID de la empresa.
+     * @return una lista de productos de la empresa.
+     */
+    List<Product> findByEnterpriseId(String enterpriseId);
+    
+    /**
+     * Busca productos activos por ID de empresa.
+     *
+     * @param enterpriseId el ID de la empresa.
+     * @param state el estado del producto.
+     * @return una lista de productos activos de la empresa.
+     */
+    List<Product> findByEnterpriseIdAndState(String enterpriseId, boolean state);
+    
+    /**
+     * Busca productos por ID de categoría.
+     *
+     * @param categoryId el ID de la categoría.
+     * @return una lista de productos de la categoría.
+     */
+    List<Product> findByCategoryId(Long categoryId);
+    
+    /**
+     * Busca productos por ID de unidad de medida.
+     *
+     * @param unitOfMeasureId el ID de la unidad de medida.
+     * @return una lista de productos con esa unidad de medida.
+     */
+    List<Product> findByUnitOfMeasureId(Long unitOfMeasureId);
 }

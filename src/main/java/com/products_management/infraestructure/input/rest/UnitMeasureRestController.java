@@ -23,7 +23,6 @@ public class UnitMeasureRestController {
 
         private final IUnitOfMeasureServicePort unitOfMeasureServicePort;
         private final UnitOfMeasureRestMapperImpl unitOfMeasureRestMapper;
-        private static boolean unitsInserted = false;
 
         @GetMapping("/findAll/{enterpriseId}")
         public List<UnitOfMeasureResponse> findAll(@PathVariable String enterpriseId) {

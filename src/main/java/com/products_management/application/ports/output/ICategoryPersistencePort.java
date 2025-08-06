@@ -45,4 +45,21 @@ public interface ICategoryPersistencePort {
      * Elimina todas las categorías.
      */
     void deleteAll();
+    
+    /**
+     * Busca categorías por ID de empresa.
+     *
+     * @param enterpriseId el ID de la empresa.
+     * @return una lista de categorías de la empresa.
+     */
+    List<Category> findByEnterpriseId(String enterpriseId);
+    
+    /**
+     * Busca categorías activas por ID de empresa.
+     *
+     * @param enterpriseId el ID de la empresa.
+     * @param state el estado de la categoría.
+     * @return una lista de categorías activas de la empresa.
+     */
+    List<Category> findByEnterpriseIdAndState(String enterpriseId, String state);
 }

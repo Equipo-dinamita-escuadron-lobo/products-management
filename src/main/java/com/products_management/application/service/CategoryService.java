@@ -11,7 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
+
 
 /**
  * Servicio que implementa la lógica de negocio para las categorías.
@@ -47,10 +47,7 @@ public class CategoryService implements ICategoryServicePort {
 
     @Override
     public List<Category> findAll(String enterpriseId) {
-        List<Category> allCategories = categoryPersistencePort.findAll();
-        return allCategories.stream()
-                .filter(category -> category.getEnterpriseId().equals(enterpriseId))
-                .collect(Collectors.toList());
+        return categoryPersistencePort.findByEnterpriseId(enterpriseId);
     }
 
     /**
@@ -62,11 +59,7 @@ public class CategoryService implements ICategoryServicePort {
 
     @Override
     public List<Category> findActivated(String enterpriseId) {
-        List<Category> allCategories = categoryPersistencePort.findAll();
-        return allCategories.stream()
-                .filter(category -> "true".equals(category.getState()))
-                .filter(category -> category.getEnterpriseId().equals(enterpriseId))
-                .collect(Collectors.toList());
+        return categoryPersistencePort.findByEnterpriseIdAndState(enterpriseId, "true");
     }
 
     /**

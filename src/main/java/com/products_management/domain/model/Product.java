@@ -91,7 +91,7 @@ public class Product {
      * Genera un código único basado en el tipo de ítem, categoría y ID del producto.
      */
     public void generateCode() {
-        String itemTypePrefix = name != null && name.length() >= 3 ? name.substring(0, 3).toUpperCase() : "UNK";
-        this.code = String.format("%s-%d-%d", itemTypePrefix, categoryId, id);
+        String namePrefix = name != null && name.length() >= 3 ? name.substring(0, 3).toUpperCase() : "UNK";
+        this.code = String.format("%s-%d-%d", namePrefix, categoryId, id);
     }
 }

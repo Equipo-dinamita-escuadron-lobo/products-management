@@ -2,7 +2,6 @@ package com.products_management.application.service;
 
 import java.util.List;
 
-
 import org.springframework.stereotype.Service;
 
 import com.products_management.application.dto.ProductSyncDto;
@@ -14,10 +13,10 @@ import com.products_management.domain.model.Product;
 
 import lombok.RequiredArgsConstructor;
 
-
 /**
  * Servicio que implementa la lógica de negocio para los productos.
- * Esta clase interactúa con los puertos de persistencia y realiza las operaciones
+ * Esta clase interactúa con los puertos de persistencia y realiza las
+ * operaciones
  * necesarias para gestionar los productos.
  */
 @Service
@@ -73,19 +72,24 @@ public class ProductService implements IProductServicePort {
 
     @Override
     public Product create(Product product) {
-        product.generateCode();
+        // Primero guardar para obtener el ID
         Product createdProduct = productPersistencePort.create(product);
-        
+
+        // Ahora generar el código con el ID real
+        createdProduct.generateCode();
+
+        // Actualizar con el código generado
+        createdProduct = productPersistencePort.create(createdProduct);
+
         ProductSyncDto productSyncDto = new ProductSyncDto(
-            createdProduct.getId(),
-            createdProduct.getName(),
-            createdProduct.getReference(),
-            createdProduct.getEnterpriseId(),
-            createdProduct.getPresentation(),
-            createdProduct.getQuantity(),
-            createdProduct.getCost(),
-            createdProduct.isState()
-        );
+                createdProduct.getId(),
+                createdProduct.getName(),
+                createdProduct.getReference(),
+                createdProduct.getEnterpriseId(),
+                createdProduct.getPresentation(),
+                createdProduct.getQuantity(),
+                createdProduct.getCost(),
+                createdProduct.isState());
         productEventPort.publishCreatedStockEvent(productSyncDto);
         return createdProduct;
     }
@@ -93,7 +97,7 @@ public class ProductService implements IProductServicePort {
     /**
      * Actualiza un producto existente.
      *
-     * @param id el ID del producto a actualizar.
+     * @param id      el ID del producto a actualizar.
      * @param product los datos del producto actualizado.
      * @return el producto actualizado.
      * @throws ProductNotFoundException si el producto no se encuentra.
@@ -102,28 +106,28 @@ public class ProductService implements IProductServicePort {
     @Override
     public Product update(Long id, Product product) {
         return productPersistencePort.findById(id)
-            .map(existingProduct -> {
-                boolean shouldRegenerateCode = !existingProduct.getName().equals(product.getName()) || 
-                                               !existingProduct.getCategoryId().equals(product.getCategoryId()) || 
-                                               !existingProduct.getId().equals(product.getId());
+                .map(existingProduct -> {
+                    boolean shouldRegenerateCode = !existingProduct.getName().equals(product.getName()) ||
+                            !existingProduct.getCategoryId().equals(product.getCategoryId()) ||
+                            !existingProduct.getId().equals(product.getId());
 
-                existingProduct.setName(product.getName());
-                existingProduct.setDescription(product.getDescription());
-                existingProduct.setQuantity(product.getQuantity());
-                existingProduct.setTaxPercentage(product.getTaxPercentage());
-                existingProduct.setUnitOfMeasureId(product.getUnitOfMeasureId());
-                existingProduct.setCategoryId(product.getCategoryId());
-                existingProduct.setCost(product.getCost());
-                existingProduct.setProductTypeId(product.getProductTypeId());
-                existingProduct.setReference(product.getReference());
+                    existingProduct.setName(product.getName());
+                    existingProduct.setDescription(product.getDescription());
+                    existingProduct.setQuantity(product.getQuantity());
+                    existingProduct.setTaxPercentage(product.getTaxPercentage());
+                    existingProduct.setUnitOfMeasureId(product.getUnitOfMeasureId());
+                    existingProduct.setCategoryId(product.getCategoryId());
+                    existingProduct.setCost(product.getCost());
+                    existingProduct.setProductTypeId(product.getProductTypeId());
+                    existingProduct.setReference(product.getReference());
 
-                if (shouldRegenerateCode) {
-                    existingProduct.generateCode();
-                }
+                    if (shouldRegenerateCode) {
+                        existingProduct.generateCode();
+                    }
 
-                return productPersistencePort.create(existingProduct);
-            })
-            .orElseThrow(ProductNotFoundException::new);
+                    return productPersistencePort.create(existingProduct);
+                })
+                .orElseThrow(ProductNotFoundException::new);
     }
 
     /**

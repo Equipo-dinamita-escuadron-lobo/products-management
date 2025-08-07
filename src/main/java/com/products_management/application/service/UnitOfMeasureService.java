@@ -8,6 +8,7 @@ import com.products_management.domain.exception.unitOfMeasure.UnitOfMeasureNameA
 import com.products_management.domain.exception.unitOfMeasure.UnitOfMeasureNotFoundException;
 import com.products_management.domain.model.Product;
 import com.products_management.domain.model.UnitOfMeasure;
+import com.products_management.domain.utils.StringNormalizer;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -79,6 +80,9 @@ public class UnitOfMeasureService implements IUnitOfMeasureServicePort {
 
     @Override
     public UnitOfMeasure create(UnitOfMeasure unitOfMeasure) {
+        // Normalizar nombre y abreviación de manera consistente (para validación y almacenamiento)
+        unitOfMeasure.setName(StringNormalizer.normalize(unitOfMeasure.getName()));
+        unitOfMeasure.setAbbreviation(StringNormalizer.normalize(unitOfMeasure.getAbbreviation()));
         validateUnitOfMeasureUniqueness(unitOfMeasure);
         return unitMeasurePersistencePort.create(unitOfMeasure);
     }
@@ -98,6 +102,9 @@ public class UnitOfMeasureService implements IUnitOfMeasureServicePort {
     public UnitOfMeasure update(Long id, UnitOfMeasure unitOfMeasure) {
         return unitMeasurePersistencePort.findById(id)
                 .map(existingUnit -> {
+                    // Normalizar nombre y abreviación de manera consistente (para validación y almacenamiento)
+                    unitOfMeasure.setName(StringNormalizer.normalize(unitOfMeasure.getName()));
+                    unitOfMeasure.setAbbreviation(StringNormalizer.normalize(unitOfMeasure.getAbbreviation()));
                     validateUnitOfMeasureUniquenessForUpdate(id, unitOfMeasure);
                     existingUnit.setName(unitOfMeasure.getName());
                     existingUnit.setDescription(unitOfMeasure.getDescription());
@@ -159,13 +166,12 @@ public class UnitOfMeasureService implements IUnitOfMeasureServicePort {
      * @throws UnitOfMeasureAbbreviationAlreadyExistsException si ya existe una unidad con la misma abreviación.
      */
     private void validateUnitOfMeasureUniqueness(UnitOfMeasure unitOfMeasure) {
-        // Validar nombre único
+        // El nombre y abreviación ya están normalizados, se usan directamente para validación
         if (unitMeasurePersistencePort.existsByNameAndEnterpriseId(
                 unitOfMeasure.getName(), unitOfMeasure.getEnterpriseId())) {
             throw new UnitOfMeasureNameAlreadyExistsException();
         }
 
-        // Validar abreviación única
         if (unitMeasurePersistencePort.existsByAbbreviationAndEnterpriseId(
                 unitOfMeasure.getAbbreviation(), unitOfMeasure.getEnterpriseId())) {
             throw new UnitOfMeasureAbbreviationAlreadyExistsException();
@@ -182,13 +188,12 @@ public class UnitOfMeasureService implements IUnitOfMeasureServicePort {
      * @throws UnitOfMeasureAbbreviationAlreadyExistsException si ya existe otra unidad con la misma abreviación.
      */
     private void validateUnitOfMeasureUniquenessForUpdate(Long id, UnitOfMeasure unitOfMeasure) {
-        // Validar nombre único (excluyendo la unidad actual)
+        // El nombre y abreviación ya están normalizados, se usan directamente para validación
         if (unitMeasurePersistencePort.existsByNameAndEnterpriseIdAndIdNot(
                 unitOfMeasure.getName(), unitOfMeasure.getEnterpriseId(), id)) {
             throw new UnitOfMeasureNameAlreadyExistsException();
         }
 
-        // Validar abreviación única (excluyendo la unidad actual)
         if (unitMeasurePersistencePort.existsByAbbreviationAndEnterpriseIdAndIdNot(
                 unitOfMeasure.getAbbreviation(), unitOfMeasure.getEnterpriseId(), id)) {
             throw new UnitOfMeasureAbbreviationAlreadyExistsException();

@@ -21,4 +21,14 @@ public interface ICategoryRepository extends JpaRepository<CategoryEntity, Long>
      */
     List<CategoryEntity> findByEnterpriseIdAndState(String enterpriseId, boolean state);
     
+    /**
+     * Verifica si existe una categoría con el nombre especificado para una empresa.
+     */
+    boolean existsByNameAndEnterpriseId(String name, String enterpriseId);
+    
+    /**
+     * Verifica si existe una categoría con el nombre especificado para una empresa, excluyendo un ID específico.
+     */
+    boolean existsByNameAndEnterpriseIdAndIdNot(String name, String enterpriseId, Long id);
+    
 }

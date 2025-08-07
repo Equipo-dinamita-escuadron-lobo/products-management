@@ -96,4 +96,29 @@ public class CategoryPersistenceAdapter implements ICategoryPersistencePort {
         return categoryPersistenceMapper.toCategoryList(
                 categoryRepository.findByEnterpriseIdAndState(enterpriseId, state));
     }
+
+    /**
+     * Verifica si existe una categoría con el nombre especificado para una empresa.
+     *
+     * @param name el nombre de la categoría
+     * @param enterpriseId el ID de la empresa
+     * @return true si existe, false en caso contrario
+     */
+    @Override
+    public boolean existsByNameAndEnterpriseId(String name, String enterpriseId) {
+        return categoryRepository.existsByNameAndEnterpriseId(name, enterpriseId);
+    }
+
+    /**
+     * Verifica si existe una categoría con el nombre especificado para una empresa, excluyendo un ID específico.
+     *
+     * @param name el nombre de la categoría
+     * @param enterpriseId el ID de la empresa
+     * @param id el ID a excluir de la búsqueda
+     * @return true si existe, false en caso contrario
+     */
+    @Override
+    public boolean existsByNameAndEnterpriseIdAndIdNot(String name, String enterpriseId, Long id) {
+        return categoryRepository.existsByNameAndEnterpriseIdAndIdNot(name, enterpriseId, id);
+    }
 }

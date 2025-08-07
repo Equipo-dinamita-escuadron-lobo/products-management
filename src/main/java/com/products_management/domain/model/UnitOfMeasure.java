@@ -40,5 +40,6 @@ public class UnitOfMeasure {
     /**
      * Estado de la unidad de medida (true si está activa, false si está inactiva).
      */
-    private boolean state;
+    @Builder.Default
+    private boolean state = true;
 }

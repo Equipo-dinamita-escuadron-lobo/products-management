@@ -9,5 +9,10 @@ import java.util.List;
 
 @Repository
 public interface IProductTypeRepository extends JpaRepository<ProductTypeEntity, Long> {
-    List<ProductTypeEntity> findByEnterpriseId(String enterpriseId); // Ensure the type matches
+    List<ProductTypeEntity> findByEnterpriseId(String enterpriseId);
+    
+    /**
+     * Busca tipos de producto activos por ID de empresa.
+     */
+    List<ProductTypeEntity> findByEnterpriseIdAndState(String enterpriseId, boolean state);
 }

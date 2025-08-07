@@ -36,6 +36,7 @@ public class ProductType {
     /**
      * Estado del tipo de producto (true si está activo, false si está inactivo).
      */
-    private boolean state;
+    @Builder.Default
+    private boolean state = true;
 
 }

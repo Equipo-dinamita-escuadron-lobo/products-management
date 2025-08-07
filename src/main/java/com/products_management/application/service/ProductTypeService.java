@@ -25,10 +25,6 @@ public class ProductTypeService implements IProductTypeServicePort {
 
     @Override
     public ProductType createProductType(ProductType productType) {
-        // Establecer estado activo por defecto si no se especifica
-        if (productType.getId() == null) { // Solo para nuevos productos
-            productType.setState(true);
-        }
         return productTypeOutputPort.save(productType);
     }
 

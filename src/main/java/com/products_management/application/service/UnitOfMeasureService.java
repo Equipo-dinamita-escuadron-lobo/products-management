@@ -2,8 +2,10 @@ package com.products_management.application.service;
 
 import com.products_management.application.ports.input.IUnitOfMeasureServicePort;
 import com.products_management.application.ports.output.IUnitOfMeasurePersistencePort;
-import com.products_management.domain.exception.UnitOfMeasureAssociatedException;
-import com.products_management.domain.exception.UnitOfMeasureNotFoundException;
+import com.products_management.domain.exception.unitOfMeasure.UnitOfMeasureAbbreviationAlreadyExistsException;
+import com.products_management.domain.exception.unitOfMeasure.UnitOfMeasureAssociatedException;
+import com.products_management.domain.exception.unitOfMeasure.UnitOfMeasureNameAlreadyExistsException;
+import com.products_management.domain.exception.unitOfMeasure.UnitOfMeasureNotFoundException;
 import com.products_management.domain.model.Product;
 import com.products_management.domain.model.UnitOfMeasure;
 import lombok.RequiredArgsConstructor;
@@ -71,10 +73,13 @@ public class UnitOfMeasureService implements IUnitOfMeasureServicePort {
      *
      * @param unitOfMeasure la unidad de medida a crear.
      * @return la unidad de medida creada.
+     * @throws UnitOfMeasureNameAlreadyExistsException si ya existe una unidad con el mismo nombre.
+     * @throws UnitOfMeasureAbbreviationAlreadyExistsException si ya existe una unidad con la misma abreviación.
      */
 
     @Override
     public UnitOfMeasure create(UnitOfMeasure unitOfMeasure) {
+        validateUnitOfMeasureUniqueness(unitOfMeasure);
         return unitMeasurePersistencePort.create(unitOfMeasure);
     }
 
@@ -85,12 +90,15 @@ public class UnitOfMeasureService implements IUnitOfMeasureServicePort {
      * @param unitOfMeasure los datos de la unidad de medida actualizada.
      * @return la unidad de medida actualizada.
      * @throws UnitOfMeasureNotFoundException si la unidad de medida no se encuentra.
+     * @throws UnitOfMeasureNameAlreadyExistsException si ya existe una unidad con el mismo nombre.
+     * @throws UnitOfMeasureAbbreviationAlreadyExistsException si ya existe una unidad con la misma abreviación.
      */
 
     @Override
     public UnitOfMeasure update(Long id, UnitOfMeasure unitOfMeasure) {
         return unitMeasurePersistencePort.findById(id)
                 .map(existingUnit -> {
+                    validateUnitOfMeasureUniquenessForUpdate(id, unitOfMeasure);
                     existingUnit.setName(unitOfMeasure.getName());
                     existingUnit.setDescription(unitOfMeasure.getDescription());
                     existingUnit.setAbbreviation(unitOfMeasure.getAbbreviation());
@@ -141,5 +149,49 @@ public class UnitOfMeasureService implements IUnitOfMeasureServicePort {
     @Override
     public void deleteAll() {
         unitMeasurePersistencePort.deleteAll();
+    }
+
+    /**
+     * Valida que el nombre y la abreviación de una unidad de medida sean únicos dentro de la empresa.
+     *
+     * @param unitOfMeasure la unidad de medida a validar.
+     * @throws UnitOfMeasureNameAlreadyExistsException si ya existe una unidad con el mismo nombre.
+     * @throws UnitOfMeasureAbbreviationAlreadyExistsException si ya existe una unidad con la misma abreviación.
+     */
+    private void validateUnitOfMeasureUniqueness(UnitOfMeasure unitOfMeasure) {
+        // Validar nombre único
+        if (unitMeasurePersistencePort.existsByNameAndEnterpriseId(
+                unitOfMeasure.getName(), unitOfMeasure.getEnterpriseId())) {
+            throw new UnitOfMeasureNameAlreadyExistsException();
+        }
+
+        // Validar abreviación única
+        if (unitMeasurePersistencePort.existsByAbbreviationAndEnterpriseId(
+                unitOfMeasure.getAbbreviation(), unitOfMeasure.getEnterpriseId())) {
+            throw new UnitOfMeasureAbbreviationAlreadyExistsException();
+        }
+    }
+
+    /**
+     * Valida que el nombre y la abreviación de una unidad de medida sean únicos dentro de la empresa
+     * durante una actualización, excluyendo la unidad que se está actualizando.
+     *
+     * @param id el ID de la unidad de medida que se está actualizando.
+     * @param unitOfMeasure la unidad de medida a validar.
+     * @throws UnitOfMeasureNameAlreadyExistsException si ya existe otra unidad con el mismo nombre.
+     * @throws UnitOfMeasureAbbreviationAlreadyExistsException si ya existe otra unidad con la misma abreviación.
+     */
+    private void validateUnitOfMeasureUniquenessForUpdate(Long id, UnitOfMeasure unitOfMeasure) {
+        // Validar nombre único (excluyendo la unidad actual)
+        if (unitMeasurePersistencePort.existsByNameAndEnterpriseIdAndIdNot(
+                unitOfMeasure.getName(), unitOfMeasure.getEnterpriseId(), id)) {
+            throw new UnitOfMeasureNameAlreadyExistsException();
+        }
+
+        // Validar abreviación única (excluyendo la unidad actual)
+        if (unitMeasurePersistencePort.existsByAbbreviationAndEnterpriseIdAndIdNot(
+                unitOfMeasure.getAbbreviation(), unitOfMeasure.getEnterpriseId(), id)) {
+            throw new UnitOfMeasureAbbreviationAlreadyExistsException();
+        }
     }
 }

@@ -1,4 +1,7 @@
-package com.products_management.domain.exception;
+package com.products_management.domain.exception.productType;
+
+import com.products_management.domain.exception.BaseBusinessException;
+import com.products_management.domain.exception.ErrorCode;
 
 /**
  * Excepción lanzada cuando se intenta eliminar un tipo de producto que está asociado con productos.

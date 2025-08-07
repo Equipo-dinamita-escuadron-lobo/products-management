@@ -8,7 +8,7 @@ import com.products_management.application.dto.ProductSyncDto;
 import com.products_management.application.ports.input.IProductEventPort;
 import com.products_management.application.ports.input.IProductServicePort;
 import com.products_management.application.ports.output.IProductPersistencePort;
-import com.products_management.domain.exception.ProductNotFoundException;
+import com.products_management.domain.exception.product.ProductNotFoundException;
 import com.products_management.domain.model.Product;
 
 import lombok.RequiredArgsConstructor;

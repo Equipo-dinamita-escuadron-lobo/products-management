@@ -2,8 +2,8 @@ package com.products_management.application.service;
 
 import com.products_management.application.ports.input.ICategoryServicePort;
 import com.products_management.application.ports.output.ICategoryPersistencePort;
-import com.products_management.domain.exception.CategoryAssociatedException;
-import com.products_management.domain.exception.CategoryNotFoundException;
+import com.products_management.domain.exception.category.CategoryAssociatedException;
+import com.products_management.domain.exception.category.CategoryNotFoundException;
 import com.products_management.domain.model.Category;
 import com.products_management.domain.model.Product;
 

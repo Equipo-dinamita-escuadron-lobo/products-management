@@ -5,9 +5,12 @@ import com.products_management.infraestructure.output.persistence.entity.UnitOfM
 
 import java.util.List;
 
+import org.mapstruct.Mapper;
+
 /**
  * Interfaz para mapear entre entidades de persistencia (UnitOfMeasureEntity) y objetos del dominio (UnitOfMeasure).
  */
+@Mapper(componentModel = "spring")
 public interface IUnitOfMeasurePersistenceMapper {
 
     /**

@@ -1,7 +1,7 @@
 package com.products_management.infraestructure.input.rest;
 
 import com.products_management.application.ports.input.IUnitOfMeasureServicePort;
-import com.products_management.infraestructure.input.rest.mapper.impl.UnitOfMeasureRestMapperImpl;
+import com.products_management.infraestructure.input.rest.mapper.interfaces.IUnitOfMeasureRestMapper;
 import com.products_management.infraestructure.input.rest.model.request.UnitOfMeasureCreateRequest;
 import com.products_management.infraestructure.input.rest.model.response.UnitOfMeasureResponse;
 
@@ -22,7 +22,7 @@ import java.util.List;
 public class UnitMeasureRestController {
 
         private final IUnitOfMeasureServicePort unitOfMeasureServicePort;
-        private final UnitOfMeasureRestMapperImpl unitOfMeasureRestMapper;
+        private final IUnitOfMeasureRestMapper unitOfMeasureRestMapper;
 
         @GetMapping("/findAll/{enterpriseId}")
         public List<UnitOfMeasureResponse> findAll(@PathVariable String enterpriseId) {

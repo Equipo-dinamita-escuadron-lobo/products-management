@@ -6,9 +6,12 @@ import com.products_management.infraestructure.input.rest.model.response.Categor
 
 import java.util.List;
 
+import org.mapstruct.Mapper;
+
 /**
  * Interfaz que define métodos para mapear entre entidades de categoría y sus representaciones REST.
  */
+@Mapper(componentModel = "spring")
 public interface ICategoryRestMapper {
 
     /**

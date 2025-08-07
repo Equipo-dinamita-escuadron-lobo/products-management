@@ -2,7 +2,7 @@ package com.products_management.infraestructure.output.persistence;
 
 import com.products_management.application.ports.output.IUnitOfMeasurePersistencePort;
 import com.products_management.domain.model.UnitOfMeasure;
-import com.products_management.infraestructure.output.persistence.mapper.impl.UnitOfMeasurePersistenceMapperImpl;
+import com.products_management.infraestructure.output.persistence.mapper.interfaces.IUnitOfMeasurePersistenceMapper;
 import com.products_management.infraestructure.output.persistence.repository.IUnitOfMeasureRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -18,7 +18,7 @@ import java.util.Optional;
 public class UnitOfMeasurePersistenceAdapter implements IUnitOfMeasurePersistencePort {
 
     private final IUnitOfMeasureRepository unitOfMeasureRepository;
-    private final UnitOfMeasurePersistenceMapperImpl unitOfMeasurePersistenceMapper;
+    private final IUnitOfMeasurePersistenceMapper unitOfMeasurePersistenceMapper;
 
     /**
      * Busca una unidad de medida por su ID.

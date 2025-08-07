@@ -2,7 +2,7 @@ package com.products_management.infraestructure.output.persistence;
 
 import com.products_management.application.ports.output.ICategoryPersistencePort;
 import com.products_management.domain.model.Category;
-import com.products_management.infraestructure.output.persistence.mapper.impl.CategoryPersistenceMapperImpl;
+import com.products_management.infraestructure.output.persistence.mapper.interfaces.ICategoryPersistenceMapper;
 import com.products_management.infraestructure.output.persistence.repository.ICategoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -19,7 +19,7 @@ import java.util.Optional;
 public class CategoryPersistenceAdapter implements ICategoryPersistencePort {
 
     private final ICategoryRepository categoryRepository;
-    private final CategoryPersistenceMapperImpl categoryPersistenceMapper;
+    private final ICategoryPersistenceMapper categoryPersistenceMapper;
 
     /**
      * Busca una categoría por su ID.

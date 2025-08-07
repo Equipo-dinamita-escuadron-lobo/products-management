@@ -56,7 +56,8 @@ public class ProductCreateRequest {
     private double cost;
 
     @JsonIgnore
-    private String state;
+    @Builder.Default
+    private boolean state = true; // Por defecto activo
 
     private String reference;
 

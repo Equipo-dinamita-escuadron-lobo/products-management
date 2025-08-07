@@ -76,7 +76,8 @@ public class Product {
     /**
      * @brief Estado del producto ("true" si está activo, "false" si está inactivo).
      */
-    private boolean state;
+    @Builder.Default
+    private boolean state = true;
     /**
 
      * Campo de referencia opcional

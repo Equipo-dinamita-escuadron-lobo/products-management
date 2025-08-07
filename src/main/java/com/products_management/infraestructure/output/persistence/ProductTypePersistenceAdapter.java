@@ -2,7 +2,7 @@ package com.products_management.infraestructure.output.persistence;
 
 import com.products_management.application.ports.output.IProductTypePersistencePort;
 import com.products_management.domain.model.ProductType;
-import com.products_management.infraestructure.output.persistence.mapper.impl.ProductTypePersistenceMapperImpl;
+import com.products_management.infraestructure.output.persistence.mapper.interfaces.IProductTypePersistenceMapper;
 import com.products_management.infraestructure.output.persistence.repository.IProductTypeRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -17,7 +17,7 @@ import java.util.Optional;
 public class ProductTypePersistenceAdapter implements IProductTypePersistencePort {
 
     private final IProductTypeRepository productTypeRepository;
-    private final ProductTypePersistenceMapperImpl productTypePersistenceMapper;
+    private final IProductTypePersistenceMapper productTypePersistenceMapper;
 
 
     @Override

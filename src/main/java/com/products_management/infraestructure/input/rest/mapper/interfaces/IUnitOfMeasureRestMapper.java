@@ -6,9 +6,12 @@ import com.products_management.infraestructure.input.rest.model.response.UnitOfM
 
 import java.util.List;
 
+import org.mapstruct.Mapper;
+
 /**
  * Interfaz que define métodos para mapear entre entidades de unidad de medida y sus representaciones REST.
  */
+@Mapper(componentModel = "spring")
 public interface IUnitOfMeasureRestMapper {
 
     /**

@@ -5,9 +5,13 @@ import com.products_management.infraestructure.output.persistence.entity.Categor
 
 import java.util.List;
 
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+
 /**
  * Interfaz para mapear entre entidades de persistencia (CategoryEntity) y objetos del dominio (Category).
  */
+@Mapper(componentModel = "spring")
 public interface ICategoryPersistenceMapper {
 
     /**
@@ -15,6 +19,7 @@ public interface ICategoryPersistenceMapper {
      * @param category Objeto Category del dominio.
      * @return CategoryEntity correspondiente.
      */
+    @Mapping(target = "tenantId", ignore = true)
     CategoryEntity toCategoryEntity(Category category);
 
     /**

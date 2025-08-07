@@ -25,16 +25,28 @@ public class ProductTypeService implements IProductTypeServicePort {
 
     @Override
     public ProductType createProductType(ProductType productType) {
+        // Establecer estado activo por defecto si no se especifica
+        if (productType.getId() == null) { // Solo para nuevos productos
+            productType.setState(true);
+        }
         return productTypeOutputPort.save(productType);
     }
 
     @Override
     public List<ProductType> getProductTypesByEnterpriseId(String enterpriseId) {
         List<ProductType> productTypes = productTypeOutputPort.findByEnterpriseId(enterpriseId);
-        if (productTypes.isEmpty()) {
-            throw new ProductTypeNotFoundException(enterpriseId);
-        }
         return productTypes;
+    }
+
+    /**
+     * Obtiene una lista de todos los tipos de producto activados asociados a una empresa.
+     *
+     * @param enterpriseId el ID de la empresa.
+     * @return una lista de todos los tipos de producto activados de la empresa.
+     */
+    @Override
+    public List<ProductType> findActivated(String enterpriseId) {
+        return productTypeOutputPort.findByEnterpriseIdAndState(enterpriseId, true);
     }
 
     @Override
@@ -82,5 +94,24 @@ public class ProductTypeService implements IProductTypeServicePort {
     public ProductType getProductTypeById(Long id) {
         return productTypeOutputPort.findById(id)
                 .orElseThrow(() -> new ProductTypeNotFoundException());
+    }
+    
+    /**
+     * Cambia el estado de un tipo de producto (activado/desactivado).
+     *
+     * @param id el ID del tipo de producto cuyo estado se va a cambiar.
+     * @throws ProductTypeNotFoundException si el tipo de producto no se encuentra.
+     */
+    @Override
+    public void changeState(Long id) {
+        ProductType productType = productTypeOutputPort.findById(id)
+                .orElseThrow(() -> new ProductTypeNotFoundException());
+        productType.setState(!productType.isState());
+        productTypeOutputPort.save(productType);
+    }
+    
+    @Override
+    public List<ProductType> getProductTypesByEnterpriseIdAndState(String enterpriseId, boolean state) {
+        return productTypeOutputPort.findByEnterpriseIdAndState(enterpriseId, state);
     }
 }

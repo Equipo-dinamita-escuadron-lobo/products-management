@@ -26,6 +26,7 @@ public class ProductTypeMapperImpl implements IProductTypeRestMapper {
         productType.setName(request.getName());
         productType.setDescription(request.getDescription());
         productType.setEnterpriseId(request.getEnterpriseId());
+        productType.setState(request.isState());
 
         return productType;
     }
@@ -60,6 +61,7 @@ public class ProductTypeMapperImpl implements IProductTypeRestMapper {
         response.setName(productType.getName());
         response.setDescription(productType.getDescription());
         response.setEnterpriseId(productType.getEnterpriseId());
+        response.setState(productType.isState());
     
         return response;
     }

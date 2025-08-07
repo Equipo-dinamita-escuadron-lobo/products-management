@@ -17,4 +17,13 @@ public interface  IProductTypePersistencePort {
     ProductType update(Long id, ProductType productType);
     
     void delete(Long id);
+    
+    /**
+     * Busca tipos de producto activos por ID de empresa.
+     *
+     * @param enterpriseId el ID de la empresa.
+     * @param state el estado del tipo de producto.
+     * @return una lista de tipos de producto activos de la empresa.
+     */
+    List<ProductType> findByEnterpriseIdAndState(String enterpriseId, boolean state);
 }

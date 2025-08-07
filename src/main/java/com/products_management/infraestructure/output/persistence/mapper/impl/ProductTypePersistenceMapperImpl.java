@@ -25,6 +25,7 @@ public class ProductTypePersistenceMapperImpl implements IProductTypePersistence
         productTypeEntity.setName(productType.getName());
         productTypeEntity.setDescription(productType.getDescription());
         productTypeEntity.setEnterpriseId(productType.getEnterpriseId());
+        productTypeEntity.setState(productType.isState());
 
         return productTypeEntity;
     }
@@ -40,6 +41,7 @@ public class ProductTypePersistenceMapperImpl implements IProductTypePersistence
                 .name(productTypeEntity.getName())
                 .description(productTypeEntity.getDescription())
                 .enterpriseId(productTypeEntity.getEnterpriseId())
+                .state(productTypeEntity.isState())
                 .build();
     }
 

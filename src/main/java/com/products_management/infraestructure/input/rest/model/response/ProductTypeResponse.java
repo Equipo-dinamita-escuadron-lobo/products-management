@@ -13,4 +13,5 @@ public class ProductTypeResponse {
     private String name;
     private String description;
     private String enterpriseId;
+    private boolean state;
 }

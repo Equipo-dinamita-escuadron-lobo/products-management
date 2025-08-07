@@ -15,4 +15,14 @@ public interface IProductTypeRepository extends JpaRepository<ProductTypeEntity,
      * Busca tipos de producto activos por ID de empresa.
      */
     List<ProductTypeEntity> findByEnterpriseIdAndState(String enterpriseId, boolean state);
+    
+    /**
+     * Verifica si existe un tipo de producto con el nombre especificado para una empresa.
+     */
+    boolean existsByNameAndEnterpriseId(String name, String enterpriseId);
+    
+    /**
+     * Verifica si existe un tipo de producto con el nombre especificado para una empresa, excluyendo un ID específico.
+     */
+    boolean existsByNameAndEnterpriseIdAndIdNot(String name, String enterpriseId, Long id);
 }

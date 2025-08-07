@@ -55,4 +55,14 @@ public class ProductTypePersistenceAdapter implements IProductTypePersistencePor
     public List<ProductType> findByEnterpriseIdAndState(String enterpriseId, boolean state) {
         return productTypePersistenceMapper.toProductTypeList(productTypeRepository.findByEnterpriseIdAndState(enterpriseId, state));
     }
+
+    @Override
+    public boolean existsByNameAndEnterpriseId(String name, String enterpriseId) {
+        return productTypeRepository.existsByNameAndEnterpriseId(name, enterpriseId);
+    }
+
+    @Override
+    public boolean existsByNameAndEnterpriseIdAndIdNot(String name, String enterpriseId, Long id) {
+        return productTypeRepository.existsByNameAndEnterpriseIdAndIdNot(name, enterpriseId, id);
+    }
 }

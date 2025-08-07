@@ -25,6 +25,7 @@ public enum ErrorCode {
     CATEGORY_NOT_FOUND("CATEGORY_NOT_FOUND", "Categoría no encontrada"),
     INVALID_CATEGORY("INVALID_CATEGORY", "Categoría inválida"),
     CATEGORY_ASSOCIATED("CATEGORY_ASSOCIATED_WITH_PRODUCT", "La categoría está asociada con un producto"),
+    CATEGORY_NAME_ALREADY_EXISTS("CATEGORY_NAME_ALREADY_EXISTS", "Ya existe una categoría con este nombre"),
 
     //Codigos de tipo de producto
     PRODUCT_TYPE_NOT_FOUND("PRODUCT_TYPE_NOT_FOUND", "Tipo de producto no encontrado"),

@@ -2,6 +2,7 @@ package com.products_management.infraestructure.input.rest.advice;
 
 import com.products_management.domain.exception.*;
 import com.products_management.domain.exception.category.CategoryAssociatedException;
+import com.products_management.domain.exception.category.CategoryNameAlreadyExistsException;
 import com.products_management.domain.exception.category.CategoryNotFoundException;
 import com.products_management.domain.exception.product.ProductNotFoundException;
 import com.products_management.domain.exception.productType.ProductTypeAssociatedException;
@@ -78,7 +79,8 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler({
         UnitOfMeasureNameAlreadyExistsException.class,
-        UnitOfMeasureAbbreviationAlreadyExistsException.class
+        UnitOfMeasureAbbreviationAlreadyExistsException.class,
+        CategoryNameAlreadyExistsException.class
     })
     public ResponseEntity<ErrorResponse> handleDuplicateExceptions(
             BaseBusinessException ex, WebRequest request) {

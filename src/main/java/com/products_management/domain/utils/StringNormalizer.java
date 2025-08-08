@@ -30,6 +30,22 @@ public final class StringNormalizer {
     }
 
     /**
+     * Normaliza un código/referencia manteniendo el formato en mayúsculas.
+     * Elimina tildes/acentos y espacios extra, pero convierte todo a mayúsculas.
+     * Ideal para códigos SKU, referencias, códigos de producto, etc.
+     *
+     * @param input el código/referencia a normalizar
+     * @return el código normalizado en mayúsculas, o null si el input es null
+     */
+    public static String normalizeCode(String input) {
+        if (input == null || input.trim().isEmpty()) {
+            return input;
+        }
+        
+        return removeAccents(input.trim().toUpperCase());
+    }
+
+    /**
      * Elimina tildes y acentos de una cadena de texto.
      *
      * @param input el texto del cual eliminar acentos

@@ -87,4 +87,42 @@ public interface IProductPersistencePort {
      * @return una lista de productos de ese tipo de producto.
      */
     List<Product> findByProductTypeId(Long productTypeId);
+    
+    /**
+     * Verifica si existe un producto con el nombre especificado para una empresa.
+     *
+     * @param name el nombre del producto.
+     * @param enterpriseId el ID de la empresa.
+     * @return true si existe, false en caso contrario.
+     */
+    boolean existsByNameAndEnterpriseId(String name, String enterpriseId);
+    
+    /**
+     * Verifica si existe un producto con la referencia especificada para una empresa.
+     *
+     * @param reference la referencia del producto.
+     * @param enterpriseId el ID de la empresa.
+     * @return true si existe, false en caso contrario.
+     */
+    boolean existsByReferenceAndEnterpriseId(String reference, String enterpriseId);
+    
+    /**
+     * Verifica si existe un producto con el nombre especificado para una empresa, excluyendo un ID específico.
+     *
+     * @param name el nombre del producto.
+     * @param enterpriseId el ID de la empresa.
+     * @param id el ID a excluir de la búsqueda.
+     * @return true si existe, false en caso contrario.
+     */
+    boolean existsByNameAndEnterpriseIdAndIdNot(String name, String enterpriseId, Long id);
+    
+    /**
+     * Verifica si existe un producto con la referencia especificada para una empresa, excluyendo un ID específico.
+     *
+     * @param reference la referencia del producto.
+     * @param enterpriseId el ID de la empresa.
+     * @param id el ID a excluir de la búsqueda.
+     * @return true si existe, false en caso contrario.
+     */
+    boolean existsByReferenceAndEnterpriseIdAndIdNot(String reference, String enterpriseId, Long id);
 }

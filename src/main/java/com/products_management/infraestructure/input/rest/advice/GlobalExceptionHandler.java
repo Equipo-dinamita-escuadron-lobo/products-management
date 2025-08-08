@@ -4,7 +4,9 @@ import com.products_management.domain.exception.*;
 import com.products_management.domain.exception.category.CategoryAssociatedException;
 import com.products_management.domain.exception.category.CategoryNameAlreadyExistsException;
 import com.products_management.domain.exception.category.CategoryNotFoundException;
+import com.products_management.domain.exception.product.ProductNameAlreadyExistsException;
 import com.products_management.domain.exception.product.ProductNotFoundException;
+import com.products_management.domain.exception.product.ProductReferenceAlreadyExistsException;
 import com.products_management.domain.exception.productType.ProductTypeAssociatedException;
 import com.products_management.domain.exception.productType.ProductTypeNameAlreadyExistsException;
 import com.products_management.domain.exception.productType.ProductTypeNotFoundException;
@@ -82,7 +84,9 @@ public class GlobalExceptionHandler {
         UnitOfMeasureNameAlreadyExistsException.class,
         UnitOfMeasureAbbreviationAlreadyExistsException.class,
         CategoryNameAlreadyExistsException.class,
-        ProductTypeNameAlreadyExistsException.class
+        ProductTypeNameAlreadyExistsException.class,
+        ProductNameAlreadyExistsException.class,
+        ProductReferenceAlreadyExistsException.class
     })
     public ResponseEntity<ErrorResponse> handleDuplicateExceptions(
             BaseBusinessException ex, WebRequest request) {

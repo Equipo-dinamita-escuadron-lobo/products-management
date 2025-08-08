@@ -41,4 +41,24 @@ public interface IProductRepository extends JpaRepository<ProductEntity, Long> {
      */
     List<ProductEntity> findByProductTypeId(Long productTypeId);
     
+    /**
+     * Verifica si existe un producto con el nombre especificado para una empresa.
+     */
+    boolean existsByNameAndEnterpriseId(String name, String enterpriseId);
+    
+    /**
+     * Verifica si existe un producto con la referencia especificada para una empresa.
+     */
+    boolean existsByReferenceAndEnterpriseId(String reference, String enterpriseId);
+    
+    /**
+     * Verifica si existe un producto con el nombre especificado para una empresa, excluyendo un ID específico.
+     */
+    boolean existsByNameAndEnterpriseIdAndIdNot(String name, String enterpriseId, Long id);
+    
+    /**
+     * Verifica si existe un producto con la referencia especificada para una empresa, excluyendo un ID específico.
+     */
+    boolean existsByReferenceAndEnterpriseIdAndIdNot(String reference, String enterpriseId, Long id);
+    
 }

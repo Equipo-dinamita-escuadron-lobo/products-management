@@ -9,7 +9,10 @@ import com.products_management.application.ports.input.IProductEventPort;
 import com.products_management.application.ports.input.IProductServicePort;
 import com.products_management.application.ports.output.IProductPersistencePort;
 import com.products_management.domain.exception.product.ProductNotFoundException;
+import com.products_management.domain.exception.product.ProductNameAlreadyExistsException;
+import com.products_management.domain.exception.product.ProductReferenceAlreadyExistsException;
 import com.products_management.domain.model.Product;
+import com.products_management.domain.utils.StringNormalizer;
 
 import lombok.RequiredArgsConstructor;
 
@@ -72,6 +75,15 @@ public class ProductService implements IProductServicePort {
 
     @Override
     public Product create(Product product) {
+        // Normalizar nombre y referencia de productos en mayúsculas (formato estándar para productos)
+        product.setName(StringNormalizer.normalizeCode(product.getName()));
+        if (product.getReference() != null && !product.getReference().trim().isEmpty()) {
+            product.setReference(StringNormalizer.normalizeCode(product.getReference()));
+        }
+        
+        // Validar unicidad antes de crear
+        validateProductUniqueness(product);
+        
         // Primero guardar para obtener el ID
         Product createdProduct = productPersistencePort.create(product);
 
@@ -107,6 +119,15 @@ public class ProductService implements IProductServicePort {
     public Product update(Long id, Product product) {
         return productPersistencePort.findById(id)
                 .map(existingProduct -> {
+                    // Normalizar nombre y referencia de productos en mayúsculas (formato estándar para productos)
+                    product.setName(StringNormalizer.normalizeCode(product.getName()));
+                    if (product.getReference() != null && !product.getReference().trim().isEmpty()) {
+                        product.setReference(StringNormalizer.normalizeCode(product.getReference()));
+                    }
+                    
+                    // Validar unicidad antes de actualizar
+                    validateProductUniquenessForUpdate(id, product);
+                    
                     boolean shouldRegenerateCode = !existingProduct.getName().equals(product.getName()) ||
                             !existingProduct.getCategoryId().equals(product.getCategoryId()) ||
                             !existingProduct.getId().equals(product.getId());
@@ -203,5 +224,53 @@ public class ProductService implements IProductServicePort {
     @Override
     public List<Product> findAllByProductType(Long productTypeId) {
         return productPersistencePort.findByProductTypeId(productTypeId);
+    }
+    
+    /**
+     * Valida que el nombre y la referencia de un producto sean únicos dentro de la empresa.
+     *
+     * @param product el producto a validar.
+     * @throws ProductNameAlreadyExistsException si ya existe un producto con el mismo nombre.
+     * @throws ProductReferenceAlreadyExistsException si ya existe un producto con la misma referencia.
+     */
+    private void validateProductUniqueness(Product product) {
+        // El nombre ya está normalizado, se usa directamente para validación
+        if (productPersistencePort.existsByNameAndEnterpriseId(
+                product.getName(), product.getEnterpriseId())) {
+            throw new ProductNameAlreadyExistsException();
+        }
+        
+        // Validar referencia solo si no es null o vacía
+        if (product.getReference() != null && !product.getReference().trim().isEmpty()) {
+            if (productPersistencePort.existsByReferenceAndEnterpriseId(
+                    product.getReference(), product.getEnterpriseId())) {
+                throw new ProductReferenceAlreadyExistsException();
+            }
+        }
+    }
+    
+    /**
+     * Valida que el nombre y la referencia de un producto sean únicos dentro de la empresa
+     * durante una actualización, excluyendo el producto que se está actualizando.
+     *
+     * @param id el ID del producto que se está actualizando.
+     * @param product el producto a validar.
+     * @throws ProductNameAlreadyExistsException si ya existe otro producto con el mismo nombre.
+     * @throws ProductReferenceAlreadyExistsException si ya existe otro producto con la misma referencia.
+     */
+    private void validateProductUniquenessForUpdate(Long id, Product product) {
+        // El nombre ya está normalizado, se usa directamente para validación
+        if (productPersistencePort.existsByNameAndEnterpriseIdAndIdNot(
+                product.getName(), product.getEnterpriseId(), id)) {
+            throw new ProductNameAlreadyExistsException();
+        }
+        
+        // Validar referencia solo si no es null o vacía
+        if (product.getReference() != null && !product.getReference().trim().isEmpty()) {
+            if (productPersistencePort.existsByReferenceAndEnterpriseIdAndIdNot(
+                    product.getReference(), product.getEnterpriseId(), id)) {
+                throw new ProductReferenceAlreadyExistsException();
+            }
+        }
     }
 }

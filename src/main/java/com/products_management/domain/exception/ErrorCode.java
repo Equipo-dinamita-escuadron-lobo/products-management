@@ -13,6 +13,8 @@ public enum ErrorCode {
     //Codigos de producto
     PRODUCT_NOT_FOUND("PRODUCT_NOT_FOUND", "Producto no encontrado"),
     INVALID_PRODUCT("INVALID_PRODUCT", "Producto inválido"),
+    PRODUCT_NAME_ALREADY_EXISTS("PRODUCT_NAME_ALREADY_EXISTS", "Ya existe un producto con este nombre"),
+    PRODUCT_REFERENCE_ALREADY_EXISTS("PRODUCT_REFERENCE_ALREADY_EXISTS", "Ya existe un producto con esta referencia"),
 
     //Codigos de unidad de medida
     UNITOFMEASURE_NOT_FOUND("UNITOFMEASURE_NOT_FOUND", "Unidad de medida no encontrada"),

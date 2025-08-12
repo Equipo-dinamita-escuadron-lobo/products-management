@@ -33,4 +33,10 @@ public class ProductType {
      */
     private String enterpriseId;
 
+    /**
+     * Estado del tipo de producto (true si está activo, false si está inactivo).
+     */
+    @Builder.Default
+    private boolean state = true;
+
 }

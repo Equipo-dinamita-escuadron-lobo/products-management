@@ -1,6 +1,20 @@
 package com.products_management.infraestructure.input.rest.advice;
 
 import com.products_management.domain.exception.*;
+import com.products_management.domain.exception.category.CategoryAssociatedException;
+import com.products_management.domain.exception.category.CategoryNameAlreadyExistsException;
+import com.products_management.domain.exception.category.CategoryNotFoundException;
+import com.products_management.domain.exception.product.ProductNameAlreadyExistsException;
+import com.products_management.domain.exception.product.ProductNotFoundException;
+import com.products_management.domain.exception.product.ProductReferenceAlreadyExistsException;
+import com.products_management.domain.exception.productType.ProductTypeAssociatedException;
+import com.products_management.domain.exception.productType.ProductTypeNameAlreadyExistsException;
+import com.products_management.domain.exception.productType.ProductTypeNotFoundException;
+import com.products_management.domain.exception.unitOfMeasure.UnitOfMeasureAbbreviationAlreadyExistsException;
+import com.products_management.domain.exception.unitOfMeasure.UnitOfMeasureAssociatedException;
+import com.products_management.domain.exception.unitOfMeasure.UnitOfMeasureNameAlreadyExistsException;
+import com.products_management.domain.exception.unitOfMeasure.UnitOfMeasureNotFoundException;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -55,6 +69,32 @@ public class GlobalExceptionHandler {
                 .timestamp(LocalDateTime.now())
                 .status(HttpStatus.CONFLICT.value())
                 .error("Conflict")
+                .message(ex.getMessage())
+                .code(ex.getErrorCode().getCode())
+                .path(request.getDescription(false).replace("uri=", ""))
+                .build();
+        
+        return new ResponseEntity<>(errorResponse, HttpStatus.CONFLICT);
+    }
+
+    /**
+     * Maneja todas las excepciones de duplicados (conflictos de unicidad).
+     */
+    @ExceptionHandler({
+        UnitOfMeasureNameAlreadyExistsException.class,
+        UnitOfMeasureAbbreviationAlreadyExistsException.class,
+        CategoryNameAlreadyExistsException.class,
+        ProductTypeNameAlreadyExistsException.class,
+        ProductNameAlreadyExistsException.class,
+        ProductReferenceAlreadyExistsException.class
+    })
+    public ResponseEntity<ErrorResponse> handleDuplicateExceptions(
+            BaseBusinessException ex, WebRequest request) {
+        
+        ErrorResponse errorResponse = ErrorResponse.builder()
+                .timestamp(LocalDateTime.now())
+                .status(HttpStatus.CONFLICT.value())
+                .error("Duplicate Entry")
                 .message(ex.getMessage())
                 .code(ex.getErrorCode().getCode())
                 .path(request.getDescription(false).replace("uri=", ""))

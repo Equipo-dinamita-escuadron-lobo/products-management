@@ -1,7 +1,7 @@
 package com.products_management.infraestructure.input.rest;
 
 import com.products_management.application.ports.input.ICategoryServicePort;
-import com.products_management.infraestructure.input.rest.mapper.impl.CategoryRestMapperImpl;
+import com.products_management.infraestructure.input.rest.mapper.interfaces.ICategoryRestMapper;
 import com.products_management.infraestructure.input.rest.model.request.CategoryCreateRequest;
 import com.products_management.infraestructure.input.rest.model.response.CategoryResponse;
 
@@ -22,7 +22,7 @@ import java.util.List;
 public class CategoryRestController {
 
         private final ICategoryServicePort categoryServicePort;
-        private final CategoryRestMapperImpl categoryRestMapper;
+        private final ICategoryRestMapper categoryRestMapper;
 
         @GetMapping("/findAll/{enterpriseId}")
         public List<CategoryResponse> findAll(@PathVariable String enterpriseId) {

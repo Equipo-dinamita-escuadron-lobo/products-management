@@ -58,6 +58,16 @@ public class ProductTypeRestController {
         return ResponseEntity.ok(responses);
     }
 
+    @GetMapping("/findActivate/{enterpriseId}")
+    public List<ProductTypeResponse> findActivate(@PathVariable String enterpriseId) {
+        List<ProductType> productTypes = productTypeService.findActivated(enterpriseId);
+        return productTypes.stream()
+                .map(productTypeMapper::toProductTypeResponse)
+                .collect(Collectors.toList());
+    }
+
+
+
     @GetMapping("/{id}")
     public ResponseEntity<ProductTypeResponse> getProductTypeById(@PathVariable Long id) {
         ProductType productType = productTypeService.getProductTypeById(id);
@@ -73,6 +83,11 @@ public class ProductTypeRestController {
         ProductType updatedProductType = productTypeService.updateProductType(id, productType);
         ProductTypeResponse response = productTypeMapper.toProductTypeResponse(updatedProductType);
         return ResponseEntity.ok(response);
+    }
+
+    @PutMapping("/changeState/{id}")
+    public void changeState(@PathVariable Long id) {
+        productTypeService.changeState(id);
     }
 
     @DeleteMapping("/{id}")

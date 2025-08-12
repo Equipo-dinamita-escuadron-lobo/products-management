@@ -62,4 +62,42 @@ public interface IUnitOfMeasurePersistencePort {
      * Elimina todas las unidades de medida.
      */
     void deleteAll();
+    
+    /**
+     * Verifica si existe una unidad de medida con el nombre especificado para una empresa.
+     *
+     * @param name el nombre de la unidad de medida.
+     * @param enterpriseId el ID de la empresa.
+     * @return true si existe, false en caso contrario.
+     */
+    boolean existsByNameAndEnterpriseId(String name, String enterpriseId);
+    
+    /**
+     * Verifica si existe una unidad de medida con la abreviación especificada para una empresa.
+     *
+     * @param abbreviation la abreviación de la unidad de medida.
+     * @param enterpriseId el ID de la empresa.
+     * @return true si existe, false en caso contrario.
+     */
+    boolean existsByAbbreviationAndEnterpriseId(String abbreviation, String enterpriseId);
+    
+    /**
+     * Verifica si existe una unidad de medida con el nombre especificado para una empresa, excluyendo un ID específico.
+     *
+     * @param name el nombre de la unidad de medida.
+     * @param enterpriseId el ID de la empresa.
+     * @param id el ID a excluir de la búsqueda.
+     * @return true si existe, false en caso contrario.
+     */
+    boolean existsByNameAndEnterpriseIdAndIdNot(String name, String enterpriseId, Long id);
+    
+    /**
+     * Verifica si existe una unidad de medida con la abreviación especificada para una empresa, excluyendo un ID específico.
+     *
+     * @param abbreviation la abreviación de la unidad de medida.
+     * @param enterpriseId el ID de la empresa.
+     * @param id el ID a excluir de la búsqueda.
+     * @return true si existe, false en caso contrario.
+     */
+    boolean existsByAbbreviationAndEnterpriseIdAndIdNot(String abbreviation, String enterpriseId, Long id);
 }

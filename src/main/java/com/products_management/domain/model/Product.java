@@ -1,6 +1,7 @@
 package com.products_management.domain.model;
 
 import java.util.Date;
+import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -44,9 +45,9 @@ public class Product {
     private Integer quantity;
 
     /**
-     * @brief Porcentaje de impuestos aplicable al producto.
+     * @brief Lista de impuestos aplicables al producto.
      */
-    private Integer taxPercentage;
+    private List<String> taxPercentage;
 
     /**
      * @brief Fecha de creación del producto.
@@ -76,7 +77,8 @@ public class Product {
     /**
      * @brief Estado del producto ("true" si está activo, "false" si está inactivo).
      */
-    private boolean state;
+    @Builder.Default
+    private boolean state = true;
     /**
 
      * Campo de referencia opcional

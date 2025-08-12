@@ -55,7 +55,8 @@ public class Category {
     /**
      * Estado de la categoría (true si está activa, false si está inactiva).
      */
-    private boolean state;
+    @Builder.Default
+    private boolean state = true;
 
      /**
      * ID de impuesto a la categoria

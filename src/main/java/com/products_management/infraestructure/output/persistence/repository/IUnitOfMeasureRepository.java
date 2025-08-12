@@ -21,4 +21,24 @@ public interface IUnitOfMeasureRepository extends JpaRepository<UnitOfMeasureEnt
      */
     List<UnitOfMeasureEntity> findByEnterpriseIdAndState(String enterpriseId, boolean state);
     
+    /**
+     * Verifica si existe una unidad de medida con el nombre especificado para una empresa.
+     */
+    boolean existsByNameAndEnterpriseId(String name, String enterpriseId);
+    
+    /**
+     * Verifica si existe una unidad de medida con la abreviación especificada para una empresa.
+     */
+    boolean existsByAbbreviationAndEnterpriseId(String abbreviation, String enterpriseId);
+    
+    /**
+     * Verifica si existe una unidad de medida con el nombre especificado para una empresa, excluyendo un ID específico.
+     */
+    boolean existsByNameAndEnterpriseIdAndIdNot(String name, String enterpriseId, Long id);
+    
+    /**
+     * Verifica si existe una unidad de medida con la abreviación especificada para una empresa, excluyendo un ID específico.
+     */
+    boolean existsByAbbreviationAndEnterpriseIdAndIdNot(String abbreviation, String enterpriseId, Long id);
+    
 }

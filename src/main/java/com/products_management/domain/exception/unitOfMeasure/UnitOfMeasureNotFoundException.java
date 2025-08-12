@@ -1,4 +1,7 @@
-package com.products_management.domain.exception;
+package com.products_management.domain.exception.unitOfMeasure;
+
+import com.products_management.domain.exception.BaseBusinessException;
+import com.products_management.domain.exception.ErrorCode;
 
 /**
  * Excepción lanzada cuando no se encuentra una unidad de medida.

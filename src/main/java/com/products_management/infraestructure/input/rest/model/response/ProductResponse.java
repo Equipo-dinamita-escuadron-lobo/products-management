@@ -1,6 +1,7 @@
 package com.products_management.infraestructure.input.rest.model.response;
 
 import java.util.Date;
+import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -44,9 +45,9 @@ public class ProductResponse {
     private Integer quantity;
 
     /**
-     * Porcentaje de impuesto aplicado al producto.
+     * Lista de impuestos aplicados al producto.
      */
-    private Integer taxPercentage;
+    private List<String> taxPercentage;
 
     /**
      * Fecha de creación del producto.

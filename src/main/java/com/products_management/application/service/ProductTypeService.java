@@ -3,10 +3,12 @@ package com.products_management.application.service;
 import com.products_management.application.ports.input.IProductServicePort;
 import com.products_management.application.ports.input.IProductTypeServicePort;
 import com.products_management.application.ports.output.IProductTypePersistencePort;
-import com.products_management.domain.exception.ProductTypeAssociatedException;
-import com.products_management.domain.exception.ProductTypeNotFoundException;
+import com.products_management.domain.exception.productType.ProductTypeAssociatedException;
+import com.products_management.domain.exception.productType.ProductTypeNotFoundException;
+import com.products_management.domain.exception.productType.ProductTypeNameAlreadyExistsException;
 import com.products_management.domain.model.Product;
 import com.products_management.domain.model.ProductType;
+import com.products_management.domain.utils.StringNormalizer;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -25,16 +27,27 @@ public class ProductTypeService implements IProductTypeServicePort {
 
     @Override
     public ProductType createProductType(ProductType productType) {
+        // Normalizar el nombre de manera consistente (para validación y almacenamiento)
+        productType.setName(StringNormalizer.normalize(productType.getName()));
+        validateProductTypeUniqueness(productType);
         return productTypeOutputPort.save(productType);
     }
 
     @Override
     public List<ProductType> getProductTypesByEnterpriseId(String enterpriseId) {
         List<ProductType> productTypes = productTypeOutputPort.findByEnterpriseId(enterpriseId);
-        if (productTypes.isEmpty()) {
-            throw new ProductTypeNotFoundException(enterpriseId);
-        }
         return productTypes;
+    }
+
+    /**
+     * Obtiene una lista de todos los tipos de producto activados asociados a una empresa.
+     *
+     * @param enterpriseId el ID de la empresa.
+     * @return una lista de todos los tipos de producto activados de la empresa.
+     */
+    @Override
+    public List<ProductType> findActivated(String enterpriseId) {
+        return productTypeOutputPort.findByEnterpriseIdAndState(enterpriseId, true);
     }
 
     @Override
@@ -49,6 +62,11 @@ public class ProductTypeService implements IProductTypeServicePort {
         if (existingProductType.isEmpty()) {
             throw new ProductTypeNotFoundException();
         }
+        
+        // Normalizar el nombre de manera consistente (para validación y almacenamiento)
+        productType.setName(StringNormalizer.normalize(productType.getName()));
+        validateProductTypeUniquenessForUpdate(id, productType);
+        
         return productTypeOutputPort.update(id, productType);
     }
 
@@ -82,5 +100,54 @@ public class ProductTypeService implements IProductTypeServicePort {
     public ProductType getProductTypeById(Long id) {
         return productTypeOutputPort.findById(id)
                 .orElseThrow(() -> new ProductTypeNotFoundException());
+    }
+    
+    /**
+     * Cambia el estado de un tipo de producto (activado/desactivado).
+     *
+     * @param id el ID del tipo de producto cuyo estado se va a cambiar.
+     * @throws ProductTypeNotFoundException si el tipo de producto no se encuentra.
+     */
+    @Override
+    public void changeState(Long id) {
+        ProductType productType = productTypeOutputPort.findById(id)
+                .orElseThrow(() -> new ProductTypeNotFoundException());
+        productType.setState(!productType.isState());
+        productTypeOutputPort.save(productType);
+    }
+    
+    @Override
+    public List<ProductType> getProductTypesByEnterpriseIdAndState(String enterpriseId, boolean state) {
+        return productTypeOutputPort.findByEnterpriseIdAndState(enterpriseId, state);
+    }
+    
+    /**
+     * Valida que el nombre de un tipo de producto sea único dentro de la empresa.
+     *
+     * @param productType el tipo de producto a validar.
+     * @throws ProductTypeNameAlreadyExistsException si ya existe un tipo de producto con el mismo nombre.
+     */
+    private void validateProductTypeUniqueness(ProductType productType) {
+        // El nombre ya está normalizado, se usa directamente para validación
+        if (productTypeOutputPort.existsByNameAndEnterpriseId(
+                productType.getName(), productType.getEnterpriseId())) {
+            throw new ProductTypeNameAlreadyExistsException();
+        }
+    }
+    
+    /**
+     * Valida que el nombre de un tipo de producto sea único dentro de la empresa
+     * durante una actualización, excluyendo el tipo de producto que se está actualizando.
+     *
+     * @param id el ID del tipo de producto que se está actualizando.
+     * @param productType el tipo de producto a validar.
+     * @throws ProductTypeNameAlreadyExistsException si ya existe otro tipo de producto con el mismo nombre.
+     */
+    private void validateProductTypeUniquenessForUpdate(Long id, ProductType productType) {
+        // El nombre ya está normalizado, se usa directamente para validación
+        if (productTypeOutputPort.existsByNameAndEnterpriseIdAndIdNot(
+                productType.getName(), productType.getEnterpriseId(), id)) {
+            throw new ProductTypeNameAlreadyExistsException();
+        }
     }
 }

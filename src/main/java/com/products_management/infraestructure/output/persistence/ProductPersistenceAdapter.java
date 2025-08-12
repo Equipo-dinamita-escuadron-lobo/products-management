@@ -131,4 +131,24 @@ public class ProductPersistenceAdapter implements IProductPersistencePort {
         return productPersistenceMapper.toProductList(
                 productRepository.findByProductTypeId(productTypeId));
     }
+
+    @Override
+    public boolean existsByNameAndEnterpriseId(String name, String enterpriseId) {
+        return productRepository.existsByNameAndEnterpriseId(name, enterpriseId);
+    }
+
+    @Override
+    public boolean existsByReferenceAndEnterpriseId(String reference, String enterpriseId) {
+        return productRepository.existsByReferenceAndEnterpriseId(reference, enterpriseId);
+    }
+
+    @Override
+    public boolean existsByNameAndEnterpriseIdAndIdNot(String name, String enterpriseId, Long id) {
+        return productRepository.existsByNameAndEnterpriseIdAndIdNot(name, enterpriseId, id);
+    }
+
+    @Override
+    public boolean existsByReferenceAndEnterpriseIdAndIdNot(String reference, String enterpriseId, Long id) {
+        return productRepository.existsByReferenceAndEnterpriseIdAndIdNot(reference, enterpriseId, id);
+    }
 }

@@ -6,9 +6,13 @@ import com.products_management.infraestructure.input.rest.model.response.Product
 
 import java.util.List;
 
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+
 /**
  * Interfaz para mapear entre modelos de entrada (ProductTypeRequest) y objetos del dominio (ProductType).
  */
+@Mapper(componentModel = "spring")
 public interface IProductTypeRestMapper {
 
     /**
@@ -16,6 +20,7 @@ public interface IProductTypeRestMapper {
      * @param productTypeRequest Objeto de solicitud.
      * @return ProductType correspondiente.
      */
+    @Mapping(target = "id", ignore = true)
     ProductType toProductType(ProductTypeRequest productTypeRequest);
 
     /**

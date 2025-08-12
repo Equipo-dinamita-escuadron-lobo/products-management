@@ -2,10 +2,12 @@ package com.products_management.application.service;
 
 import com.products_management.application.ports.input.ICategoryServicePort;
 import com.products_management.application.ports.output.ICategoryPersistencePort;
-import com.products_management.domain.exception.CategoryAssociatedException;
-import com.products_management.domain.exception.CategoryNotFoundException;
+import com.products_management.domain.exception.category.CategoryAssociatedException;
+import com.products_management.domain.exception.category.CategoryNotFoundException;
+import com.products_management.domain.exception.category.CategoryNameAlreadyExistsException;
 import com.products_management.domain.model.Category;
 import com.products_management.domain.model.Product;
+import com.products_management.domain.utils.StringNormalizer;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -67,10 +69,14 @@ public class CategoryService implements ICategoryServicePort {
      *
      * @param category la categoría a crear.
      * @return la categoría creada.
+     * @throws CategoryNameAlreadyExistsException si ya existe una categoría con el mismo nombre.
      */
 
     @Override
     public Category create(Category category) {
+        // Normalizar el nombre de manera consistente (para validación y almacenamiento)
+        category.setName(StringNormalizer.normalize(category.getName()));
+        validateCategoryUniqueness(category);
         return categoryPersistencePort.create(category);
     }
 
@@ -81,12 +87,16 @@ public class CategoryService implements ICategoryServicePort {
      * @param category los datos de la categoría actualizada.
      * @return la categoría actualizada.
      * @throws CategoryNotFoundException si la categoría no se encuentra.
+     * @throws CategoryNameAlreadyExistsException si ya existe una categoría con el mismo nombre.
      */
 
     @Override
     public Category update(Long id, Category category) {
         return categoryPersistencePort.findById(id)
                 .map(existingCategory -> {
+                    // Normalizar el nombre de manera consistente (para validación y almacenamiento)
+                    category.setName(StringNormalizer.normalize(category.getName()));
+                    validateCategoryUniquenessForUpdate(id, category);
                     existingCategory.setName(category.getName());
                     existingCategory.setDescription(category.getDescription());
                     existingCategory.setEnterpriseId(category.getEnterpriseId());
@@ -142,5 +152,35 @@ public class CategoryService implements ICategoryServicePort {
     @Override
     public void deleteAll() {
         categoryPersistencePort.deleteAll();
+    }
+
+    /**
+     * Valida que el nombre de una categoría sea único dentro de la empresa.
+     *
+     * @param category la categoría a validar.
+     * @throws CategoryNameAlreadyExistsException si ya existe una categoría con el mismo nombre.
+     */
+    private void validateCategoryUniqueness(Category category) {
+        // El nombre ya está normalizado, se usa directamente para validación
+        if (categoryPersistencePort.existsByNameAndEnterpriseId(
+                category.getName(), category.getEnterpriseId())) {
+            throw new CategoryNameAlreadyExistsException();
+        }
+    }
+
+    /**
+     * Valida que el nombre de una categoría sea único dentro de la empresa
+     * durante una actualización, excluyendo la categoría que se está actualizando.
+     *
+     * @param id el ID de la categoría que se está actualizando.
+     * @param category la categoría a validar.
+     * @throws CategoryNameAlreadyExistsException si ya existe otra categoría con el mismo nombre.
+     */
+    private void validateCategoryUniquenessForUpdate(Long id, Category category) {
+        // El nombre ya está normalizado, se usa directamente para validación
+        if (categoryPersistencePort.existsByNameAndEnterpriseIdAndIdNot(
+                category.getName(), category.getEnterpriseId(), id)) {
+            throw new CategoryNameAlreadyExistsException();
+        }
     }
 }

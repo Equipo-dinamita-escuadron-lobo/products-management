@@ -5,9 +5,12 @@ import com.products_management.infraestructure.output.persistence.entity.Product
 
 import java.util.List;
 
+import org.mapstruct.Mapper;
+
 /**
  * Interfaz para mapear entre entidades de persistencia (ProductTypeEntity) y objetos del dominio (ProductType).
  */
+@Mapper(componentModel = "spring")
 public interface IProductTypePersistenceMapper {
 
     /**

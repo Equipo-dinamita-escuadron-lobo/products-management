@@ -2,7 +2,7 @@ package com.products_management.infraestructure.output.persistence;
 
 import com.products_management.application.ports.output.ICategoryPersistencePort;
 import com.products_management.domain.model.Category;
-import com.products_management.infraestructure.output.persistence.mapper.impl.CategoryPersistenceMapperImpl;
+import com.products_management.infraestructure.output.persistence.mapper.interfaces.ICategoryPersistenceMapper;
 import com.products_management.infraestructure.output.persistence.repository.ICategoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -19,7 +19,7 @@ import java.util.Optional;
 public class CategoryPersistenceAdapter implements ICategoryPersistencePort {
 
     private final ICategoryRepository categoryRepository;
-    private final CategoryPersistenceMapperImpl categoryPersistenceMapper;
+    private final ICategoryPersistenceMapper categoryPersistenceMapper;
 
     /**
      * Busca una categoría por su ID.
@@ -95,5 +95,30 @@ public class CategoryPersistenceAdapter implements ICategoryPersistencePort {
     public List<Category> findByEnterpriseIdAndState(String enterpriseId, boolean state) {
         return categoryPersistenceMapper.toCategoryList(
                 categoryRepository.findByEnterpriseIdAndState(enterpriseId, state));
+    }
+
+    /**
+     * Verifica si existe una categoría con el nombre especificado para una empresa.
+     *
+     * @param name el nombre de la categoría
+     * @param enterpriseId el ID de la empresa
+     * @return true si existe, false en caso contrario
+     */
+    @Override
+    public boolean existsByNameAndEnterpriseId(String name, String enterpriseId) {
+        return categoryRepository.existsByNameAndEnterpriseId(name, enterpriseId);
+    }
+
+    /**
+     * Verifica si existe una categoría con el nombre especificado para una empresa, excluyendo un ID específico.
+     *
+     * @param name el nombre de la categoría
+     * @param enterpriseId el ID de la empresa
+     * @param id el ID a excluir de la búsqueda
+     * @return true si existe, false en caso contrario
+     */
+    @Override
+    public boolean existsByNameAndEnterpriseIdAndIdNot(String name, String enterpriseId, Long id) {
+        return categoryRepository.existsByNameAndEnterpriseIdAndIdNot(name, enterpriseId, id);
     }
 }

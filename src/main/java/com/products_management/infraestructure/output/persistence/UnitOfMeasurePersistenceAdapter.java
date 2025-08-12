@@ -2,7 +2,7 @@ package com.products_management.infraestructure.output.persistence;
 
 import com.products_management.application.ports.output.IUnitOfMeasurePersistencePort;
 import com.products_management.domain.model.UnitOfMeasure;
-import com.products_management.infraestructure.output.persistence.mapper.impl.UnitOfMeasurePersistenceMapperImpl;
+import com.products_management.infraestructure.output.persistence.mapper.interfaces.IUnitOfMeasurePersistenceMapper;
 import com.products_management.infraestructure.output.persistence.repository.IUnitOfMeasureRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -18,7 +18,7 @@ import java.util.Optional;
 public class UnitOfMeasurePersistenceAdapter implements IUnitOfMeasurePersistencePort {
 
     private final IUnitOfMeasureRepository unitOfMeasureRepository;
-    private final UnitOfMeasurePersistenceMapperImpl unitOfMeasurePersistenceMapper;
+    private final IUnitOfMeasurePersistenceMapper unitOfMeasurePersistenceMapper;
 
     /**
      * Busca una unidad de medida por su ID.
@@ -94,5 +94,55 @@ public class UnitOfMeasurePersistenceAdapter implements IUnitOfMeasurePersistenc
     public List<UnitOfMeasure> findByEnterpriseIdAndState(String enterpriseId, boolean state) {
         return unitOfMeasurePersistenceMapper.toUnitOfMeasureList(
                 unitOfMeasureRepository.findByEnterpriseIdAndState(enterpriseId, state));
+    }
+
+    /**
+     * Verifica si existe una unidad de medida con el nombre especificado para una empresa.
+     *
+     * @param name el nombre de la unidad de medida
+     * @param enterpriseId el ID de la empresa
+     * @return true si existe, false en caso contrario
+     */
+    @Override
+    public boolean existsByNameAndEnterpriseId(String name, String enterpriseId) {
+        return unitOfMeasureRepository.existsByNameAndEnterpriseId(name, enterpriseId);
+    }
+
+    /**
+     * Verifica si existe una unidad de medida con la abreviación especificada para una empresa.
+     *
+     * @param abbreviation la abreviación de la unidad de medida
+     * @param enterpriseId el ID de la empresa
+     * @return true si existe, false en caso contrario
+     */
+    @Override
+    public boolean existsByAbbreviationAndEnterpriseId(String abbreviation, String enterpriseId) {
+        return unitOfMeasureRepository.existsByAbbreviationAndEnterpriseId(abbreviation, enterpriseId);
+    }
+
+    /**
+     * Verifica si existe una unidad de medida con el nombre especificado para una empresa, excluyendo un ID específico.
+     *
+     * @param name el nombre de la unidad de medida
+     * @param enterpriseId el ID de la empresa
+     * @param id el ID a excluir de la búsqueda
+     * @return true si existe, false en caso contrario
+     */
+    @Override
+    public boolean existsByNameAndEnterpriseIdAndIdNot(String name, String enterpriseId, Long id) {
+        return unitOfMeasureRepository.existsByNameAndEnterpriseIdAndIdNot(name, enterpriseId, id);
+    }
+
+    /**
+     * Verifica si existe una unidad de medida con la abreviación especificada para una empresa, excluyendo un ID específico.
+     *
+     * @param abbreviation la abreviación de la unidad de medida
+     * @param enterpriseId el ID de la empresa
+     * @param id el ID a excluir de la búsqueda
+     * @return true si existe, false en caso contrario
+     */
+    @Override
+    public boolean existsByAbbreviationAndEnterpriseIdAndIdNot(String abbreviation, String enterpriseId, Long id) {
+        return unitOfMeasureRepository.existsByAbbreviationAndEnterpriseIdAndIdNot(abbreviation, enterpriseId, id);
     }
 }

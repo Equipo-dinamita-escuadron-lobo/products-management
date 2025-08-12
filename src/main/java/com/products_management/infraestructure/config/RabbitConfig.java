@@ -12,6 +12,7 @@ import org.springframework.amqp.core.BindingBuilder;
 public class RabbitConfig {
     public static final String PRODUCT_EXCHANGE = "product.exchange";
     public static final String PRODUCT_STOCK_QUEUE = "product.stock.queue";
+    public static final String PRODUCT_KARDEX_QUEUE = "product.kardex.queue";
 
     @Bean
     Jackson2JsonMessageConverter jsonMessageConverter() {
@@ -19,8 +20,13 @@ public class RabbitConfig {
     }
 
     @Bean
-    Queue productStockQueue() {
+    Queue productStockQueue1() {
         return new Queue(PRODUCT_STOCK_QUEUE, true);
+    }
+
+    @Bean
+    Queue productKardexQueue() {
+        return new Queue(PRODUCT_KARDEX_QUEUE, true);
     }
 
     @Bean
@@ -29,8 +35,13 @@ public class RabbitConfig {
     }
 
     @Bean
-    Binding productStockQueueBinding() {
-        return BindingBuilder.bind(productStockQueue()).to(productExchange());
+    Binding productStockQueueBinding1() {
+        return BindingBuilder.bind(productStockQueue1()).to(productExchange());
+    }
+
+    @Bean
+    Binding productKardexQueueBinding() {
+        return BindingBuilder.bind(productKardexQueue()).to(productExchange());
     }
 
 }

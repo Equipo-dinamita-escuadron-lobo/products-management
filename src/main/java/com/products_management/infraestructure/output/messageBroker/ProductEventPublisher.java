@@ -24,7 +24,7 @@ public class ProductEventPublisher implements IProductEventPort{
     @Override
     public void publishCreatedStockEvent(ProductSyncDto productSyncDto) {
         EventDto<ProductSyncDto> event = new EventDto<>(EventType.CREATED, productSyncDto);
-        log.info("Publishing stock created event for product: {}", productSyncDto);
+        log.info("Publishing stock created event for product: {}", productSyncDto.getName());
 
         rabbitTemplate.convertAndSend(RabbitConfig.PRODUCT_EXCHANGE, "", event, message -> {
             message.getMessageProperties().setHeader("x-tenant-id", jwtUtils.getId());

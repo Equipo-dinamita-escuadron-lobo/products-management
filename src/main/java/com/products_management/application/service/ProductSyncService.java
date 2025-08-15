@@ -10,15 +10,18 @@ import com.products_management.application.ports.input.IProductSyncServicePort;
 import com.products_management.application.ports.output.IProductSyncPort;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class ProductSyncService implements IProductSyncServicePort{
 
     private final IProductSyncPort productSyncPort;
 
     @Override
     public List<ProductSyncDto> findByEnterpriseId(String enterpriseId, Instant since) {
+        log.info("Finding products for enterpriseId: {} since: {}", enterpriseId, since);
         return productSyncPort.findByEnterpriseId(enterpriseId, since);
     }
     

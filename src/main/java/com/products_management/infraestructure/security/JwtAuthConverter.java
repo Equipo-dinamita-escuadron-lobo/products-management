@@ -49,7 +49,6 @@ public class JwtAuthConverter implements Converter<Jwt, AbstractAuthenticationTo
                 .toList();
 
         this.jwtToken = jwt;
-        log.info("JWT Token Converted: {}", jwt.getTokenValue());
         return new JwtAuthenticationToken(jwt, authorities, getPrincipleName(jwt));
     }
 

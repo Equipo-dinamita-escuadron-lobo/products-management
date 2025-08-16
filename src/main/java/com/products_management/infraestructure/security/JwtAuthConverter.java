@@ -2,8 +2,6 @@ package com.products_management.infraestructure.security;
 
 import org.springframework.stereotype.Component;
 
-import lombok.extern.slf4j.Slf4j;
-
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -23,7 +21,6 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
  * También proporciona métodos utilitarios relacionados con JWT.
  */
 @Component
-@Slf4j
 public class JwtAuthConverter implements Converter<Jwt, AbstractAuthenticationToken>, IJwtUtils {
 
     private final JwtGrantedAuthoritiesConverter jwtGrantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();

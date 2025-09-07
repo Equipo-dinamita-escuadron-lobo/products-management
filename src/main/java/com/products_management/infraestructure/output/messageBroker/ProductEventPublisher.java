@@ -27,7 +27,7 @@ public class ProductEventPublisher implements IProductEventPort{
         log.info("Publishing stock created event for product: {}", productSyncDto.getName());
 
         rabbitTemplate.convertAndSend(RabbitConfig.PRODUCT_EXCHANGE, "", event, message -> {
-            message.getMessageProperties().setHeader("x-tenant-id", jwtUtils.getId());
+            message.getMessageProperties().setHeader("x-jwt-token", jwtUtils.getToken());
             return message;
         });
     }

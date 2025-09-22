@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component;
 
 import com.products_management.application.dto.ProductSyncDto;
 import com.products_management.application.ports.input.IProductEventPort;
-import com.products_management.infraestructure.config.RabbitConfig;
+import com.products_management.infraestructure.config.rabbitConfig.RabbitProductConfig;
 import com.products_management.infraestructure.output.messageBroker.dto.EventDto;
 import com.products_management.infraestructure.output.messageBroker.enums.EventType;
 import com.products_management.infraestructure.security.IJwtUtils;
@@ -26,7 +26,7 @@ public class ProductEventPublisher implements IProductEventPort{
         EventDto<ProductSyncDto> event = new EventDto<>(EventType.CREATED, productSyncDto);
         log.info("Publishing stock created event for product: {}", productSyncDto.getName());
 
-        rabbitTemplate.convertAndSend(RabbitConfig.PRODUCT_EXCHANGE, "", event, message -> {
+        rabbitTemplate.convertAndSend(RabbitProductConfig.PRODUCT_EXCHANGE, "", event, message -> {
             message.getMessageProperties().setHeader("x-jwt-token", jwtUtils.getToken());
             return message;
         });

@@ -169,12 +169,12 @@ public class UnitOfMeasureService implements IUnitOfMeasureServicePort {
         // El nombre y abreviación ya están normalizados, se usan directamente para validación
         if (unitMeasurePersistencePort.existsByNameAndEnterpriseId(
                 unitOfMeasure.getName(), unitOfMeasure.getEnterpriseId())) {
-            throw new UnitOfMeasureNameAlreadyExistsException();
+            throw new UnitOfMeasureNameAlreadyExistsException(unitOfMeasure.getName());
         }
 
         if (unitMeasurePersistencePort.existsByAbbreviationAndEnterpriseId(
                 unitOfMeasure.getAbbreviation(), unitOfMeasure.getEnterpriseId())) {
-            throw new UnitOfMeasureAbbreviationAlreadyExistsException();
+            throw new UnitOfMeasureAbbreviationAlreadyExistsException(unitOfMeasure.getAbbreviation());
         }
     }
 
@@ -191,12 +191,12 @@ public class UnitOfMeasureService implements IUnitOfMeasureServicePort {
         // El nombre y abreviación ya están normalizados, se usan directamente para validación
         if (unitMeasurePersistencePort.existsByNameAndEnterpriseIdAndIdNot(
                 unitOfMeasure.getName(), unitOfMeasure.getEnterpriseId(), id)) {
-            throw new UnitOfMeasureNameAlreadyExistsException();
+            throw new UnitOfMeasureNameAlreadyExistsException(unitOfMeasure.getName());
         }
 
         if (unitMeasurePersistencePort.existsByAbbreviationAndEnterpriseIdAndIdNot(
                 unitOfMeasure.getAbbreviation(), unitOfMeasure.getEnterpriseId(), id)) {
-            throw new UnitOfMeasureAbbreviationAlreadyExistsException();
+            throw new UnitOfMeasureAbbreviationAlreadyExistsException(unitOfMeasure.getAbbreviation());
         }
     }
 }

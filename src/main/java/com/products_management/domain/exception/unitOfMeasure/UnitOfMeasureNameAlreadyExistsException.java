@@ -14,6 +14,6 @@ public class UnitOfMeasureNameAlreadyExistsException extends BaseBusinessExcepti
     
     public UnitOfMeasureNameAlreadyExistsException(String name) {
         super(ErrorCode.UNITOFMEASURE_NAME_ALREADY_EXISTS, 
-              String.format("Ya existe una unidad de medida con el nombre: '%s'", name));
+              String.format("Ya existe una unidad de medida con el nombre '%s'", name));
     }
 }

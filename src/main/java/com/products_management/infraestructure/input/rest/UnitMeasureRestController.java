@@ -90,11 +90,10 @@ public class UnitMeasureRestController {
 
         @PutMapping("/update/{id}")
         public UnitOfMeasureResponse update(@PathVariable Long id,
-                        @RequestParam String enterpriseId,
                         @Valid @RequestBody UnitOfMeasureCreateRequest unitOfMeasureCreateRequest) {
                 UnitOfMeasure unitOfMeasure = unitOfMeasureRestMapper.toUnitOfMeasure(unitOfMeasureCreateRequest);
                 return unitOfMeasureRestMapper.toUnitOfMeasureResponse(
-                                unitOfMeasureServicePort.update(id, enterpriseId, unitOfMeasure));
+                                unitOfMeasureServicePort.update(id, unitOfMeasureCreateRequest.getEnterpriseId(), unitOfMeasure));
         }
 
         @PutMapping("/changeState/{id}")

@@ -34,17 +34,6 @@ public class ProductTypeService implements IProductTypeServicePort {
         return productTypeOutputPort.save(productType);
     }
 
-    /**
-     * Obtiene una lista de todos los tipos de producto activados asociados a una empresa.
-     *
-     * @param enterpriseId el ID de la empresa.
-     * @return una lista de todos los tipos de producto activados de la empresa.
-     */
-    @Override
-    public List<ProductType> findActivated(String enterpriseId) {
-        return productTypeOutputPort.findByEnterpriseIdAndState(enterpriseId, true);
-    }
-
     @Override
     public ProductType updateProductType(Long id, String enterpriseId, ProductType productType) {
         // Verificar que el tipo de producto existe y pertenece a la empresa antes de actualizar
@@ -106,11 +95,6 @@ public class ProductTypeService implements IProductTypeServicePort {
                 .orElseThrow(() -> new ProductTypeNotFoundException());
         productType.setState(!productType.isState());
         productTypeOutputPort.save(productType);
-    }
-    
-    @Override
-    public List<ProductType> getProductTypesByEnterpriseIdAndState(String enterpriseId, boolean state) {
-        return productTypeOutputPort.findByEnterpriseIdAndState(enterpriseId, state);
     }
     
     @Override

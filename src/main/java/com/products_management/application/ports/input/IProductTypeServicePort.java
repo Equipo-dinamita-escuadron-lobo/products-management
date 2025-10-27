@@ -3,7 +3,6 @@ package com.products_management.application.ports.input;
 import com.products_management.domain.exception.productType.ProductTypeNotFoundException;
 import com.products_management.domain.model.ProductType;
 import org.springframework.data.domain.Page;
-import java.util.List;
 import java.util.Optional;
 
 
@@ -23,14 +22,6 @@ public interface IProductTypeServicePort {
      */
     ProductType getProductTypeByIdAndEnterpriseId(Long id, String enterpriseId);
 
-    /**
-     * Obtiene una lista de todos los tipos de producto activados asociados a una empresa.
-     *
-     * @param enterpriseId el ID de la empresa.
-     * @return una lista de todos los tipos de producto activados de la empresa.
-     */
-    List<ProductType> findActivated(String enterpriseId);
-
     ProductType updateProductType(Long id, String enterpriseId, ProductType productType);
 
     void deleteProductType(Long id, String enterpriseId);
@@ -43,15 +34,6 @@ public interface IProductTypeServicePort {
      */
     void changeState(Long id, String enterpriseId);
     
-    /**
-     * Busca tipos de producto activos por ID de empresa.
-     *
-     * @param enterpriseId el ID de la empresa.
-     * @param state el estado del tipo de producto.
-     * @return una lista de tipos de producto activos de la empresa.
-     */
-    List<ProductType> getProductTypesByEnterpriseIdAndState(String enterpriseId, boolean state);
-
     /**
      * Obtiene todos los tipos de producto de una empresa con paginación y ordenamiento.
      *

@@ -8,7 +8,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -17,11 +16,6 @@ public interface IProductTypeRepository extends JpaRepository<ProductTypeEntity,
      * Busca un tipo de producto por ID e ID de empresa.
      */
     Optional<ProductTypeEntity> findByIdAndEnterpriseId(Long id, String enterpriseId);
-
-    /**
-     * Busca tipos de producto activos por ID de empresa.
-     */
-    List<ProductTypeEntity> findByEnterpriseIdAndState(String enterpriseId, boolean state);
 
     /**
      * Verifica si existe un tipo de producto con el nombre especificado para una

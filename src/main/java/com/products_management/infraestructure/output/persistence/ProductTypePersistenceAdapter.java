@@ -14,7 +14,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
 import java.util.Optional;
 
 @Component
@@ -49,11 +48,6 @@ public class ProductTypePersistenceAdapter implements IProductTypePersistencePor
     @Override
     public Optional<ProductType> findByIdAndEnterpriseId(Long id, String enterpriseId) {
         return productTypeRepository.findByIdAndEnterpriseId(id, enterpriseId).map(productTypePersistenceMapper::toProductType);
-    }
-    
-    @Override
-    public List<ProductType> findByEnterpriseIdAndState(String enterpriseId, boolean state) {
-        return productTypePersistenceMapper.toProductTypeList(productTypeRepository.findByEnterpriseIdAndState(enterpriseId, state));
     }
 
     @Override

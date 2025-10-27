@@ -6,9 +6,15 @@ import org.springframework.stereotype.Repository;
 import com.products_management.infraestructure.output.persistence.entity.ProductTypeEntity;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface IProductTypeRepository extends JpaRepository<ProductTypeEntity, Long> {
+    /**
+     * Busca un tipo de producto por ID e ID de empresa.
+     */
+    Optional<ProductTypeEntity> findByIdAndEnterpriseId(Long id, String enterpriseId);
+    
     List<ProductTypeEntity> findByEnterpriseId(String enterpriseId);
     
     /**

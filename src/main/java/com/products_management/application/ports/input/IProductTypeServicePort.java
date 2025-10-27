@@ -13,13 +13,14 @@ public interface IProductTypeServicePort {
     Optional<ProductType> findById(Long id);
     
     /**
-     * Busca un tipo de producto por ID y lanza excepción si no se encuentra.
+     * Busca un tipo de producto por ID y empresa, lanza excepción si no se encuentra.
      * 
      * @param id el ID del tipo de producto a buscar
+     * @param enterpriseId el ID de la empresa
      * @return el tipo de producto encontrado
      * @throws ProductTypeNotFoundException si no se encuentra el tipo de producto
      */
-    ProductType getProductTypeById(Long id);
+    ProductType getProductTypeByIdAndEnterpriseId(Long id, String enterpriseId);
 
     List<ProductType> getProductTypesByEnterpriseId(String enterpriseId);
 
@@ -31,16 +32,17 @@ public interface IProductTypeServicePort {
      */
     List<ProductType> findActivated(String enterpriseId);
 
-    ProductType updateProductType(Long id, ProductType productType);
+    ProductType updateProductType(Long id, String enterpriseId, ProductType productType);
 
-    void deleteProductType(Long id);
+    void deleteProductType(Long id, String enterpriseId);
     
     /**
      * Cambia el estado de un tipo de producto (activado/desactivado).
      *
      * @param id el ID del tipo de producto cuyo estado se va a cambiar.
+     * @param enterpriseId el ID de la empresa.
      */
-    void changeState(Long id);
+    void changeState(Long id, String enterpriseId);
     
     /**
      * Busca tipos de producto activos por ID de empresa.

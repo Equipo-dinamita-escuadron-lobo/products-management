@@ -47,6 +47,11 @@ public class ProductTypePersistenceAdapter implements IProductTypePersistencePor
     }
     
     @Override
+    public Optional<ProductType> findByIdAndEnterpriseId(Long id, String enterpriseId) {
+        return productTypeRepository.findByIdAndEnterpriseId(id, enterpriseId).map(productTypePersistenceMapper::toProductType);
+    }
+    
+    @Override
     public List<ProductType> findByEnterpriseIdAndState(String enterpriseId, boolean state) {
         return productTypePersistenceMapper.toProductTypeList(productTypeRepository.findByEnterpriseIdAndState(enterpriseId, state));
     }

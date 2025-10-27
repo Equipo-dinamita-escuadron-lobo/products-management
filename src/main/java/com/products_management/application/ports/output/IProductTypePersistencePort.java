@@ -8,6 +8,11 @@ public interface  IProductTypePersistencePort {
 
     ProductType save(ProductType productType);
 
+    /**
+     * Busca un tipo de producto por ID e ID de empresa.
+     */
+    Optional<ProductType> findByIdAndEnterpriseId(Long id, String enterpriseId);
+    
     List<ProductType> findByEnterpriseId(String enterpriseId);
     
     Optional<ProductType> findById(Long id);

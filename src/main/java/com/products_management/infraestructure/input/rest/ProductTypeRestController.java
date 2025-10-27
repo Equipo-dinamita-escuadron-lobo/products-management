@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -58,10 +59,9 @@ public class ProductTypeRestController {
     }
 
 
-
     @GetMapping("/{id}")
-    public ResponseEntity<ProductTypeResponse> getProductTypeById(@PathVariable Long id) {
-        ProductType productType = productTypeService.getProductTypeById(id);
+    public ResponseEntity<ProductTypeResponse> getProductTypeById(@PathVariable Long id, @RequestParam String enterpriseId) {
+        ProductType productType = productTypeService.getProductTypeByIdAndEnterpriseId(id, enterpriseId);
         ProductTypeResponse response = productTypeMapper.toProductTypeResponse(productType);
         return ResponseEntity.ok(response);
     }
@@ -71,19 +71,19 @@ public class ProductTypeRestController {
             @PathVariable Long id,
             @RequestBody ProductTypeRequest productTypeRequest) {
         ProductType productType = productTypeMapper.toProductType(productTypeRequest);
-        ProductType updatedProductType = productTypeService.updateProductType(id, productType);
+        ProductType updatedProductType = productTypeService.updateProductType(id, productTypeRequest.getEnterpriseId(), productType);
         ProductTypeResponse response = productTypeMapper.toProductTypeResponse(updatedProductType);
         return ResponseEntity.ok(response);
     }
 
     @PutMapping("/changeState/{id}")
-    public void changeState(@PathVariable Long id) {
-        productTypeService.changeState(id);
+    public void changeState(@PathVariable Long id, @RequestParam String enterpriseId) {
+        productTypeService.changeState(id, enterpriseId);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteProductType(@PathVariable Long id) {
-        productTypeService.deleteProductType(id);
+    public ResponseEntity<Void> deleteProductType(@PathVariable Long id, @RequestParam String enterpriseId) {
+        productTypeService.deleteProductType(id, enterpriseId);
         return ResponseEntity.noContent().build();
     }
 }

@@ -51,9 +51,9 @@ public class ProductTypeService implements IProductTypeServicePort {
     }
 
     @Override
-    public ProductType updateProductType(Long id, ProductType productType) {
-        // Verificar que el tipo de producto existe antes de actualizar
-        Optional<ProductType> existingProductType = productTypeOutputPort.findById(id);
+    public ProductType updateProductType(Long id, String enterpriseId, ProductType productType) {
+        // Verificar que el tipo de producto existe y pertenece a la empresa antes de actualizar
+        Optional<ProductType> existingProductType = productTypeOutputPort.findByIdAndEnterpriseId(id, enterpriseId);
         if (existingProductType.isEmpty()) {
             throw new ProductTypeNotFoundException();
         }
@@ -66,9 +66,9 @@ public class ProductTypeService implements IProductTypeServicePort {
     }
 
     @Override
-    public void deleteProductType(Long id) {
-        // Verificar que el tipo de producto existe antes de eliminar
-        Optional<ProductType> existingProductType = productTypeOutputPort.findById(id);
+    public void deleteProductType(Long id, String enterpriseId) {
+        // Verificar que el tipo de producto existe y pertenece a la empresa antes de eliminar
+        Optional<ProductType> existingProductType = productTypeOutputPort.findByIdAndEnterpriseId(id, enterpriseId);
         if (existingProductType.isEmpty()) {
             throw new ProductTypeNotFoundException();
         }
@@ -86,14 +86,15 @@ public class ProductTypeService implements IProductTypeServicePort {
     }
     
     /**
-     * Busca un tipo de producto por ID y lanza excepción si no se encuentra.
+     * Busca un tipo de producto por ID y empresa, lanza excepción si no se encuentra.
      * 
      * @param id el ID del tipo de producto a buscar
+     * @param enterpriseId el ID de la empresa
      * @return el tipo de producto encontrado
      * @throws ProductTypeNotFoundException si no se encuentra el tipo de producto
      */
-    public ProductType getProductTypeById(Long id) {
-        return productTypeOutputPort.findById(id)
+    public ProductType getProductTypeByIdAndEnterpriseId(Long id, String enterpriseId) {
+        return productTypeOutputPort.findByIdAndEnterpriseId(id, enterpriseId)
                 .orElseThrow(() -> new ProductTypeNotFoundException());
     }
     
@@ -101,11 +102,12 @@ public class ProductTypeService implements IProductTypeServicePort {
      * Cambia el estado de un tipo de producto (activado/desactivado).
      *
      * @param id el ID del tipo de producto cuyo estado se va a cambiar.
+     * @param enterpriseId el ID de la empresa.
      * @throws ProductTypeNotFoundException si el tipo de producto no se encuentra.
      */
     @Override
-    public void changeState(Long id) {
-        ProductType productType = productTypeOutputPort.findById(id)
+    public void changeState(Long id, String enterpriseId) {
+        ProductType productType = productTypeOutputPort.findByIdAndEnterpriseId(id, enterpriseId)
                 .orElseThrow(() -> new ProductTypeNotFoundException());
         productType.setState(!productType.isState());
         productTypeOutputPort.save(productType);

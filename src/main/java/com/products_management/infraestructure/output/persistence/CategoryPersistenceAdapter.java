@@ -12,7 +12,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
 import java.util.Optional;
 
 /**
@@ -61,18 +60,6 @@ public class CategoryPersistenceAdapter implements ICategoryPersistencePort {
     }
 
 
-    /**
-     * Busca categorías activas por ID de empresa.
-     *
-     * @param enterpriseId el ID de la empresa
-     * @param state el estado de la categoría
-     * @return una lista de categorías activas de la empresa
-     */
-    @Override
-    public List<Category> findByEnterpriseIdAndState(String enterpriseId, boolean state) {
-        return categoryPersistenceMapper.toCategoryList(
-                categoryRepository.findByEnterpriseIdAndState(enterpriseId, state));
-    }
 
     /**
      * Verifica si existe una categoría con el nombre especificado para una empresa.

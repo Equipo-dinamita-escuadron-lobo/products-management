@@ -4,8 +4,6 @@ import com.products_management.domain.model.Category;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import java.util.List;
-
 /**
  * Interfaz que define los puertos de entrada para el servicio de categorías.
  * Los puertos de entrada representan las operaciones que pueden ser realizadas
@@ -86,13 +84,6 @@ public interface ICategoryServicePort {
      */
     long countActiveCategoriesByEntId(String enterpriseId);
 
-    /**
-     * Obtiene una lista de todas las categorías activadas asociadas a una empresa.
-     *
-     * @param enterpriseId el ID de la empresa.
-     * @return una lista de todas las categorías activadas de la empresa.
-     */
-    List<Category> findActivated(String enterpriseId);
 
     /**
      * Crea una nueva categoría.

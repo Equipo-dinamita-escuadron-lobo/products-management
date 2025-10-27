@@ -4,7 +4,6 @@ import com.products_management.domain.model.Category;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import java.util.List;
 import java.util.Optional;
 
 /**
@@ -39,14 +38,6 @@ public interface ICategoryPersistencePort {
     void deleteById(Long id);
 
 
-    /**
-     * Busca categorías activas por ID de empresa.
-     *
-     * @param enterpriseId el ID de la empresa.
-     * @param state el estado de la categoría.
-     * @return una lista de categorías activas de la empresa.
-     */
-    List<Category> findByEnterpriseIdAndState(String enterpriseId, boolean state);
 
     /**
      * Obtiene todas las categorías de una empresa con paginación.

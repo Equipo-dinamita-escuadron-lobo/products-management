@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.*;
 
 import com.products_management.infraestructure.utils.PaginationHelper;
 
-import java.util.List;
 import java.util.Optional;
 
 /**
@@ -64,9 +63,21 @@ public class CategoryRestController {
                 return new ResponseEntity<>(responsePage, HttpStatus.OK);
         }
 
-        @GetMapping("/findActivate/{enterpriseId}")
-        public List<CategoryResponse> findActivate(@PathVariable String enterpriseId) {
-                return categoryRestMapper.toCategoryResponseList(categoryServicePort.findActivated(enterpriseId));
+        @GetMapping("/findActivate")
+        public ResponseEntity<Page<CategoryResponse>> findActivate(
+                @RequestParam String enterpriseId,
+                @RequestParam(required = false) Optional<Integer> numPage,
+                @RequestParam(required = false) Optional<Integer> size) {
+
+                long totalRecords = categoryServicePort.countActiveCategoriesByEntId(enterpriseId);
+                Pageable pageable = PaginationHelper.createFlexiblePageable(numPage, size, totalRecords);
+
+                Page<Category> page = categoryServicePort.getAllActiveCategoriesByWithSort(enterpriseId, pageable.getPageNumber(),
+                        pageable.getPageSize(), "name", "asc");
+
+                Page<CategoryResponse> responsePage = page.map(categoryRestMapper::toCategoryResponse);
+
+                return new ResponseEntity<>(responsePage, HttpStatus.OK);
         }
 
         @PostMapping("/create")

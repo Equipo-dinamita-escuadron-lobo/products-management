@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 
+
 /**
  * Servicio que implementa la lógica de negocio para las categorías.
  * Esta clase interactúa con los puertos de persistencia y realiza las operaciones
@@ -44,17 +45,6 @@ public class CategoryService implements ICategoryServicePort {
     }
 
 
-    /**
-     * Obtiene una lista de todas las categorías activadas asociadas a una empresa.
-     *
-     * @param enterpriseId el ID de la empresa.
-     * @return una lista de todas las categorías activadas de la empresa.
-     */
-
-    @Override
-    public List<Category> findActivated(String enterpriseId) {
-        return categoryPersistencePort.findByEnterpriseIdAndState(enterpriseId, true);
-    }
 
     /**
      * Crea una nueva categoría.

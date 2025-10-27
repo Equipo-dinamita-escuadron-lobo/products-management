@@ -128,7 +128,7 @@ public class ProductTypeService implements IProductTypeServicePort {
         // El nombre ya está normalizado, se usa directamente para validación
         if (productTypeOutputPort.existsByNameAndEnterpriseId(
                 productType.getName(), productType.getEnterpriseId())) {
-            throw new ProductTypeNameAlreadyExistsException();
+            throw new ProductTypeNameAlreadyExistsException(productType.getName());
         }
     }
     
@@ -144,7 +144,7 @@ public class ProductTypeService implements IProductTypeServicePort {
         // El nombre ya está normalizado, se usa directamente para validación
         if (productTypeOutputPort.existsByNameAndEnterpriseIdAndIdNot(
                 productType.getName(), productType.getEnterpriseId(), id)) {
-            throw new ProductTypeNameAlreadyExistsException();
+            throw new ProductTypeNameAlreadyExistsException(productType.getName());
         }
     }
 }

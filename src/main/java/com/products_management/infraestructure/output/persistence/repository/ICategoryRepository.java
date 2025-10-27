@@ -4,6 +4,7 @@ import com.products_management.infraestructure.output.persistence.entity.Categor
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Interfaz para el repositorio de categorías que extiende JpaRepository.
@@ -30,5 +31,10 @@ public interface ICategoryRepository extends JpaRepository<CategoryEntity, Long>
      * Verifica si existe una categoría con el nombre especificado para una empresa, excluyendo un ID específico.
      */
     boolean existsByNameAndEnterpriseIdAndIdNot(String name, String enterpriseId, Long id);
-    
+
+    /**
+     * Busca una categoría por ID y empresa.
+     */
+    Optional<CategoryEntity> findByIdAndEnterpriseId(Long id, String enterpriseId);
+
 }

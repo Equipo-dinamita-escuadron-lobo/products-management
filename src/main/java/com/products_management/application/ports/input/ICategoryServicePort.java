@@ -12,12 +12,13 @@ import java.util.List;
 public interface ICategoryServicePort {
 
     /**
-     * Busca una categoría por su ID.
+     * Busca una categoría por su ID y empresa.
      *
+     * @param enterpriseId el ID de la empresa.
      * @param id el ID de la categoría a buscar.
-     * @return la categoría encontrada, o null si no se encuentra.
+     * @return la categoría encontrada.
      */
-    Category findById(Long id);
+    Category findById(String enterpriseId, Long id);
 
     /**
      * Obtiene una lista de todas las categorías asociadas a una empresa.
@@ -46,25 +47,28 @@ public interface ICategoryServicePort {
     /**
      * Actualiza una categoría existente.
      *
+     * @param enterpriseId el ID de la empresa.
      * @param id el ID de la categoría a actualizar.
      * @param category los datos de la categoría actualizada.
      * @return la categoría actualizada.
      */
-    Category update(Long id, Category category);
+    Category update(String enterpriseId, Long id, Category category);
 
     /**
-     * Elimina una categoría por su ID.
+     * Elimina una categoría por su ID y empresa.
      *
+     * @param enterpriseId el ID de la empresa.
      * @param id el ID de la categoría a eliminar.
      */
-    void deleteById(Long id);
+    void deleteById(String enterpriseId, Long id);
 
     /**
      * Cambia el estado de una categoría (por ejemplo, activado/desactivado).
      *
+     * @param enterpriseId el ID de la empresa.
      * @param id el ID de la categoría cuyo estado se va a cambiar.
      */
-    void changeState(Long id);
+    void changeState(String enterpriseId, Long id);
 
     /**
      * Elimina todas las categorías.

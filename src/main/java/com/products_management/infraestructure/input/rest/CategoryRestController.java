@@ -29,9 +29,9 @@ public class CategoryRestController {
                 return categoryRestMapper.toCategoryResponseList(categoryServicePort.findAll(enterpriseId));
         }
 
-        @GetMapping("/findById/{id}")
-        public CategoryResponse findById(@PathVariable Long id) {
-                return categoryRestMapper.toCategoryResponse(categoryServicePort.findById(id));
+        @GetMapping("/findById/{enterpriseId}/{id}")
+        public CategoryResponse findById(@PathVariable String enterpriseId, @PathVariable Long id) {
+                return categoryRestMapper.toCategoryResponse(categoryServicePort.findById(enterpriseId, id));
         }
 
         @GetMapping("/findActivate/{enterpriseId}")
@@ -48,21 +48,21 @@ public class CategoryRestController {
                                                                 categoryRestMapper.toCategory(categoryCreateRequest))));
         }
 
-        @PutMapping("/update/{id}")
-        public CategoryResponse update(@PathVariable Long id,
+        @PutMapping("/update/{enterpriseId}/{id}")
+        public CategoryResponse update(@PathVariable String enterpriseId, @PathVariable Long id,
                         @Valid @RequestBody CategoryCreateRequest categoryCreateRequest) {
                 return categoryRestMapper.toCategoryResponse(
-                                categoryServicePort.update(id, categoryRestMapper.toCategory(categoryCreateRequest)));
+                                categoryServicePort.update(enterpriseId, id, categoryRestMapper.toCategory(categoryCreateRequest)));
         }
 
-        @PutMapping("/changeState/{id}")
-        public void changeState(@PathVariable Long id) {
-                categoryServicePort.changeState(id);
+        @PutMapping("/changeState/{enterpriseId}/{id}")
+        public void changeState(@PathVariable String enterpriseId, @PathVariable Long id) {
+                categoryServicePort.changeState(enterpriseId, id);
         }
 
-        @DeleteMapping("/delete/{id}")
-        public void deleteById(@PathVariable Long id) {
-                categoryServicePort.deleteById(id);
+        @DeleteMapping("/delete/{enterpriseId}/{id}")
+        public void deleteById(@PathVariable String enterpriseId, @PathVariable Long id) {
+                categoryServicePort.deleteById(enterpriseId, id);
         }
 
         @DeleteMapping("/deleteAll")

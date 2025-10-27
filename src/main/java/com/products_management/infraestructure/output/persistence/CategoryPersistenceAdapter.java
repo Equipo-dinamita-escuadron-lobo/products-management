@@ -22,14 +22,15 @@ public class CategoryPersistenceAdapter implements ICategoryPersistencePort {
     private final ICategoryPersistenceMapper categoryPersistenceMapper;
 
     /**
-     * Busca una categoría por su ID.
+     * Busca una categoría por su ID y empresa.
      *
      * @param id el ID de la categoría
+     * @param enterpriseId el ID de la empresa
      * @return un Optional que contiene la categoría si se encuentra, de lo contrario vacío
      */
     @Override
-    public Optional<Category> findById(Long id) {
-        return categoryRepository.findById(Long.valueOf(id))
+    public Optional<Category> findByIdAndEnterpriseId(Long id, String enterpriseId) {
+        return categoryRepository.findByIdAndEnterpriseId(id, enterpriseId)
                 .map(categoryPersistenceMapper::toCategory);
     }
 

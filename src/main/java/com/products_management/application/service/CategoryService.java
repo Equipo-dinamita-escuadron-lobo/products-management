@@ -28,16 +28,17 @@ public class CategoryService implements ICategoryServicePort {
     private final ProductService productServicePort;
 
     /**
-     * Busca una categoría por su ID.
+     * Busca una categoría por su ID y empresa.
      *
+     * @param enterpriseId el ID de la empresa.
      * @param id el ID de la categoría a buscar.
      * @return la categoría encontrada.
      * @throws CategoryNotFoundException si la categoría no se encuentra.
      */
 
     @Override
-    public Category findById(Long id) {
-        return categoryPersistencePort.findById(id).orElseThrow(CategoryNotFoundException::new);
+    public Category findById(String enterpriseId, Long id) {
+        return categoryPersistencePort.findByIdAndEnterpriseId(id, enterpriseId).orElseThrow(CategoryNotFoundException::new);
     }
 
     /**
@@ -83,6 +84,7 @@ public class CategoryService implements ICategoryServicePort {
     /**
      * Actualiza una categoría existente.
      *
+     * @param enterpriseId el ID de la empresa.
      * @param id el ID de la categoría a actualizar.
      * @param category los datos de la categoría actualizada.
      * @return la categoría actualizada.
@@ -91,8 +93,8 @@ public class CategoryService implements ICategoryServicePort {
      */
 
     @Override
-    public Category update(Long id, Category category) {
-        return categoryPersistencePort.findById(id)
+    public Category update(String enterpriseId, Long id, Category category) {
+        return categoryPersistencePort.findByIdAndEnterpriseId(id, enterpriseId)
                 .map(existingCategory -> {
                     // Normalizar el nombre de manera consistente (para validación y almacenamiento)
                     category.setName(StringNormalizer.normalize(category.getName()));
@@ -113,29 +115,31 @@ public class CategoryService implements ICategoryServicePort {
     /**
      * Cambia el estado de una categoría (activado/desactivado).
      *
+     * @param enterpriseId el ID de la empresa.
      * @param id el ID de la categoría cuyo estado se va a cambiar.
      * @throws CategoryNotFoundException si la categoría no se encuentra.
      */
 
     @Override
-    public void changeState(Long id) {
-        Category category = categoryPersistencePort.findById(id)
+    public void changeState(String enterpriseId, Long id) {
+        Category category = categoryPersistencePort.findByIdAndEnterpriseId(id, enterpriseId)
                 .orElseThrow(CategoryNotFoundException::new);
         category.setState(!category.isState());
         categoryPersistencePort.create(category);
     }
 
     /**
-     * Elimina una categoría por su ID.
+     * Elimina una categoría por su ID y empresa.
      *
+     * @param enterpriseId el ID de la empresa.
      * @param id el ID de la categoría a eliminar.
      * @throws CategoryNotFoundException si la categoría no se encuentra.
      * @throws CategoryAssociatedException si la categoría está asociada a productos.
      */
 
     @Override
-    public void deleteById(Long id) {
-        if (categoryPersistencePort.findById(id).isEmpty()) {
+    public void deleteById(String enterpriseId, Long id) {
+        if (categoryPersistencePort.findByIdAndEnterpriseId(id, enterpriseId).isEmpty()) {
             throw new CategoryNotFoundException();
         }
         List<Product> products = productServicePort.findAllByCategory(id);

@@ -12,12 +12,13 @@ import java.util.Optional;
 public interface ICategoryPersistencePort {
 
     /**
-     * Busca una categoría por su ID.
+     * Busca una categoría por su ID y empresa.
      *
      * @param id el ID de la categoría a buscar.
+     * @param enterpriseId el ID de la empresa.
      * @return un Optional que contiene la categoría encontrada, o un Optional vacío si no se encuentra.
      */
-    Optional<Category> findById(Long id);
+    Optional<Category> findByIdAndEnterpriseId(Long id, String enterpriseId);
 
     /**
      * Obtiene una lista de todas las categorías.

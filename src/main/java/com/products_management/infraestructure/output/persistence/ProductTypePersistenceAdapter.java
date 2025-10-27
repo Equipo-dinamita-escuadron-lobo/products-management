@@ -100,6 +100,19 @@ public class ProductTypePersistenceAdapter implements IProductTypePersistencePor
         return productTypeRepository.countByEnterpriseId(enterpriseId);
     }
 
+    @Override
+    public Page<ProductType> findActivatedByEnterpriseId(String enterpriseId, int page, int size) {
+        Sort sort = Sort.by("name").ascending(); // Sort por defecto por name asc
+        Pageable pageable = PageRequest.of(page, size, sort);
+        Page<ProductTypeEntity> entityPage = productTypeRepository.findActivatedByEnterpriseId(enterpriseId, pageable);
+        return entityPage.map(productTypePersistenceMapper::toProductType);
+    }
+
+    @Override
+    public long countActivatedByEnterpriseId(String enterpriseId) {
+        return productTypeRepository.countActivatedByEnterpriseId(enterpriseId);
+    }
+
     /**
      * Mapea el campo de ordenamiento del modelo ProductType al campo correspondiente en ProductTypeEntity.
      * Solo permite ordenamiento por nombre.

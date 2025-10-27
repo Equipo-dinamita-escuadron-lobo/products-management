@@ -22,9 +22,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
  * Controlador REST para la gestión de tipos de producto.
@@ -45,12 +43,22 @@ public class ProductTypeRestController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    @GetMapping("/findActivate/{enterpriseId}")
-    public List<ProductTypeResponse> findActivate(@PathVariable String enterpriseId) {
-        List<ProductType> productTypes = productTypeService.findActivated(enterpriseId);
-        return productTypes.stream()
-                .map(productTypeMapper::toProductTypeResponse)
-                .collect(Collectors.toList());
+    @GetMapping("/findActivate")
+    public ResponseEntity<Page<ProductTypeResponse>> findActivate(
+            @RequestParam String enterpriseId,
+            @RequestParam(required = false) Optional<Integer> numPage,
+            @RequestParam(required = false) Optional<Integer> size) {
+
+        long totalRecords = productTypeService.countActivatedByEnterpriseId(enterpriseId);
+
+        Pageable pageable = PaginationHelper.createFlexiblePageable(numPage, size, totalRecords);
+
+        Page<ProductType> page = productTypeService.findActivatedWithPagination(enterpriseId,
+                pageable.getPageNumber(), pageable.getPageSize());
+
+        Page<ProductTypeResponse> response = page.map(productTypeMapper::toProductTypeResponse);
+
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/findAll")

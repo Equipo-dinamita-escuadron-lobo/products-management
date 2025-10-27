@@ -132,6 +132,16 @@ public class ProductTypeService implements IProductTypeServicePort {
     public long countByEnterpriseId(String enterpriseId) {
         return productTypeOutputPort.countByEnterpriseId(enterpriseId);
     }
+
+    @Override
+    public Page<ProductType> findActivatedWithPagination(String enterpriseId, int page, int size) {
+        return productTypeOutputPort.findActivatedByEnterpriseId(enterpriseId, page, size);
+    }
+
+    @Override
+    public long countActivatedByEnterpriseId(String enterpriseId) {
+        return productTypeOutputPort.countActivatedByEnterpriseId(enterpriseId);
+    }
     
     /**
      * Valida que el nombre de un tipo de producto sea único dentro de la empresa.

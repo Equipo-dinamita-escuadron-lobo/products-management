@@ -67,4 +67,23 @@ public interface IProductTypeRepository extends JpaRepository<ProductTypeEntity,
 
     @Query("SELECT COUNT(p) FROM ProductTypeEntity p WHERE p.enterpriseId = :enterpriseId")
     long countByEnterpriseId(@Param("enterpriseId") String enterpriseId);
+
+    /**
+     * Busca tipos de producto activados por empresa con paginación.
+     *
+     * @param enterpriseId ID de la empresa
+     * @param pageable Paginación
+     * @return Página de tipos de producto activados
+     */
+    @Query("SELECT p FROM ProductTypeEntity p WHERE p.enterpriseId = :enterpriseId AND p.state = true")
+    Page<ProductTypeEntity> findActivatedByEnterpriseId(@Param("enterpriseId") String enterpriseId, Pageable pageable);
+
+    /**
+     * Cuenta tipos de producto activados por empresa.
+     *
+     * @param enterpriseId ID de la empresa
+     * @return Cantidad de tipos de producto activados
+     */
+    @Query("SELECT COUNT(p) FROM ProductTypeEntity p WHERE p.enterpriseId = :enterpriseId AND p.state = true")
+    long countActivatedByEnterpriseId(@Param("enterpriseId") String enterpriseId);
 }

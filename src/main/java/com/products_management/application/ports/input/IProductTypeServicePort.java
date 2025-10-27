@@ -93,4 +93,22 @@ public interface IProductTypeServicePort {
      * @return Cantidad total de tipos de producto
      */
     long countByEnterpriseId(String enterpriseId);
+
+    /**
+     * Obtiene tipos de producto activados con paginación.
+     *
+     * @param enterpriseId ID de la empresa
+     * @param page Número de página
+     * @param size Tamaño de página
+     * @return Página de tipos de producto activados
+     */
+    Page<ProductType> findActivatedWithPagination(String enterpriseId, int page, int size);
+
+    /**
+     * Cuenta tipos de producto activados por empresa.
+     *
+     * @param enterpriseId ID de la empresa
+     * @return Cantidad de tipos de producto activados
+     */
+    long countActivatedByEnterpriseId(String enterpriseId);
 }

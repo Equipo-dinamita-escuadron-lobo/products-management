@@ -31,8 +31,6 @@ public interface IProductTypeServicePort {
      */
     List<ProductType> findActivated(String enterpriseId);
 
-    List<ProductType> listAllProductTypes();
-
     ProductType updateProductType(Long id, ProductType productType);
 
     void deleteProductType(Long id);

@@ -10,8 +10,6 @@ public interface  IProductTypePersistencePort {
 
     List<ProductType> findByEnterpriseId(String enterpriseId);
     
-    List<ProductType> findAll();
-
     Optional<ProductType> findById(Long id);
 
     ProductType update(Long id, ProductType productType);

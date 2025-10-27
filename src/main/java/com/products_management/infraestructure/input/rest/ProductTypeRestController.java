@@ -40,15 +40,6 @@ public class ProductTypeRestController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    @GetMapping
-    public ResponseEntity<List<ProductTypeResponse>> getAllProductTypes() {
-        List<ProductType> productTypes = productTypeService.listAllProductTypes();
-        List<ProductTypeResponse> responses = productTypes.stream()
-                .map(productTypeMapper::toProductTypeResponse)
-                .collect(Collectors.toList());
-        return ResponseEntity.ok(responses);
-    }
-
     @GetMapping("/enterprise/{enterpriseId}")
     public ResponseEntity<List<ProductTypeResponse>> getProductTypesByEnterpriseId(@PathVariable String enterpriseId) {
         List<ProductType> productTypes = productTypeService.getProductTypesByEnterpriseId(enterpriseId);

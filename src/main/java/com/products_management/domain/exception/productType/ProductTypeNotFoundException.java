@@ -14,11 +14,11 @@ public class ProductTypeNotFoundException extends BaseBusinessException {
     
     public ProductTypeNotFoundException(Long id) {
         super(ErrorCode.PRODUCT_TYPE_NOT_FOUND, 
-              String.format("No se encontró el tipo de producto con ID: %d", id));
+              String.format("No se encontró el tipo de producto con ID %d", id));
     }
     
     public ProductTypeNotFoundException(String enterpriseId) {
         super(ErrorCode.PRODUCT_TYPE_NOT_FOUND, 
-              String.format("No se encontraron tipos de producto para la empresa con ID: %s", enterpriseId));
+              String.format("No se encontraron tipos de producto para la empresa con ID %s", enterpriseId));
     }
 }

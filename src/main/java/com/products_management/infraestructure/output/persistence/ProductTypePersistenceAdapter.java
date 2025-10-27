@@ -31,11 +31,6 @@ public class ProductTypePersistenceAdapter implements IProductTypePersistencePor
     }
 
     @Override
-    public List<ProductType> findAll() {
-        return productTypePersistenceMapper.toProductTypeList(productTypeRepository.findAll());
-    }
-
-    @Override
     public ProductType update(Long id, ProductType productType) {
         productType.setId(id);
         return productTypePersistenceMapper.toProductType(productTypeRepository.save(productTypePersistenceMapper.toProductTypeEntity(productType)));

@@ -51,11 +51,6 @@ public class ProductTypeService implements IProductTypeServicePort {
     }
 
     @Override
-    public List<ProductType> listAllProductTypes() {
-        return productTypeOutputPort.findAll();
-    }
-
-    @Override
     public ProductType updateProductType(Long id, ProductType productType) {
         // Verificar que el tipo de producto existe antes de actualizar
         Optional<ProductType> existingProductType = productTypeOutputPort.findById(id);

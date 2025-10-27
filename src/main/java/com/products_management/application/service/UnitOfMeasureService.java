@@ -233,18 +233,15 @@ public class UnitOfMeasureService implements IUnitOfMeasureServicePort {
     }
 
     /**
-     * Obtiene todas las unidades de medida activas con ordenamiento.
-     *
+     * Obtiene todas las unidades de medida activas con ordenamiento ascendente por nombre.
      * @param enterpriseId El id de la empresa
      * @param page Número de página
      * @param size Tamaño de página
-     * @param sortField Campo de ordenamiento
-     * @param sortOrder Orden (asc/desc)
-     * @return Página de unidades de medida activas ordenadas
+     * @return Página de unidades de medida activas ordenadas por nombre ascendente
      */
     @Override
-    public Page<UnitOfMeasure> getAllActiveUnitOfMeasuresByWithSort(String enterpriseId, int page, int size, String sortField, String sortOrder) {
-        return unitMeasurePersistencePort.getActiveUnitOfMeasuresBy(enterpriseId, page, size, sortField, sortOrder);
+    public Page<UnitOfMeasure> getAllActiveUnitOfMeasuresBy(String enterpriseId, int page, int size) {
+        return unitMeasurePersistencePort.getActiveUnitOfMeasuresBy(enterpriseId, page, size, "name", "asc");
     }
 
     /**

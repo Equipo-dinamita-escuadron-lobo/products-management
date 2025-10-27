@@ -66,15 +66,13 @@ public interface IUnitOfMeasureServicePort {
     Page<UnitOfMeasure> getAllUnitOfMeasuresByWithSort(String enterpriseId, int page, int size, String sortField, String sortOrder);
 
     /**
-     * Obtiene todas las unidades de medida activas con ordenamiento.
+     * Obtiene todas las unidades de medida activas con ordenamiento ascendente por nombre.
      * @param enterpriseId El id de la empresa
      * @param page Número de página
      * @param size Tamaño de página
-     * @param sortField Campo de ordenamiento
-     * @param sortOrder Orden (asc/desc)
-     * @return Página de unidades de medida activas ordenadas
+     * @return Página de unidades de medida activas ordenadas por nombre ascendente
      */
-    Page<UnitOfMeasure> getAllActiveUnitOfMeasuresByWithSort(String enterpriseId, int page, int size, String sortField, String sortOrder);
+    Page<UnitOfMeasure> getAllActiveUnitOfMeasuresBy(String enterpriseId, int page, int size);
 
     /**
      * Cuenta el total de unidades de medida activas por empresa.

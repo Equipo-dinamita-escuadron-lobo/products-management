@@ -38,20 +38,35 @@ public class UnitMeasureRestController {
                         @RequestParam(defaultValue = "name") String sortField,
                         @RequestParam(defaultValue = "asc") String sortOrder) {
 
-                // Contar total de registros (con o sin filtro)
                 long totalRecords = (search != null && !search.trim().isEmpty())
                                 ? unitOfMeasureServicePort.countByEntIdAndSearch(enterpriseId, search)
                                 : unitOfMeasureServicePort.countAllUnitOfMeasuresByEntId(enterpriseId);
 
-                // Crear Pageable flexible
                 Pageable pageable = PaginationHelper.createFlexiblePageable(numPage, size, totalRecords);
 
-                // Obtener página de datos (con o sin filtro)
                 Page<UnitOfMeasure> page = (search != null && !search.trim().isEmpty())
                                 ? unitOfMeasureServicePort.findByEntIdAndSearch(enterpriseId, search,
                                                 pageable.getPageNumber(), pageable.getPageSize(), sortField, sortOrder)
                                 : unitOfMeasureServicePort.getAllUnitOfMeasuresByWithSort(enterpriseId,
                                                 pageable.getPageNumber(), pageable.getPageSize(), sortField, sortOrder);
+
+                Page<UnitOfMeasureResponse> response = page.map(unitOfMeasureRestMapper::toUnitOfMeasureResponse);
+
+                return ResponseEntity.ok(response);
+        }
+
+        @GetMapping("/findActivate")
+        public ResponseEntity<Page<UnitOfMeasureResponse>> findActivate(
+                        @RequestParam String enterpriseId,
+                        @RequestParam(required = false) Optional<Integer> numPage,
+                        @RequestParam(required = false) Optional<Integer> size) {
+
+                long totalRecords = unitOfMeasureServicePort.countActiveUnitOfMeasuresByEntId(enterpriseId);
+
+                Pageable pageable = PaginationHelper.createFlexiblePageable(numPage, size, totalRecords);
+
+                Page<UnitOfMeasure> page = unitOfMeasureServicePort.getAllActiveUnitOfMeasuresBy(enterpriseId,
+                                pageable.getPageNumber(), pageable.getPageSize());
 
                 Page<UnitOfMeasureResponse> response = page.map(unitOfMeasureRestMapper::toUnitOfMeasureResponse);
 

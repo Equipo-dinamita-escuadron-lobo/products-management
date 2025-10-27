@@ -11,7 +11,6 @@ import com.products_management.domain.model.UnitOfMeasure;
 import com.products_management.domain.utils.StringNormalizer;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -167,18 +166,6 @@ public class UnitOfMeasureService implements IUnitOfMeasureServicePort {
                 unitOfMeasure.getAbbreviation(), unitOfMeasure.getEnterpriseId(), id)) {
             throw new UnitOfMeasureAbbreviationAlreadyExistsException(unitOfMeasure.getAbbreviation());
         }
-    }
-
-    /**
-     * Obtiene todas las unidades de medida de una empresa con paginación.
-     *
-     * @param enterpriseId el ID de la empresa
-     * @param pageable información de paginación
-     * @return página de unidades de medida encontradas (puede estar vacía si no hay datos)
-     */
-    @Override
-    public Page<UnitOfMeasure> getAllUnitOfMeasuresBy(String enterpriseId, Pageable pageable) {
-        return unitMeasurePersistencePort.getAllUnitOfMeasuresBy(enterpriseId, pageable);
     }
 
     /**

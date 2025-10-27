@@ -2,7 +2,6 @@ package com.products_management.application.ports.input;
 
 import com.products_management.domain.model.UnitOfMeasure;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 
 /**
  * Interfaz que define los puertos de entrada para el servicio de unidades de medida.
@@ -19,14 +18,6 @@ public interface IUnitOfMeasureServicePort {
      * @return la unidad de medida encontrada.
      */
     UnitOfMeasure findByIdAndEnterpriseId(Long id, String enterpriseId);
-
-    /**
-     * Obtiene todas las unidades de medida de una empresa con paginación.
-     * @param enterpriseId El id de la empresa
-     * @param pageable El objeto pageable
-     * @return La página de unidades de medida
-     */
-    Page<UnitOfMeasure> getAllUnitOfMeasuresBy(String enterpriseId, Pageable pageable);
 
     /**
      * Cuenta el total de unidades de medida por empresa.

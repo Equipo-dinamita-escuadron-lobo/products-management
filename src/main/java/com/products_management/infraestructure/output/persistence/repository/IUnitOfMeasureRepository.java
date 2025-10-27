@@ -7,8 +7,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import java.util.List;
-
 import java.util.Optional;
 
 /**
@@ -21,16 +19,6 @@ public interface IUnitOfMeasureRepository extends JpaRepository<UnitOfMeasureEnt
      * Busca una unidad de medida por ID e ID de empresa.
      */
     Optional<UnitOfMeasureEntity> findByIdAndEnterpriseId(Long id, String enterpriseId);
-    
-    /**
-     * Busca unidades de medida por ID de empresa.
-     */
-    List<UnitOfMeasureEntity> findByEnterpriseId(String enterpriseId);
-    
-    /**
-     * Busca unidades de medida activas por ID de empresa.
-     */
-    List<UnitOfMeasureEntity> findByEnterpriseIdAndState(String enterpriseId, boolean state);
     
     /**
      * Verifica si existe una unidad de medida con el nombre especificado para una empresa.

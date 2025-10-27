@@ -24,14 +24,6 @@ public interface IUnitOfMeasurePersistencePort {
 
 
     /**
-     * Obtiene todas las unidades de medida de una empresa con paginación.
-     * @param enterpriseId El id de la empresa
-     * @param pageable El objeto pageable
-     * @return La página de unidades de medida
-     */
-    Page<UnitOfMeasure> getAllUnitOfMeasuresBy(String enterpriseId, Pageable pageable);
-
-    /**
      * Obtiene todas las unidades de medida de una empresa filtradas por estado.
      * Optimizado para exportación con filtro de estado en BD.
      *
@@ -118,15 +110,6 @@ public interface IUnitOfMeasurePersistencePort {
      * @param enterpriseId el ID de la empresa.
      */
     void deleteByIdAndEnterpriseId(Long id, String enterpriseId);
-
-    /**
-     * Cambia el estado de una unidad de medida por ID y empresa.
-     *
-     * @param id el ID de la unidad de medida.
-     * @param enterpriseId el ID de la empresa.
-     * @return la unidad de medida actualizada.
-     */
-    UnitOfMeasure changeStateByIdAndEnterpriseId(Long id, String enterpriseId);
 
     /**
      * Verifica si existe una unidad de medida con el nombre especificado para una empresa.

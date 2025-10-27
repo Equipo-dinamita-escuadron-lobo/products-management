@@ -61,21 +61,6 @@ public class UnitOfMeasurePersistenceAdapter implements IUnitOfMeasurePersistenc
     }
 
     /**
-     * Cambia el estado de una unidad de medida por ID y empresa.
-     *
-     * @param id el ID de la unidad de medida.
-     * @param enterpriseId el ID de la empresa.
-     * @return la unidad de medida actualizada.
-     */
-    @Override
-    public UnitOfMeasure changeStateByIdAndEnterpriseId(Long id, String enterpriseId) {
-        UnitOfMeasureEntity entity = unitOfMeasureRepository.findByIdAndEnterpriseId(id, enterpriseId)
-                .orElseThrow(() -> new RuntimeException("Unit of measure not found"));
-        entity.setState(!entity.isState());
-        return unitOfMeasurePersistenceMapper.toUnitOfMeasure(unitOfMeasureRepository.save(entity));
-    }
-
-    /**
      * Verifica si existe una unidad de medida con el nombre especificado para una empresa.
      *
      * @param name el nombre de la unidad de medida
@@ -123,21 +108,6 @@ public class UnitOfMeasurePersistenceAdapter implements IUnitOfMeasurePersistenc
     @Override
     public boolean existsByAbbreviationAndEnterpriseIdAndIdNot(String abbreviation, String enterpriseId, Long id) {
         return unitOfMeasureRepository.existsByAbbreviationAndEnterpriseIdAndIdNot(abbreviation, enterpriseId, id);
-    }
-
-    /**
-     * Obtiene todas las unidades de medida de una empresa con paginación.
-     *
-     * @param enterpriseId el ID de la empresa
-     * @param pageable información de paginación
-     * @return página de unidades de medida encontradas (puede estar vacía si no hay datos)
-     */
-    @Override
-    public Page<UnitOfMeasure> getAllUnitOfMeasuresBy(String enterpriseId, Pageable pageable) {
-        Page<UnitOfMeasureEntity> pageEntities = unitOfMeasureRepository.getUnitOfMeasuresBy(enterpriseId, pageable);
-        Page<UnitOfMeasure> pageUnitOfMeasures = pageEntities.map(this::convertToUnitOfMeasure);
-
-        return pageUnitOfMeasures;
     }
 
     /**

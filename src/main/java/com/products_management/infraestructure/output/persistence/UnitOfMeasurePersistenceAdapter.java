@@ -2,11 +2,15 @@ package com.products_management.infraestructure.output.persistence;
 
 import com.products_management.application.ports.output.IUnitOfMeasurePersistencePort;
 import com.products_management.domain.model.UnitOfMeasure;
+import com.products_management.infraestructure.output.persistence.entity.UnitOfMeasureEntity;
 import com.products_management.infraestructure.output.persistence.mapper.interfaces.IUnitOfMeasurePersistenceMapper;
 import com.products_management.infraestructure.output.persistence.repository.IUnitOfMeasureRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
-import java.util.List;
 import java.util.Optional;
 
 /**
@@ -33,16 +37,6 @@ public class UnitOfMeasurePersistenceAdapter implements IUnitOfMeasurePersistenc
     }
 
     /**
-     * Obtiene una lista de todas las unidades de medida.
-     *
-     * @return una lista de unidades de medida
-     */
-    @Override
-    public List<UnitOfMeasure> findAll() {
-        return unitOfMeasurePersistenceMapper.toUnitOfMeasureList(unitOfMeasureRepository.findAll());
-    }
-
-    /**
      * Crea una nueva unidad de medida.
      *
      * @param unitOfMeasure la unidad de medida a crear
@@ -61,31 +55,6 @@ public class UnitOfMeasurePersistenceAdapter implements IUnitOfMeasurePersistenc
     @Override
     public void deleteById(Long id) {
         unitOfMeasureRepository.deleteById(Long.valueOf(id));
-    }
-
-    /**
-     * Busca unidades de medida por ID de empresa.
-     *
-     * @param enterpriseId el ID de la empresa
-     * @return una lista de unidades de medida de la empresa
-     */
-    @Override
-    public List<UnitOfMeasure> findByEnterpriseId(String enterpriseId) {
-        return unitOfMeasurePersistenceMapper.toUnitOfMeasureList(
-                unitOfMeasureRepository.findByEnterpriseId(enterpriseId));
-    }
-
-    /**
-     * Busca unidades de medida activas por ID de empresa.
-     *
-     * @param enterpriseId el ID de la empresa
-     * @param state el estado de la unidad de medida
-     * @return una lista de unidades de medida activas de la empresa
-     */
-    @Override
-    public List<UnitOfMeasure> findByEnterpriseIdAndState(String enterpriseId, boolean state) {
-        return unitOfMeasurePersistenceMapper.toUnitOfMeasureList(
-                unitOfMeasureRepository.findByEnterpriseIdAndState(enterpriseId, state));
     }
 
     /**
@@ -136,5 +105,172 @@ public class UnitOfMeasurePersistenceAdapter implements IUnitOfMeasurePersistenc
     @Override
     public boolean existsByAbbreviationAndEnterpriseIdAndIdNot(String abbreviation, String enterpriseId, Long id) {
         return unitOfMeasureRepository.existsByAbbreviationAndEnterpriseIdAndIdNot(abbreviation, enterpriseId, id);
+    }
+
+    /**
+     * Obtiene todas las unidades de medida de una empresa con paginación.
+     *
+     * @param enterpriseId el ID de la empresa
+     * @param pageable información de paginación
+     * @return página de unidades de medida encontradas (puede estar vacía si no hay datos)
+     */
+    @Override
+    public Page<UnitOfMeasure> getAllUnitOfMeasuresBy(String enterpriseId, Pageable pageable) {
+        Page<UnitOfMeasureEntity> pageEntities = unitOfMeasureRepository.getUnitOfMeasuresBy(enterpriseId, pageable);
+        Page<UnitOfMeasure> pageUnitOfMeasures = pageEntities.map(this::convertToUnitOfMeasure);
+
+        return pageUnitOfMeasures;
+    }
+
+    /**
+     * Obtiene todas las unidades de medida de una empresa filtradas por estado.
+     * Optimizado para exportación: el filtro se aplica en BD, no en memoria.
+     *
+     * @param enterpriseId El identificador de la entidad
+     * @param state Estado de las unidades de medida (true=activas, false=inactivas)
+     * @param pageable El objeto Pageable que contiene la información de paginación
+     * @return Una página de objetos UnitOfMeasure filtrados por estado
+     */
+    @Override
+    public Page<UnitOfMeasure> getAllUnitOfMeasuresByState(String enterpriseId, Boolean state, Pageable pageable) {
+        Page<UnitOfMeasureEntity> pageEntities = unitOfMeasureRepository.getUnitOfMeasuresByEnterpriseIdAndState(enterpriseId, state, pageable);
+        Page<UnitOfMeasure> pageUnitOfMeasures = pageEntities.map(this::convertToUnitOfMeasure);
+
+        return pageUnitOfMeasures;
+    }
+
+    /**
+     * Busca unidades de medida por empresa y término de búsqueda con ordenamiento.
+     * Busca en: nombres, abreviaturas.
+     *
+     * @param enterpriseId ID de la empresa
+     * @param search Término de búsqueda
+     * @param page Número de página
+     * @param size Tamaño de página
+     * @param sortField Campo de ordenamiento
+     * @param sortOrder Orden (asc/desc)
+     * @return Página de unidades de medida que coinciden con la búsqueda
+     */
+    @Override
+    public Page<UnitOfMeasure> findByEnterpriseIdAndSearch(String enterpriseId, String search, int page, int size, String sortField, String sortOrder) {
+        String entitySortField = mapUnitOfMeasureSortField(sortField);
+        Sort sort = "desc".equalsIgnoreCase(sortOrder) 
+            ? Sort.by(entitySortField).descending() 
+            : Sort.by(entitySortField).ascending();
+        
+        Pageable pageable = PageRequest.of(page, size, sort);
+        Page<UnitOfMeasureEntity> pageEntities = unitOfMeasureRepository.findByEnterpriseIdAndSearch(enterpriseId, search, pageable);
+        Page<UnitOfMeasure> pageUnitOfMeasures = pageEntities.map(this::convertToUnitOfMeasure);
+
+        return pageUnitOfMeasures;
+    }
+
+    /**
+     * Cuenta unidades de medida por empresa y término de búsqueda.
+     *
+     * @param enterpriseId ID de la empresa
+     * @param search Término de búsqueda
+     * @return Cantidad de unidades de medida que coinciden
+     */
+    @Override
+    public long countByEnterpriseIdAndSearch(String enterpriseId, String search) {
+        return unitOfMeasureRepository.countByEnterpriseIdAndSearch(enterpriseId, search);
+    }
+
+    /**
+     * Obtiene todas las unidades de medida con ordenamiento.
+     * @param enterpriseId El id de la empresa
+     * @param page Número de página
+     * @param size Tamaño de página
+     * @param sortField Campo de ordenamiento
+     * @param sortOrder Orden (asc/desc)
+     * @return Página de unidades de medida ordenadas
+     */
+    @Override
+    public Page<UnitOfMeasure> getAllUnitOfMeasuresByWithSort(String enterpriseId, int page, int size, String sortField, String sortOrder) {
+        String entitySortField = mapUnitOfMeasureSortField(sortField);
+        Sort sort = "desc".equalsIgnoreCase(sortOrder) 
+            ? Sort.by(entitySortField).descending() 
+            : Sort.by(entitySortField).ascending();
+        
+        Pageable pageable = PageRequest.of(page, size, sort);
+        Page<UnitOfMeasureEntity> pageEntities = unitOfMeasureRepository.getUnitOfMeasuresBy(enterpriseId, pageable);
+        Page<UnitOfMeasure> pageUnitOfMeasures = pageEntities.map(this::convertToUnitOfMeasure);
+
+        return pageUnitOfMeasures;
+    }
+
+    /**
+     * Cuenta el total de unidades de medida por empresa.
+     * @param enterpriseId El id de la empresa
+     * @return El número total de unidades de medida
+     */
+    @Override
+    public long countByEnterpriseId(String enterpriseId) {
+        return unitOfMeasureRepository.countByEnterpriseId(enterpriseId);
+    }
+
+    /**
+     * Obtiene todas las unidades de medida activas de una empresa con ordenamiento.
+     *
+     * @param enterpriseId ID de la empresa
+     * @param page Número de página
+     * @param size Tamaño de página
+     * @param sortField Campo de ordenamiento
+     * @param sortOrder Orden (asc/desc)
+     * @return Página de unidades de medida activas ordenadas
+     */
+    @Override
+    public Page<UnitOfMeasure> getActiveUnitOfMeasuresBy(String enterpriseId, int page, int size, String sortField, String sortOrder) {
+        String entitySortField = mapUnitOfMeasureSortField(sortField);
+        Sort sort = "desc".equalsIgnoreCase(sortOrder) 
+            ? Sort.by(entitySortField).descending() 
+            : Sort.by(entitySortField).ascending();
+        
+        Pageable pageable = PageRequest.of(page, size, sort);
+        Page<UnitOfMeasureEntity> pageEntities = unitOfMeasureRepository.getActiveUnitOfMeasuresBy(enterpriseId, pageable);
+        Page<UnitOfMeasure> pageUnitOfMeasures = pageEntities.map(this::convertToUnitOfMeasure);
+
+        return pageUnitOfMeasures;
+    }
+
+    /**
+     * Cuenta el total de unidades de medida activas por empresa.
+     *
+     * @param enterpriseId ID de la empresa
+     * @return Cantidad total de unidades de medida activas
+     */
+    @Override
+    public long countActiveByEnterpriseId(String enterpriseId) {
+        return unitOfMeasureRepository.countActiveByEnterpriseId(enterpriseId);
+    }
+
+    /**
+     * Mapea el campo de ordenamiento del modelo UnitOfMeasure al campo correspondiente en UnitOfMeasureEntity.
+     * Solo permite ordenamiento por nombre y abreviación.
+     * @param sortField Campo de ordenamiento del modelo
+     * @return Campo de ordenamiento de la entidad
+     */
+    private String mapUnitOfMeasureSortField(String sortField) {
+        if (sortField == null || sortField.trim().isEmpty()) {
+            return "name"; // Default
+        }
+        switch (sortField.toLowerCase()) {
+            case "name":
+                return "name";
+            case "abbreviation":
+                return "abbreviation";
+            default:
+                return "name"; // Default para cualquier otro campo
+        }
+    }
+
+    /**
+     * Convierte un objeto UnitOfMeasureEntity a un objeto UnitOfMeasure.
+     * @param unitOfMeasureEntity El objeto UnitOfMeasureEntity que se va a convertir.
+     * @return El objeto UnitOfMeasure resultante de la conversión.
+     */
+    private UnitOfMeasure convertToUnitOfMeasure(UnitOfMeasureEntity unitOfMeasureEntity) {
+        return unitOfMeasurePersistenceMapper.toUnitOfMeasure(unitOfMeasureEntity);
     }
 }

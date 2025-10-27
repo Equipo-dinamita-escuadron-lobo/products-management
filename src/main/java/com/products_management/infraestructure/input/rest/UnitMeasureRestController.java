@@ -1,17 +1,21 @@
 package com.products_management.infraestructure.input.rest;
 
 import com.products_management.application.ports.input.IUnitOfMeasureServicePort;
+import com.products_management.domain.model.UnitOfMeasure;
 import com.products_management.infraestructure.input.rest.mapper.interfaces.IUnitOfMeasureRestMapper;
 import com.products_management.infraestructure.input.rest.model.request.UnitOfMeasureCreateRequest;
 import com.products_management.infraestructure.input.rest.model.response.UnitOfMeasureResponse;
+import com.products_management.infraestructure.utils.PaginationHelper;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.util.Optional;
 
 /**
  * Controlador REST para la gestión de unidades de medida.
@@ -24,16 +28,34 @@ public class UnitMeasureRestController {
         private final IUnitOfMeasureServicePort unitOfMeasureServicePort;
         private final IUnitOfMeasureRestMapper unitOfMeasureRestMapper;
 
-        @GetMapping("/findAll/{enterpriseId}")
-        public List<UnitOfMeasureResponse> findAll(@PathVariable String enterpriseId) {
-                return unitOfMeasureRestMapper
-                                .toUnitOfMeasureResponseList(unitOfMeasureServicePort.findAll(enterpriseId));
-        }
+       
+        @GetMapping("/findAll")
+        public ResponseEntity<Page<UnitOfMeasureResponse>> findAll(
+                        @RequestParam String enterpriseId,
+                        @RequestParam(required = false) String search,
+                        @RequestParam(required = false) Optional<Integer> numPage,
+                        @RequestParam(required = false) Optional<Integer> size,
+                        @RequestParam(defaultValue = "name") String sortField,
+                        @RequestParam(defaultValue = "asc") String sortOrder) {
 
-        @GetMapping("/findActivate/{enterpriseId}")
-        public List<UnitOfMeasureResponse> findActivate(@PathVariable String enterpriseId) {
-                return unitOfMeasureRestMapper
-                                .toUnitOfMeasureResponseList(unitOfMeasureServicePort.findActivated(enterpriseId));
+                // Contar total de registros (con o sin filtro)
+                long totalRecords = (search != null && !search.trim().isEmpty())
+                                ? unitOfMeasureServicePort.countByEntIdAndSearch(enterpriseId, search)
+                                : unitOfMeasureServicePort.countAllUnitOfMeasuresByEntId(enterpriseId);
+
+                // Crear Pageable flexible
+                Pageable pageable = PaginationHelper.createFlexiblePageable(numPage, size, totalRecords);
+
+                // Obtener página de datos (con o sin filtro)
+                Page<UnitOfMeasure> page = (search != null && !search.trim().isEmpty())
+                                ? unitOfMeasureServicePort.findByEntIdAndSearch(enterpriseId, search,
+                                                pageable.getPageNumber(), pageable.getPageSize(), sortField, sortOrder)
+                                : unitOfMeasureServicePort.getAllUnitOfMeasuresByWithSort(enterpriseId,
+                                                pageable.getPageNumber(), pageable.getPageSize(), sortField, sortOrder);
+
+                Page<UnitOfMeasureResponse> response = page.map(unitOfMeasureRestMapper::toUnitOfMeasureResponse);
+
+                return ResponseEntity.ok(response);
         }
 
         @GetMapping("/findById/{id}")

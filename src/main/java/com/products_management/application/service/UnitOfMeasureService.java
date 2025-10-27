@@ -10,11 +10,11 @@ import com.products_management.domain.model.Product;
 import com.products_management.domain.model.UnitOfMeasure;
 import com.products_management.domain.utils.StringNormalizer;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.Comparator;
 
 
 
@@ -43,31 +43,6 @@ public class UnitOfMeasureService implements IUnitOfMeasureServicePort {
         return unitMeasurePersistencePort.findById(id).orElseThrow(UnitOfMeasureNotFoundException::new);
     }
 
-    /**
-     * Obtiene una lista de todas las unidades de medida asociadas a una empresa.
-     *
-     * @param enterpriseId el ID de la empresa.
-     * @return una lista de todas las unidades de medida de la empresa.
-     */
-
-    @Override
-    public List<UnitOfMeasure> findAll(String enterpriseId) {
-        return unitMeasurePersistencePort.findByEnterpriseId(enterpriseId).stream()
-                .sorted(Comparator.comparing(UnitOfMeasure::getName)) // Ordenar alfabéticamente por nombre
-                .collect(Collectors.toList());
-    }
-
-    /**
-     * Obtiene una lista de todas las unidades de medida activadas asociadas a una empresa.
-     *
-     * @param enterpriseId el ID de la empresa.
-     * @return una lista de todas las unidades de medida activadas de la empresa.
-     */
-
-    @Override
-    public List<UnitOfMeasure> findActivated(String enterpriseId) {
-        return unitMeasurePersistencePort.findByEnterpriseIdAndState(enterpriseId, true);
-    }
 
     /**
      * Crea una nueva unidad de medida.
@@ -124,7 +99,7 @@ public class UnitOfMeasureService implements IUnitOfMeasureServicePort {
     @Override
     public void changeState(Long id) {
         UnitOfMeasure unitOfMeasure = unitMeasurePersistencePort.findById(id)
-                .orElseThrow(() -> new UnitOfMeasureNotFoundException());
+                .orElseThrow(UnitOfMeasureNotFoundException::new);
         unitOfMeasure.setState(!unitOfMeasure.isState());
         unitMeasurePersistencePort.create(unitOfMeasure);
     }
@@ -189,5 +164,97 @@ public class UnitOfMeasureService implements IUnitOfMeasureServicePort {
                 unitOfMeasure.getAbbreviation(), unitOfMeasure.getEnterpriseId(), id)) {
             throw new UnitOfMeasureAbbreviationAlreadyExistsException(unitOfMeasure.getAbbreviation());
         }
+    }
+
+    /**
+     * Obtiene todas las unidades de medida de una empresa con paginación.
+     *
+     * @param enterpriseId el ID de la empresa
+     * @param pageable información de paginación
+     * @return página de unidades de medida encontradas (puede estar vacía si no hay datos)
+     */
+    @Override
+    public Page<UnitOfMeasure> getAllUnitOfMeasuresBy(String enterpriseId, Pageable pageable) {
+        return unitMeasurePersistencePort.getAllUnitOfMeasuresBy(enterpriseId, pageable);
+    }
+
+    /**
+     * Cuenta el total de unidades de medida por empresa.
+     *
+     * @param enterpriseId el ID de la empresa
+     * @return el número total de unidades de medida
+     */
+    @Override
+    public long countAllUnitOfMeasuresByEntId(String enterpriseId) {
+        return unitMeasurePersistencePort.countByEnterpriseId(enterpriseId);
+    }
+
+    /**
+     * Busca unidades de medida por empresa y término de búsqueda con ordenamiento.
+     *
+     * @param enterpriseId El id de la empresa
+     * @param search Término de búsqueda
+     * @param page Número de página
+     * @param size Tamaño de página
+     * @param sortField Campo de ordenamiento
+     * @param sortOrder Orden (asc/desc)
+     * @return Página de unidades de medida que coinciden con la búsqueda
+     */
+    @Override
+    public Page<UnitOfMeasure> findByEntIdAndSearch(String enterpriseId, String search, int page, int size, String sortField, String sortOrder) {
+        return unitMeasurePersistencePort.findByEnterpriseIdAndSearch(enterpriseId, search, page, size, sortField, sortOrder);
+    }
+
+    /**
+     * Cuenta unidades de medida por empresa y término de búsqueda.
+     *
+     * @param enterpriseId El id de la empresa
+     * @param search Término de búsqueda
+     * @return Cantidad de unidades de medida que coinciden
+     */
+    @Override
+    public long countByEntIdAndSearch(String enterpriseId, String search) {
+        return unitMeasurePersistencePort.countByEnterpriseIdAndSearch(enterpriseId, search);
+    }
+
+    /**
+     * Obtiene todas las unidades de medida con ordenamiento.
+     *
+     * @param enterpriseId El id de la empresa
+     * @param page Número de página
+     * @param size Tamaño de página
+     * @param sortField Campo de ordenamiento
+     * @param sortOrder Orden (asc/desc)
+     * @return Página de unidades de medida ordenadas
+     */
+    @Override
+    public Page<UnitOfMeasure> getAllUnitOfMeasuresByWithSort(String enterpriseId, int page, int size, String sortField, String sortOrder) {
+        return unitMeasurePersistencePort.getAllUnitOfMeasuresByWithSort(enterpriseId, page, size, sortField, sortOrder);
+    }
+
+    /**
+     * Obtiene todas las unidades de medida activas con ordenamiento.
+     *
+     * @param enterpriseId El id de la empresa
+     * @param page Número de página
+     * @param size Tamaño de página
+     * @param sortField Campo de ordenamiento
+     * @param sortOrder Orden (asc/desc)
+     * @return Página de unidades de medida activas ordenadas
+     */
+    @Override
+    public Page<UnitOfMeasure> getAllActiveUnitOfMeasuresByWithSort(String enterpriseId, int page, int size, String sortField, String sortOrder) {
+        return unitMeasurePersistencePort.getActiveUnitOfMeasuresBy(enterpriseId, page, size, sortField, sortOrder);
+    }
+
+    /**
+     * Cuenta el total de unidades de medida activas por empresa.
+     *
+     * @param enterpriseId el ID de la empresa
+     * @return el número total de unidades de medida activas
+     */
+    @Override
+    public long countActiveUnitOfMeasuresByEntId(String enterpriseId) {
+        return unitMeasurePersistencePort.countActiveByEnterpriseId(enterpriseId);
     }
 }

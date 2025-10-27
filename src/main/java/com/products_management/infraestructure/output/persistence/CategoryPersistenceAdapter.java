@@ -66,14 +66,6 @@ public class CategoryPersistenceAdapter implements ICategoryPersistencePort {
     }
 
     /**
-     * Elimina todas las categorías.
-     */
-    @Override
-    public void deleteAll() {
-        categoryRepository.deleteAll();
-    }
-
-    /**
      * Busca categorías por ID de empresa.
      *
      * @param enterpriseId el ID de la empresa

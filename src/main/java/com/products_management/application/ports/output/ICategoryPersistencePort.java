@@ -43,11 +43,6 @@ public interface ICategoryPersistencePort {
     void deleteById(Long id);
 
     /**
-     * Elimina todas las categorías.
-     */
-    void deleteAll();
-    
-    /**
      * Busca categorías por ID de empresa.
      *
      * @param enterpriseId el ID de la empresa.

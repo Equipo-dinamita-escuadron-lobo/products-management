@@ -150,15 +150,6 @@ public class CategoryService implements ICategoryServicePort {
     }
 
     /**
-     * Elimina todas las categorías.
-     */
-
-    @Override
-    public void deleteAll() {
-        categoryPersistencePort.deleteAll();
-    }
-
-    /**
      * Valida que el nombre de una categoría sea único dentro de la empresa.
      *
      * @param category la categoría a validar.

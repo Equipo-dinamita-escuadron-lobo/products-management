@@ -64,9 +64,4 @@ public class CategoryRestController {
         public void deleteById(@PathVariable String enterpriseId, @PathVariable Long id) {
                 categoryServicePort.deleteById(enterpriseId, id);
         }
-
-        @DeleteMapping("/deleteAll")
-        public void deleteAll() {
-                categoryServicePort.deleteAll();
-        }
 }

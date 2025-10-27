@@ -69,9 +69,4 @@ public interface ICategoryServicePort {
      * @param id el ID de la categoría cuyo estado se va a cambiar.
      */
     void changeState(String enterpriseId, Long id);
-
-    /**
-     * Elimina todas las categorías.
-     */
-    void deleteAll();
 }

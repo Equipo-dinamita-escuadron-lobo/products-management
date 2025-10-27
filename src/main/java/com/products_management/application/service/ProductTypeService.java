@@ -9,6 +9,7 @@ import com.products_management.domain.exception.productType.ProductTypeNameAlrea
 import com.products_management.domain.model.Product;
 import com.products_management.domain.model.ProductType;
 import com.products_management.domain.utils.StringNormalizer;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -31,12 +32,6 @@ public class ProductTypeService implements IProductTypeServicePort {
         productType.setName(StringNormalizer.normalize(productType.getName()));
         validateProductTypeUniqueness(productType);
         return productTypeOutputPort.save(productType);
-    }
-
-    @Override
-    public List<ProductType> getProductTypesByEnterpriseId(String enterpriseId) {
-        List<ProductType> productTypes = productTypeOutputPort.findByEnterpriseId(enterpriseId);
-        return productTypes;
     }
 
     /**
@@ -116,6 +111,26 @@ public class ProductTypeService implements IProductTypeServicePort {
     @Override
     public List<ProductType> getProductTypesByEnterpriseIdAndState(String enterpriseId, boolean state) {
         return productTypeOutputPort.findByEnterpriseIdAndState(enterpriseId, state);
+    }
+    
+    @Override
+    public Page<ProductType> getAllProductTypesByWithSort(String enterpriseId, int page, int size, String sortField, String sortOrder) {
+        return productTypeOutputPort.getAllProductTypesByWithSort(enterpriseId, page, size, sortField, sortOrder);
+    }
+
+    @Override
+    public Page<ProductType> findByEnterpriseIdAndSearch(String enterpriseId, String search, int page, int size, String sortField, String sortOrder) {
+        return productTypeOutputPort.findByEnterpriseIdAndSearch(enterpriseId, search, page, size, sortField, sortOrder);
+    }
+
+    @Override
+    public long countByEnterpriseIdAndSearch(String enterpriseId, String search) {
+        return productTypeOutputPort.countByEnterpriseIdAndSearch(enterpriseId, search);
+    }
+
+    @Override
+    public long countByEnterpriseId(String enterpriseId) {
+        return productTypeOutputPort.countByEnterpriseId(enterpriseId);
     }
     
     /**

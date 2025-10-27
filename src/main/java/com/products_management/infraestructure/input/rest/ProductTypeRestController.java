@@ -1,12 +1,15 @@
 package com.products_management.infraestructure.input.rest;
 
+import com.products_management.application.ports.input.IProductTypeServicePort;
 import com.products_management.domain.model.ProductType;
 import com.products_management.infraestructure.input.rest.mapper.interfaces.IProductTypeRestMapper;
 import com.products_management.infraestructure.input.rest.model.request.ProductTypeRequest;
 import com.products_management.infraestructure.input.rest.model.response.ProductTypeResponse;
+import com.products_management.infraestructure.utils.PaginationHelper;
 
-import com.products_management.application.ports.input.IProductTypeServicePort;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -20,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -41,15 +45,6 @@ public class ProductTypeRestController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    @GetMapping("/enterprise/{enterpriseId}")
-    public ResponseEntity<List<ProductTypeResponse>> getProductTypesByEnterpriseId(@PathVariable String enterpriseId) {
-        List<ProductType> productTypes = productTypeService.getProductTypesByEnterpriseId(enterpriseId);
-        List<ProductTypeResponse> responses = productTypes.stream()
-                .map(productTypeMapper::toProductTypeResponse)
-                .collect(Collectors.toList());
-        return ResponseEntity.ok(responses);
-    }
-
     @GetMapping("/findActivate/{enterpriseId}")
     public List<ProductTypeResponse> findActivate(@PathVariable String enterpriseId) {
         List<ProductType> productTypes = productTypeService.findActivated(enterpriseId);
@@ -58,6 +53,31 @@ public class ProductTypeRestController {
                 .collect(Collectors.toList());
     }
 
+    @GetMapping("/findAll")
+    public ResponseEntity<Page<ProductTypeResponse>> findAll(
+            @RequestParam String enterpriseId,
+            @RequestParam(required = false) String search,
+            @RequestParam(required = false) Optional<Integer> numPage,
+            @RequestParam(required = false) Optional<Integer> size,
+            @RequestParam(defaultValue = "name") String sortField,
+            @RequestParam(defaultValue = "asc") String sortOrder) {
+
+        long totalRecords = (search != null && !search.trim().isEmpty())
+                ? productTypeService.countByEnterpriseIdAndSearch(enterpriseId, search)
+                : productTypeService.countByEnterpriseId(enterpriseId);
+
+        Pageable pageable = PaginationHelper.createFlexiblePageable(numPage, size, totalRecords);
+
+        Page<ProductType> page = (search != null && !search.trim().isEmpty())
+                ? productTypeService.findByEnterpriseIdAndSearch(enterpriseId, search,
+                        pageable.getPageNumber(), pageable.getPageSize(), sortField, sortOrder)
+                : productTypeService.getAllProductTypesByWithSort(enterpriseId,
+                        pageable.getPageNumber(), pageable.getPageSize(), sortField, sortOrder);
+
+        Page<ProductTypeResponse> response = page.map(productTypeMapper::toProductTypeResponse);
+
+        return ResponseEntity.ok(response);
+    }
 
     @GetMapping("/{id}")
     public ResponseEntity<ProductTypeResponse> getProductTypeById(@PathVariable Long id, @RequestParam String enterpriseId) {

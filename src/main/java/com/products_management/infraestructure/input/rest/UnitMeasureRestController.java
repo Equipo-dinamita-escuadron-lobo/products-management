@@ -69,9 +69,4 @@ public class UnitMeasureRestController {
                 unitOfMeasureServicePort.deleteById(id);
         }
 
-        @DeleteMapping("/deleteAll")
-        public void deleteAll() {
-                unitOfMeasureServicePort.deleteAll();
-        }
-
 }

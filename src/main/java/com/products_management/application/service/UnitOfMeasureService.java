@@ -150,15 +150,6 @@ public class UnitOfMeasureService implements IUnitOfMeasureServicePort {
     }
 
     /**
-     * Elimina todas las unidades de medida.
-     */
-
-    @Override
-    public void deleteAll() {
-        unitMeasurePersistencePort.deleteAll();
-    }
-
-    /**
      * Valida que el nombre y la abreviación de una unidad de medida sean únicos dentro de la empresa.
      *
      * @param unitOfMeasure la unidad de medida a validar.

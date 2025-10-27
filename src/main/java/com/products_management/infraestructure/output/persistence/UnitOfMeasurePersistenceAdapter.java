@@ -64,14 +64,6 @@ public class UnitOfMeasurePersistenceAdapter implements IUnitOfMeasurePersistenc
     }
 
     /**
-     * Elimina todas las unidades de medida.
-     */
-    @Override
-    public void deleteAll() {
-        unitOfMeasureRepository.deleteAll();
-    }
-
-    /**
      * Busca unidades de medida por ID de empresa.
      *
      * @param enterpriseId el ID de la empresa

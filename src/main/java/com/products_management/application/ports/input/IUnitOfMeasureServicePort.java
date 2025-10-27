@@ -64,9 +64,4 @@ public interface IUnitOfMeasureServicePort {
      * @param id el ID de la unidad de medida cuyo estado se va a cambiar.
      */
     void changeState(Long id);
-
-    /**
-     * Elimina todas las unidades de medida.
-     */
-    void deleteAll();
 }

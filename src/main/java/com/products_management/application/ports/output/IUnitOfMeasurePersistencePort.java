@@ -59,11 +59,6 @@ public interface IUnitOfMeasurePersistencePort {
     void deleteById(Long id);
 
     /**
-     * Elimina todas las unidades de medida.
-     */
-    void deleteAll();
-    
-    /**
      * Verifica si existe una unidad de medida con el nombre especificado para una empresa.
      *
      * @param name el nombre de la unidad de medida.

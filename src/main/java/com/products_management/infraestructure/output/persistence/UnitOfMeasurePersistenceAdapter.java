@@ -25,14 +25,15 @@ public class UnitOfMeasurePersistenceAdapter implements IUnitOfMeasurePersistenc
     private final IUnitOfMeasurePersistenceMapper unitOfMeasurePersistenceMapper;
 
     /**
-     * Busca una unidad de medida por su ID.
+     * Busca una unidad de medida por su ID y empresa.
      *
-     * @param id el ID de la unidad de medida
-     * @return un Optional que contiene la unidad de medida si se encuentra, de lo contrario vacío
+     * @param id el ID de la unidad de medida a buscar.
+     * @param enterpriseId el ID de la empresa.
+     * @return un Optional que contiene la unidad de medida encontrada, o un Optional vacío si no se encuentra.
      */
     @Override
-    public Optional<UnitOfMeasure> findById(Long id) {
-        return unitOfMeasureRepository.findById(Long.valueOf(id))
+    public Optional<UnitOfMeasure> findByIdAndEnterpriseId(Long id, String enterpriseId) {
+        return unitOfMeasureRepository.findByIdAndEnterpriseId(id, enterpriseId)
                 .map(unitOfMeasurePersistenceMapper::toUnitOfMeasure);
     }
 
@@ -48,13 +49,30 @@ public class UnitOfMeasurePersistenceAdapter implements IUnitOfMeasurePersistenc
     }
 
     /**
-     * Elimina una unidad de medida por su ID.
+     * Elimina una unidad de medida por su ID y empresa.
      *
-     * @param id el ID de la unidad de medida a eliminar
+     * @param id el ID de la unidad de medida a eliminar.
+     * @param enterpriseId el ID de la empresa.
      */
     @Override
-    public void deleteById(Long id) {
-        unitOfMeasureRepository.deleteById(Long.valueOf(id));
+    public void deleteByIdAndEnterpriseId(Long id, String enterpriseId) {
+        unitOfMeasureRepository.findByIdAndEnterpriseId(id, enterpriseId)
+                .ifPresent(unitOfMeasureRepository::delete);
+    }
+
+    /**
+     * Cambia el estado de una unidad de medida por ID y empresa.
+     *
+     * @param id el ID de la unidad de medida.
+     * @param enterpriseId el ID de la empresa.
+     * @return la unidad de medida actualizada.
+     */
+    @Override
+    public UnitOfMeasure changeStateByIdAndEnterpriseId(Long id, String enterpriseId) {
+        UnitOfMeasureEntity entity = unitOfMeasureRepository.findByIdAndEnterpriseId(id, enterpriseId)
+                .orElseThrow(() -> new RuntimeException("Unit of measure not found"));
+        entity.setState(!entity.isState());
+        return unitOfMeasurePersistenceMapper.toUnitOfMeasure(unitOfMeasureRepository.save(entity));
     }
 
     /**

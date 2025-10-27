@@ -9,11 +9,18 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
+import java.util.Optional;
+
 /**
  * Interfaz para el repositorio de unidades de medida que extiende JpaRepository.
  * Proporciona métodos para realizar operaciones CRUD en UnitOfMeasureEntity.
  */
 public interface IUnitOfMeasureRepository extends JpaRepository<UnitOfMeasureEntity, Long> {
+    
+    /**
+     * Busca una unidad de medida por ID e ID de empresa.
+     */
+    Optional<UnitOfMeasureEntity> findByIdAndEnterpriseId(Long id, String enterpriseId);
     
     /**
      * Busca unidades de medida por ID de empresa.

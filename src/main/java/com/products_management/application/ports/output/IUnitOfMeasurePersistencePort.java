@@ -14,12 +14,13 @@ import java.util.Optional;
 public interface IUnitOfMeasurePersistencePort {
 
     /**
-     * Busca una unidad de medida por su ID.
+     * Busca una unidad de medida por su ID y empresa.
      *
      * @param id el ID de la unidad de medida a buscar.
+     * @param enterpriseId el ID de la empresa.
      * @return un Optional que contiene la unidad de medida encontrada, o un Optional vacío si no se encuentra.
      */
-    Optional<UnitOfMeasure> findById(Long id);
+    Optional<UnitOfMeasure> findByIdAndEnterpriseId(Long id, String enterpriseId);
 
 
     /**
@@ -111,11 +112,21 @@ public interface IUnitOfMeasurePersistencePort {
     UnitOfMeasure create(UnitOfMeasure unitOfMeasure);
 
     /**
-     * Elimina una unidad de medida por su ID.
+     * Elimina una unidad de medida por su ID y empresa.
      *
      * @param id el ID de la unidad de medida a eliminar.
+     * @param enterpriseId el ID de la empresa.
      */
-    void deleteById(Long id);
+    void deleteByIdAndEnterpriseId(Long id, String enterpriseId);
+
+    /**
+     * Cambia el estado de una unidad de medida por ID y empresa.
+     *
+     * @param id el ID de la unidad de medida.
+     * @param enterpriseId el ID de la empresa.
+     * @return la unidad de medida actualizada.
+     */
+    UnitOfMeasure changeStateByIdAndEnterpriseId(Long id, String enterpriseId);
 
     /**
      * Verifica si existe una unidad de medida con el nombre especificado para una empresa.

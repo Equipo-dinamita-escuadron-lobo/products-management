@@ -12,12 +12,13 @@ import org.springframework.data.domain.Pageable;
 public interface IUnitOfMeasureServicePort {
 
     /**
-     * Busca una unidad de medida por su ID.
+     * Busca una unidad de medida por su ID y empresa.
      *
      * @param id el ID de la unidad de medida a buscar.
-     * @return la unidad de medida encontrada, o null si no se encuentra.
+     * @param enterpriseId el ID de la empresa.
+     * @return la unidad de medida encontrada.
      */
-    UnitOfMeasure findById(Long id);
+    UnitOfMeasure findByIdAndEnterpriseId(Long id, String enterpriseId);
 
     /**
      * Obtiene todas las unidades de medida de una empresa con paginación.
@@ -94,22 +95,25 @@ public interface IUnitOfMeasureServicePort {
      * Actualiza una unidad de medida existente.
      *
      * @param id el ID de la unidad de medida a actualizar.
+     * @param enterpriseId el ID de la empresa.
      * @param unitOfMeasure los datos de la unidad de medida actualizada.
      * @return la unidad de medida actualizada.
      */
-    UnitOfMeasure update(Long id, UnitOfMeasure unitOfMeasure);
+    UnitOfMeasure update(Long id, String enterpriseId, UnitOfMeasure unitOfMeasure);
 
     /**
      * Elimina una unidad de medida por su ID.
      *
      * @param id el ID de la unidad de medida a eliminar.
+     * @param enterpriseId el ID de la empresa.
      */
-    void deleteById(Long id);
+    void deleteById(Long id, String enterpriseId);
 
     /**
      * Cambia el estado de una unidad de medida (por ejemplo, activado/desactivado).
      *
      * @param id el ID de la unidad de medida cuyo estado se va a cambiar.
+     * @param enterpriseId el ID de la empresa.
      */
-    void changeState(Long id);
+    void changeState(Long id, String enterpriseId);
 }

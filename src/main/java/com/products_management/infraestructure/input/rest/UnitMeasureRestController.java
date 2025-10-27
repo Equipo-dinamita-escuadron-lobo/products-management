@@ -74,8 +74,8 @@ public class UnitMeasureRestController {
         }
 
         @GetMapping("/findById/{id}")
-        public UnitOfMeasureResponse findById(@PathVariable Long id) {
-                return unitOfMeasureRestMapper.toUnitOfMeasureResponse(unitOfMeasureServicePort.findById(id));
+        public UnitOfMeasureResponse findById(@PathVariable Long id, @RequestParam String enterpriseId) {
+                return unitOfMeasureRestMapper.toUnitOfMeasureResponse(unitOfMeasureServicePort.findByIdAndEnterpriseId(id, enterpriseId));
         }
 
         @PostMapping("/create")
@@ -90,20 +90,21 @@ public class UnitMeasureRestController {
 
         @PutMapping("/update/{id}")
         public UnitOfMeasureResponse update(@PathVariable Long id,
+                        @RequestParam String enterpriseId,
                         @Valid @RequestBody UnitOfMeasureCreateRequest unitOfMeasureCreateRequest) {
+                UnitOfMeasure unitOfMeasure = unitOfMeasureRestMapper.toUnitOfMeasure(unitOfMeasureCreateRequest);
                 return unitOfMeasureRestMapper.toUnitOfMeasureResponse(
-                                unitOfMeasureServicePort.update(id,
-                                                unitOfMeasureRestMapper.toUnitOfMeasure(unitOfMeasureCreateRequest)));
+                                unitOfMeasureServicePort.update(id, enterpriseId, unitOfMeasure));
         }
 
         @PutMapping("/changeState/{id}")
-        public void changeState(@PathVariable Long id) {
-                unitOfMeasureServicePort.changeState(id);
+        public void changeState(@PathVariable Long id, @RequestParam String enterpriseId) {
+                unitOfMeasureServicePort.changeState(id, enterpriseId);
         }
 
         @DeleteMapping("/delete/{id}")
-        public void deleteById(@PathVariable Long id) {
-                unitOfMeasureServicePort.deleteById(id);
+        public void deleteById(@PathVariable Long id, @RequestParam String enterpriseId) {
+                unitOfMeasureServicePort.deleteById(id, enterpriseId);
         }
 
 }

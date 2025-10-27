@@ -14,6 +14,6 @@ public class CategoryNameAlreadyExistsException extends BaseBusinessException {
     
     public CategoryNameAlreadyExistsException(String name) {
         super(ErrorCode.CATEGORY_NAME_ALREADY_EXISTS, 
-              String.format("Ya existe una categoría con el nombre: '%s'", name));
+              String.format("Ya existe una categoría con el nombre '%s'", name));
     }
 }

@@ -14,11 +14,11 @@ public class CategoryNotFoundException extends BaseBusinessException {
     
     public CategoryNotFoundException(Long id) {
         super(ErrorCode.CATEGORY_NOT_FOUND, 
-              String.format("No se encontró la categoría con ID: %d", id));
+              String.format("No se encontró la categoría con ID %d", id));
     }
     
     public CategoryNotFoundException(String name) {
         super(ErrorCode.CATEGORY_NOT_FOUND, 
-              String.format("No se encontró la categoría con nombre: %s", name));
+              String.format("No se encontró la categoría con nombre %s", name));
     }
 }

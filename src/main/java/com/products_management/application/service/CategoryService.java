@@ -140,7 +140,7 @@ public class CategoryService implements ICategoryServicePort {
         // El nombre ya está normalizado, se usa directamente para validación
         if (categoryPersistencePort.existsByNameAndEnterpriseId(
                 category.getName(), category.getEnterpriseId())) {
-            throw new CategoryNameAlreadyExistsException();
+            throw new CategoryNameAlreadyExistsException(category.getName());
         }
     }
 
@@ -156,7 +156,7 @@ public class CategoryService implements ICategoryServicePort {
         // El nombre ya está normalizado, se usa directamente para validación
         if (categoryPersistencePort.existsByNameAndEnterpriseIdAndIdNot(
                 category.getName(), category.getEnterpriseId(), id)) {
-            throw new CategoryNameAlreadyExistsException();
+            throw new CategoryNameAlreadyExistsException(category.getName());
         }
     }
 

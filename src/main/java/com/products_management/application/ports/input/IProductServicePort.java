@@ -65,11 +65,6 @@ public interface IProductServicePort {
   void changeState(Long id);
 
   /**
-   * Elimina todos los productos.
-   */
-  void deleteAll();
-
-  /**
    * Obtiene una lista de todos los productos asociados a una categoría.
    *
    * @param categoryId el ID de la categoría.

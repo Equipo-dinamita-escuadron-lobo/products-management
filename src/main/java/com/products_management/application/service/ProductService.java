@@ -182,15 +182,6 @@ public class ProductService implements IProductServicePort {
     }
 
     /**
-     * Elimina todos los productos.
-     */
-
-    @Override
-    public void deleteAll() {
-        productPersistencePort.deleteAll();
-    }
-
-    /**
      * Obtiene una lista de todos los productos asociados a una categoría.
      *
      * @param categoryId el ID de la categoría.

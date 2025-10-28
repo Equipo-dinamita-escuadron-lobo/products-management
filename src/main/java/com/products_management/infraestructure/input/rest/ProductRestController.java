@@ -75,9 +75,4 @@ public class ProductRestController {
                 productServicePort.deleteById(id);
         }
 
-        @DeleteMapping("/deleteAll")
-        public void deleteAll() {
-                productServicePort.deleteAll();
-        }
-
 }

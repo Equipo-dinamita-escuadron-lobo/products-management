@@ -64,14 +64,6 @@ public class ProductPersistenceAdapter implements IProductPersistencePort {
     }
 
     /**
-     * Elimina todos los productos.
-     */
-    @Override
-    public void deleteAll() {
-        productRepository.deleteAll();
-    }
-
-    /**
      * Busca productos por ID de empresa.
      *
      * @param enterpriseId el ID de la empresa

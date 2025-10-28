@@ -43,19 +43,12 @@ public interface IProductPersistencePort {
     void deleteById(Long id);
 
     /**
-     * Elimina todos los productos.
-     */
-    void deleteAll();
-    
-    /**
      * Busca productos por ID de empresa.
      *
      * @param enterpriseId el ID de la empresa.
      * @return una lista de productos de la empresa.
      */
-    List<Product> findByEnterpriseId(String enterpriseId);
-    
-    /**
+    List<Product> findByEnterpriseId(String enterpriseId);    /**
      * Busca productos activos por ID de empresa.
      *
      * @param enterpriseId el ID de la empresa.

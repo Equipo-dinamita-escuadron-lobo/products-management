@@ -228,14 +228,14 @@ public class ProductService implements IProductServicePort {
         // El nombre ya está normalizado, se usa directamente para validación
         if (productPersistencePort.existsByNameAndEnterpriseId(
                 product.getName(), product.getEnterpriseId())) {
-            throw new ProductNameAlreadyExistsException();
+            throw new ProductNameAlreadyExistsException(product.getName());
         }
         
         // Validar referencia solo si no es null o vacía
         if (product.getReference() != null && !product.getReference().trim().isEmpty()) {
             if (productPersistencePort.existsByReferenceAndEnterpriseId(
                     product.getReference(), product.getEnterpriseId())) {
-                throw new ProductReferenceAlreadyExistsException();
+                throw new ProductReferenceAlreadyExistsException(product.getReference());
             }
         }
     }
@@ -253,14 +253,14 @@ public class ProductService implements IProductServicePort {
         // El nombre ya está normalizado, se usa directamente para validación
         if (productPersistencePort.existsByNameAndEnterpriseIdAndIdNot(
                 product.getName(), product.getEnterpriseId(), id)) {
-            throw new ProductNameAlreadyExistsException();
+            throw new ProductNameAlreadyExistsException(product.getName());
         }
         
         // Validar referencia solo si no es null o vacía
         if (product.getReference() != null && !product.getReference().trim().isEmpty()) {
             if (productPersistencePort.existsByReferenceAndEnterpriseIdAndIdNot(
                     product.getReference(), product.getEnterpriseId(), id)) {
-                throw new ProductReferenceAlreadyExistsException();
+                throw new ProductReferenceAlreadyExistsException(product.getReference());
             }
         }
     }

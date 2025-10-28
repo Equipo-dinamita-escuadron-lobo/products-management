@@ -57,6 +57,12 @@ logging:
   level:
     org:
       Keycloak: ${KEYCLOAK_LOG_LEVEL:DEBUG}
+      hibernate:
+        SQL: DEBUG
+        type:
+          descriptor:
+            sql:
+              BasicBinder: TRACE
 jwt:
   auth:
     converter:

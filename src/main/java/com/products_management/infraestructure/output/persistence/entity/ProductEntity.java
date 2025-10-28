@@ -39,9 +39,9 @@ public class ProductEntity {
     private String description;
     private Integer quantity;
     @ElementCollection
-    @CollectionTable(name = "product_tax_percentage", joinColumns = @JoinColumn(name = "product_id"))
-    @Column(name = "tax_percentage")
-    private List<String> taxPercentage;
+    @CollectionTable(name = "product_taxes", joinColumns = @JoinColumn(name = "product_id"))
+    @Column(name = "tax_id")
+    private List<Long> taxes;
     private Date creationDate;
     private Long unitOfMeasureId;
     private Long categoryId;

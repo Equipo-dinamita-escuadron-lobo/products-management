@@ -47,7 +47,7 @@ public class ProductResponse {
     /**
      * Lista de impuestos aplicados al producto.
      */
-    private List<String> taxPercentage;
+    private List<Long> taxes;
 
     /**
      * Fecha de creación del producto.

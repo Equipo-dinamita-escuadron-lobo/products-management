@@ -39,7 +39,7 @@ public class ProductCreateRequest {
     private Integer quantity;
 
     @NotNull(message = "Lista de impuestos es requerida")
-    private List<String> taxPercentage;
+    private List<Long> taxes;
 
     @NotNull(message = "Fecha de creación es requerida")
     private Date creationDate;

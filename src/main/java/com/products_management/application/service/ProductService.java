@@ -135,7 +135,7 @@ public class ProductService implements IProductServicePort {
                     existingProduct.setName(product.getName());
                     existingProduct.setDescription(product.getDescription());
                     existingProduct.setQuantity(product.getQuantity());
-                    existingProduct.setTaxPercentage(product.getTaxPercentage());
+                    existingProduct.setTaxes(product.getTaxes());
                     existingProduct.setUnitOfMeasureId(product.getUnitOfMeasureId());
                     existingProduct.setCategoryId(product.getCategoryId());
                     existingProduct.setCost(product.getCost());

@@ -47,7 +47,7 @@ public class Product {
     /**
      * @brief Lista de impuestos aplicables al producto.
      */
-    private List<String> taxPercentage;
+    private List<Long> taxes;
 
     /**
      * @brief Fecha de creación del producto.

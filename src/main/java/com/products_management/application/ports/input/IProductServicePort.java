@@ -23,14 +23,6 @@ public interface IProductServicePort {
   Product findById(Long id, String enterpriseId);
 
   /**
-   * Obtiene una lista de todos los productos asociados a una empresa.
-   *
-   * @param enterpriseId el ID de la empresa.
-   * @return una lista de todos los productos de la empresa.
-   */
-  List<Product> findAll(String enterpriseId);
-
-  /**
    * Obtiene una página de productos asociados a una empresa con filtros de búsqueda y paginación.
    *
    * @param enterpriseId el ID de la empresa.

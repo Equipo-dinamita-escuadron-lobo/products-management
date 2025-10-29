@@ -21,11 +21,6 @@ public interface IProductRepository extends JpaRepository<ProductEntity, Long> {
     List<ProductEntity> findByEnterpriseIdAndLastModifiedDateAfter(String enterpriseId, Instant lastSyncDate);
     
     /**
-     * Busca productos por ID de empresa.
-     */
-    List<ProductEntity> findByEnterpriseId(String enterpriseId);
-    
-    /**
      * Busca un producto por ID y empresa.
      */
     Optional<ProductEntity> findByIdAndEnterpriseId(Long id, String enterpriseId);

@@ -54,18 +54,6 @@ public class ProductService implements IProductServicePort {
     }
 
     /**
-     * Obtiene una lista de todos los productos asociados a una empresa.
-     *
-     * @param enterpriseId el ID de la empresa.
-     * @return una lista de todos los productos de la empresa.
-     */
-
-    @Override
-    public List<Product> findAll(String enterpriseId) {
-        return productPersistencePort.findByEnterpriseId(enterpriseId);
-    }
-
-    /**
      * Obtiene una página de productos asociados a una empresa con filtros de búsqueda y paginación.
      *
      * @param enterpriseId el ID de la empresa.

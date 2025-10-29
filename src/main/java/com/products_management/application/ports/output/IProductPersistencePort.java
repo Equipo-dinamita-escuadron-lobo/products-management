@@ -15,14 +15,6 @@ import org.springframework.data.domain.Page;
 public interface IProductPersistencePort {
 
     /**
-     * Busca un producto por su ID.
-     *
-     * @param id el ID del producto a buscar.
-     * @return un Optional que contiene el producto encontrado, o un Optional vacío si no se encuentra.
-     */
-    Optional<Product> findById(Long id);
-
-    /**
      * Busca un producto por su ID y empresa.
      *
      * @param id el ID del producto a buscar.
@@ -30,13 +22,6 @@ public interface IProductPersistencePort {
      * @return un Optional que contiene el producto encontrado, o un Optional vacío si no se encuentra.
      */
     Optional<Product> findByIdAndEnterpriseId(Long id, String enterpriseId);
-
-    /**
-     * Obtiene una lista de todos los productos.
-     *
-     * @return una lista de todos los productos.
-     */
-    List<Product> findAll();
 
     /**
      * Crea un nuevo producto.
@@ -54,12 +39,6 @@ public interface IProductPersistencePort {
     void deleteById(Long id);
 
     /**
-     * Busca productos por ID de empresa.
-     *
-     * @param enterpriseId el ID de la empresa.
-     * @return una lista de productos de la empresa.
-     */
-    List<Product> findByEnterpriseId(String enterpriseId);    /**
      * Busca productos activos por ID de empresa.
      *
      * @param enterpriseId el ID de la empresa.

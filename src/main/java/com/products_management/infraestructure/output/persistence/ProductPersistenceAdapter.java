@@ -24,18 +24,6 @@ public class ProductPersistenceAdapter implements IProductPersistencePort {
     private final IProductPersistenceMapper productPersistenceMapper;
 
     /**
-     * Busca un producto por su ID.
-     *
-     * @param id el ID del producto
-     * @return un Optional que contiene el producto si se encuentra, de lo contrario vacío
-     */
-    @Override
-    public Optional<Product> findById(Long id) {
-        return productRepository.findById(Long.valueOf(id))
-                .map(productPersistenceMapper::toProduct);
-    }
-
-    /**
      * Busca un producto por su ID y empresa.
      *
      * @param id el ID del producto
@@ -46,16 +34,6 @@ public class ProductPersistenceAdapter implements IProductPersistencePort {
     public Optional<Product> findByIdAndEnterpriseId(Long id, String enterpriseId) {
         return productRepository.findByIdAndEnterpriseId(id, enterpriseId)
                 .map(productPersistenceMapper::toProduct);
-    }
-
-    /**
-     * Obtiene una lista de todos los productos.
-     *
-     * @return una lista de productos
-     */
-    @Override
-    public List<Product> findAll() {
-        return productPersistenceMapper.toProductList(productRepository.findAll());
     }
 
     /**
@@ -77,18 +55,6 @@ public class ProductPersistenceAdapter implements IProductPersistencePort {
     @Override
     public void deleteById(Long id) {
         productRepository.deleteById(Long.valueOf(id));
-    }
-
-    /**
-     * Busca productos por ID de empresa.
-     *
-     * @param enterpriseId el ID de la empresa
-     * @return una lista de productos de la empresa
-     */
-    @Override
-    public List<Product> findByEnterpriseId(String enterpriseId) {
-        return productPersistenceMapper.toProductList(
-                productRepository.findByEnterpriseId(enterpriseId));
     }
 
     /**

@@ -5,6 +5,8 @@ import com.products_management.domain.model.Product;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+
 /**
  * Interfaz que define los puertos de persistencia para el servicio de productos.
  * Los puertos de persistencia representan las operaciones de almacenamiento y recuperación
@@ -127,4 +129,34 @@ public interface IProductPersistencePort {
      * @return true si existe, false en caso contrario.
      */
     boolean existsByReferenceAndEnterpriseIdAndIdNot(String reference, String enterpriseId, Long id);
+    
+    /**
+     * Busca productos por ID de empresa con filtros de búsqueda y paginación.
+     *
+     * @param enterpriseId el ID de la empresa.
+     * @param search el término de búsqueda (opcional).
+     * @param pageNumber el número de página.
+     * @param pageSize el tamaño de página.
+     * @param sortField el campo de ordenamiento.
+     * @param sortOrder el orden (asc/desc).
+     * @return una página de productos.
+     */
+    Page<Product> findByEnterpriseIdWithFilters(String enterpriseId, String search, int pageNumber, int pageSize, String sortField, String sortOrder);
+    
+    /**
+     * Cuenta productos por ID de empresa con filtros de búsqueda.
+     *
+     * @param enterpriseId el ID de la empresa.
+     * @param search el término de búsqueda (opcional).
+     * @return el número de productos que coinciden.
+     */
+    long countByEnterpriseIdWithFilters(String enterpriseId, String search);
+    
+    /**
+     * Cuenta todos los productos por ID de empresa.
+     *
+     * @param enterpriseId el ID de la empresa.
+     * @return el número total de productos.
+     */
+    long countByEnterpriseId(String enterpriseId);
 }

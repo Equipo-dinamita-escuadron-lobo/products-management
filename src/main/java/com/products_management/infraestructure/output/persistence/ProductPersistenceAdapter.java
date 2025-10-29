@@ -5,6 +5,9 @@ import com.products_management.domain.model.Product;
 import com.products_management.infraestructure.output.persistence.mapper.interfaces.IProductPersistenceMapper;
 import com.products_management.infraestructure.output.persistence.repository.IProductRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.Optional;
@@ -155,5 +158,47 @@ public class ProductPersistenceAdapter implements IProductPersistencePort {
     @Override
     public boolean existsByReferenceAndEnterpriseIdAndIdNot(String reference, String enterpriseId, Long id) {
         return productRepository.existsByReferenceAndEnterpriseIdAndIdNot(reference, enterpriseId, id);
+    }
+
+    /**
+     * Busca productos por ID de empresa con filtros de búsqueda y paginación.
+     *
+     * @param enterpriseId el ID de la empresa
+     * @param search el término de búsqueda
+     * @param pageNumber el número de página
+     * @param pageSize el tamaño de página
+     * @param sortField el campo de ordenamiento
+     * @param sortOrder el orden (asc/desc)
+     * @return una página de productos
+     */
+    @Override
+    public Page<Product> findByEnterpriseIdWithFilters(String enterpriseId, String search, int pageNumber, int pageSize, String sortField, String sortOrder) {
+        Sort sort = sortOrder.equalsIgnoreCase("desc") ? Sort.by(sortField).descending() : Sort.by(sortField).ascending();
+        PageRequest pageRequest = PageRequest.of(pageNumber, pageSize, sort);
+        return productRepository.findByEnterpriseIdWithFilters(enterpriseId, search, pageRequest)
+                .map(productPersistenceMapper::toProduct);
+    }
+
+    /**
+     * Cuenta productos por ID de empresa con filtros de búsqueda.
+     *
+     * @param enterpriseId el ID de la empresa
+     * @param search el término de búsqueda
+     * @return el número de productos que coinciden
+     */
+    @Override
+    public long countByEnterpriseIdWithFilters(String enterpriseId, String search) {
+        return productRepository.countByEnterpriseIdWithFilters(enterpriseId, search);
+    }
+
+    /**
+     * Cuenta todos los productos por ID de empresa.
+     *
+     * @param enterpriseId el ID de la empresa
+     * @return el número total de productos
+     */
+    @Override
+    public long countByEnterpriseId(String enterpriseId) {
+        return productRepository.countByEnterpriseId(enterpriseId);
     }
 }

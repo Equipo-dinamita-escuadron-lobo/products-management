@@ -4,6 +4,8 @@ import java.util.List;
 
 import com.products_management.domain.model.Product;
 
+import org.springframework.data.domain.Page;
+
 /**
  * Interfaz que define los puertos de entrada para el servicio de productos.
  * Los puertos de entrada representan las operaciones que pueden ser realizadas
@@ -27,6 +29,36 @@ public interface IProductServicePort {
    * @return una lista de todos los productos de la empresa.
    */
   List<Product> findAll(String enterpriseId);
+
+  /**
+   * Obtiene una página de productos asociados a una empresa con filtros de búsqueda y paginación.
+   *
+   * @param enterpriseId el ID de la empresa.
+   * @param search el término de búsqueda (opcional).
+   * @param pageNumber el número de página.
+   * @param pageSize el tamaño de página.
+   * @param sortField el campo de ordenamiento.
+   * @param sortOrder el orden (asc/desc).
+   * @return una página de productos.
+   */
+  Page<Product> findAllWithFilters(String enterpriseId, String search, int pageNumber, int pageSize, String sortField, String sortOrder);
+
+  /**
+   * Cuenta productos por ID de empresa con filtros de búsqueda.
+   *
+   * @param enterpriseId el ID de la empresa.
+   * @param search el término de búsqueda (opcional).
+   * @return el número de productos que coinciden.
+   */
+  long countByEnterpriseIdWithFilters(String enterpriseId, String search);
+
+  /**
+   * Cuenta todos los productos por ID de empresa.
+   *
+   * @param enterpriseId el ID de la empresa.
+   * @return el número total de productos.
+   */
+  long countByEnterpriseId(String enterpriseId);
 
   /**
    * Obtiene una lista de todos los productos activados asociados a una empresa.

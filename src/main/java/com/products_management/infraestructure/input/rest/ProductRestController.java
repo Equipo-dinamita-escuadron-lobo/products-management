@@ -36,10 +36,7 @@ public class ProductRestController {
                         @RequestParam(required = false) String search) {
 
                 Page<Product> productPage = productServicePort.findAllPaginated(enterpriseId, numPage, size, sortField, sortOrder, Optional.ofNullable(search));
-
-                // Mapear a ProductResponse
                 Page<ProductResponse> responsePage = productPage.map(productRestMapper::toProductResponse);
-
                 return new ResponseEntity<>(responsePage, HttpStatus.OK);
         }
 
@@ -55,9 +52,7 @@ public class ProductRestController {
                         @RequestParam(required = false) Optional<Integer> size) {
 
                 Page<Product> productPage = productServicePort.findActivatedPaginated(enterpriseId, numPage, size);
-
                 Page<ProductResponse> responsePage = productPage.map(productRestMapper::toProductResponse);
-
                 return new ResponseEntity<>(responsePage, HttpStatus.OK);
         }
 

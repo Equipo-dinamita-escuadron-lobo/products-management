@@ -64,9 +64,9 @@ public class ProductRestController {
                 return productRestMapper.toProductResponse(productServicePort.findById(id, enterpriseId));
         }
 
-        @GetMapping("/findActivate/{enterpriseId}")
+        @GetMapping("/findActivate")
         public ResponseEntity<Page<ProductResponse>> findActivate(
-                        @PathVariable String enterpriseId,
+                        @RequestParam String enterpriseId,
                         @RequestParam(required = false) Optional<Integer> numPage,
                         @RequestParam(required = false) Optional<Integer> size) {
 

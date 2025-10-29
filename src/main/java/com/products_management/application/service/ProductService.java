@@ -7,7 +7,13 @@ import org.springframework.stereotype.Service;
 import com.products_management.application.dto.ProductSyncDto;
 import com.products_management.application.ports.input.IProductEventPort;
 import com.products_management.application.ports.input.IProductServicePort;
+import com.products_management.application.ports.output.ICategoryPersistencePort;
 import com.products_management.application.ports.output.IProductPersistencePort;
+import com.products_management.application.ports.output.IProductTypePersistencePort;
+import com.products_management.application.ports.output.IUnitOfMeasurePersistencePort;
+import com.products_management.domain.exception.category.CategoryNotFoundException;
+import com.products_management.domain.exception.productType.ProductTypeNotFoundException;
+import com.products_management.domain.exception.unitOfMeasure.UnitOfMeasureNotFoundException;
 import com.products_management.domain.exception.product.ProductNotFoundException;
 import com.products_management.domain.exception.product.ProductNameAlreadyExistsException;
 import com.products_management.domain.exception.product.ProductReferenceAlreadyExistsException;
@@ -28,6 +34,9 @@ public class ProductService implements IProductServicePort {
 
     private final IProductPersistencePort productPersistencePort;
     private final IProductEventPort productEventPort;
+    private final IUnitOfMeasurePersistencePort unitOfMeasurePersistencePort;
+    private final ICategoryPersistencePort categoryPersistencePort;
+    private final IProductTypePersistencePort productTypePersistencePort;
 
     /**
      * Busca un producto por su ID.
@@ -81,6 +90,9 @@ public class ProductService implements IProductServicePort {
             product.setReference(StringNormalizer.normalizeCode(product.getReference()));
         }
         
+        // Validar existencia de entidades relacionadas
+        validateRelatedEntitiesExistence(product);
+        
         // Validar unicidad antes de crear
         validateProductUniqueness(product);
         
@@ -124,6 +136,9 @@ public class ProductService implements IProductServicePort {
                     if (product.getReference() != null && !product.getReference().trim().isEmpty()) {
                         product.setReference(StringNormalizer.normalizeCode(product.getReference()));
                     }
+                    
+                    // Validar existencia de entidades relacionadas
+                    validateRelatedEntitiesExistence(product);
                     
                     // Validar unicidad antes de actualizar
                     validateProductUniquenessForUpdate(id, product);
@@ -261,6 +276,40 @@ public class ProductService implements IProductServicePort {
             if (productPersistencePort.existsByReferenceAndEnterpriseIdAndIdNot(
                     product.getReference(), product.getEnterpriseId(), id)) {
                 throw new ProductReferenceAlreadyExistsException(product.getReference());
+            }
+        }
+    }
+    
+    /**
+     * Valida que las entidades relacionadas (unidad de medida, categoría, tipo de producto) existan.
+     *
+     * @param product el producto cuyas entidades relacionadas se van a validar.
+     * @throws UnitOfMeasureNotFoundException si la unidad de medida no existe.
+     * @throws CategoryNotFoundException si la categoría no existe.
+     * @throws ProductTypeNotFoundException si el tipo de producto no existe.
+     */
+    private void validateRelatedEntitiesExistence(Product product) {
+        // Validar unidad de medida
+        if (product.getUnitOfMeasureId() != null) {
+            if (unitOfMeasurePersistencePort.findByIdAndEnterpriseId(
+                    product.getUnitOfMeasureId(), product.getEnterpriseId()).isEmpty()) {
+                throw new UnitOfMeasureNotFoundException(product.getUnitOfMeasureId());
+            }
+        }
+        
+        // Validar categoría
+        if (product.getCategoryId() != null) {
+            if (categoryPersistencePort.findByIdAndEnterpriseId(
+                    product.getCategoryId(), product.getEnterpriseId()).isEmpty()) {
+                throw new CategoryNotFoundException(product.getCategoryId());
+            }
+        }
+        
+        // Validar tipo de producto
+        if (product.getProductTypeId() != null) {
+            if (productTypePersistencePort.findByIdAndEnterpriseId(
+                    product.getProductTypeId(), product.getEnterpriseId()).isEmpty()) {
+                throw new ProductTypeNotFoundException(product.getProductTypeId());
             }
         }
     }

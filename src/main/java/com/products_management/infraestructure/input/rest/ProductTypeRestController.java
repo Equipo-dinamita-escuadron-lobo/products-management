@@ -7,6 +7,7 @@ import com.products_management.infraestructure.input.rest.model.request.ProductT
 import com.products_management.infraestructure.input.rest.model.response.ProductTypeResponse;
 import com.products_management.infraestructure.utils.PaginationHelper;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -36,7 +37,7 @@ public class ProductTypeRestController {
     private final IProductTypeRestMapper productTypeMapper;
 
     @PostMapping
-    public ResponseEntity<ProductTypeResponse> createProductType(@RequestBody ProductTypeRequest productTypeRequest) {
+    public ResponseEntity<ProductTypeResponse> createProductType(@Valid @RequestBody ProductTypeRequest productTypeRequest) {
         ProductType productType = productTypeMapper.toProductType(productTypeRequest);
         ProductType createdProductType = productTypeService.createProductType(productType);
         ProductTypeResponse response = productTypeMapper.toProductTypeResponse(createdProductType);
@@ -97,7 +98,7 @@ public class ProductTypeRestController {
     @PutMapping("/{id}")
     public ResponseEntity<ProductTypeResponse> updateProductType(
             @PathVariable Long id,
-            @RequestBody ProductTypeRequest productTypeRequest) {
+            @Valid @RequestBody ProductTypeRequest productTypeRequest) {
         ProductType productType = productTypeMapper.toProductType(productTypeRequest);
         ProductType updatedProductType = productTypeService.updateProductType(id, productTypeRequest.getEnterpriseId(), productType);
         ProductTypeResponse response = productTypeMapper.toProductTypeResponse(updatedProductType);

@@ -33,11 +33,4 @@ public class UnitOfMeasureCreateRequest {
     @Builder.Default
     private boolean state = true; // Por defecto activo
 
-    public UnitOfMeasureCreateRequest(String name, String description, String abbreviation, String enterpriseId, boolean state) {
-        this.name = name;
-        this.description = description;
-        this.abbreviation = abbreviation;
-        this.enterpriseId = enterpriseId;
-        this.state = state;
-    }
 }

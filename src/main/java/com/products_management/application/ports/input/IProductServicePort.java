@@ -1,6 +1,7 @@
 package com.products_management.application.ports.input;
 
 import java.util.List;
+import java.util.Optional;
 
 import com.products_management.domain.model.Product;
 
@@ -36,6 +37,19 @@ public interface IProductServicePort {
   Page<Product> findAllWithFilters(String enterpriseId, String search, int pageNumber, int pageSize, String sortField, String sortOrder);
 
   /**
+   * Obtiene una página paginada de productos asociados a una empresa con filtros opcionales.
+   *
+   * @param enterpriseId el ID de la empresa.
+   * @param numPage el número de página (opcional).
+   * @param size el tamaño de página (opcional).
+   * @param sortField el campo de ordenamiento.
+   * @param sortOrder el orden (asc/desc).
+   * @param search el término de búsqueda (opcional).
+   * @return una página de productos.
+   */
+  Page<Product> findAllPaginated(String enterpriseId, Optional<Integer> numPage, Optional<Integer> size, String sortField, String sortOrder, Optional<String> search);
+
+  /**
    * Cuenta productos por ID de empresa con filtros de búsqueda.
    *
    * @param enterpriseId el ID de la empresa.
@@ -69,6 +83,16 @@ public interface IProductServicePort {
    * @return una página de productos activados.
    */
   Page<Product> findActivatedWithPagination(String enterpriseId, int pageNumber, int pageSize);
+
+  /**
+   * Obtiene una página paginada de productos activados asociados a una empresa.
+   *
+   * @param enterpriseId el ID de la empresa.
+   * @param numPage el número de página (opcional).
+   * @param size el tamaño de página (opcional).
+   * @return una página de productos activados.
+   */
+  Page<Product> findActivatedPaginated(String enterpriseId, Optional<Integer> numPage, Optional<Integer> size);
 
   /**
    * @brief Crea un nuevo producto.

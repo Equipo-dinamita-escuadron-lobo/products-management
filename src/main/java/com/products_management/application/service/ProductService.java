@@ -1,8 +1,10 @@
 package com.products_management.application.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.products_management.application.dto.ProductSyncDto;
@@ -20,6 +22,7 @@ import com.products_management.domain.exception.product.ProductNameAlreadyExists
 import com.products_management.domain.exception.product.ProductReferenceAlreadyExistsException;
 import com.products_management.domain.model.Product;
 import com.products_management.domain.utils.StringNormalizer;
+import com.products_management.infraestructure.utils.PaginationHelper;
 
 import lombok.RequiredArgsConstructor;
 
@@ -70,6 +73,33 @@ public class ProductService implements IProductServicePort {
     }
 
     /**
+     * Obtiene una página paginada de productos asociados a una empresa con filtros opcionales.
+     *
+     * @param enterpriseId el ID de la empresa.
+     * @param numPage el número de página (opcional).
+     * @param size el tamaño de página (opcional).
+     * @param sortField el campo de ordenamiento.
+     * @param sortOrder el orden (asc/desc).
+     * @param search el término de búsqueda (opcional).
+     * @return una página de productos.
+     */
+    @Override
+    public Page<Product> findAllPaginated(String enterpriseId, Optional<Integer> numPage, Optional<Integer> size, String sortField, String sortOrder, Optional<String> search) {
+        // Contar total de registros (con o sin filtro)
+        long totalRecords = search.isPresent() && !search.get().trim().isEmpty()
+                ? countByEnterpriseIdWithFilters(enterpriseId, search.get())
+                : countByEnterpriseId(enterpriseId);
+
+        // Crear Pageable flexible
+        Pageable pageable = PaginationHelper.createFlexiblePageable(numPage, size, totalRecords);
+
+        // Obtener página de datos (con o sin filtro)
+        return search.isPresent() && !search.get().trim().isEmpty()
+                ? findAllWithFilters(enterpriseId, search.get(), pageable.getPageNumber(), pageable.getPageSize(), sortField, sortOrder)
+                : findAllWithFilters(enterpriseId, null, pageable.getPageNumber(), pageable.getPageSize(), sortField, sortOrder);
+    }
+
+    /**
      * Cuenta productos por ID de empresa con filtros de búsqueda.
      *
      * @param enterpriseId el ID de la empresa.
@@ -114,6 +144,21 @@ public class ProductService implements IProductServicePort {
     @Override
     public Page<Product> findActivatedWithPagination(String enterpriseId, int pageNumber, int pageSize) {
         return productPersistencePort.findActivatedWithPagination(enterpriseId, pageNumber, pageSize);
+    }
+
+    /**
+     * Obtiene una página paginada de productos activados asociados a una empresa.
+     *
+     * @param enterpriseId el ID de la empresa.
+     * @param numPage el número de página (opcional).
+     * @param size el tamaño de página (opcional).
+     * @return una página de productos activados.
+     */
+    @Override
+    public Page<Product> findActivatedPaginated(String enterpriseId, Optional<Integer> numPage, Optional<Integer> size) {
+        long totalRecords = countActivatedByEnterpriseId(enterpriseId);
+        Pageable pageable = PaginationHelper.createFlexiblePageable(numPage, size, totalRecords);
+        return findActivatedWithPagination(enterpriseId, pageable.getPageNumber(), pageable.getPageSize());
     }
 
     /**
@@ -239,6 +284,7 @@ public class ProductService implements IProductServicePort {
         }
         productPersistencePort.deleteById(id);
     }
+    
 
     /**
      * Obtiene una lista de todos los productos asociados a una categoría.

@@ -8,13 +8,10 @@ import com.products_management.infraestructure.input.rest.model.response.Product
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import org.springframework.web.bind.annotation.*;
-
-import com.products_management.infraestructure.utils.PaginationHelper;
 
 import java.util.Optional;
 
@@ -38,20 +35,7 @@ public class ProductRestController {
                         @RequestParam(defaultValue = "asc") String sortOrder,
                         @RequestParam(required = false) String search) {
 
-                // Contar total de registros (con o sin filtro)
-                long totalRecords = (search != null && !search.trim().isEmpty())
-                                ? productServicePort.countByEnterpriseIdWithFilters(enterpriseId, search)
-                                : productServicePort.countByEnterpriseId(enterpriseId);
-
-                // Crear Pageable flexible
-                Pageable pageable = PaginationHelper.createFlexiblePageable(numPage, size, totalRecords);
-
-                // Obtener página de datos (con o sin filtro)
-                Page<Product> productPage = (search != null && !search.trim().isEmpty())
-                                ? productServicePort.findAllWithFilters(enterpriseId, search, pageable.getPageNumber(),
-                                                pageable.getPageSize(), sortField, sortOrder)
-                                : productServicePort.findAllWithFilters(enterpriseId, null, pageable.getPageNumber(),
-                                                pageable.getPageSize(), sortField, sortOrder);
+                Page<Product> productPage = productServicePort.findAllPaginated(enterpriseId, numPage, size, sortField, sortOrder, Optional.ofNullable(search));
 
                 // Mapear a ProductResponse
                 Page<ProductResponse> responsePage = productPage.map(productRestMapper::toProductResponse);
@@ -70,11 +54,7 @@ public class ProductRestController {
                         @RequestParam(required = false) Optional<Integer> numPage,
                         @RequestParam(required = false) Optional<Integer> size) {
 
-                long totalRecords = productServicePort.countActivatedByEnterpriseId(enterpriseId);
-
-                Pageable pageable = PaginationHelper.createFlexiblePageable(numPage, size, totalRecords);
-
-                Page<Product> productPage = productServicePort.findActivatedWithPagination(enterpriseId, pageable.getPageNumber(), pageable.getPageSize());
+                Page<Product> productPage = productServicePort.findActivatedPaginated(enterpriseId, numPage, size);
 
                 Page<ProductResponse> responsePage = productPage.map(productRestMapper::toProductResponse);
 

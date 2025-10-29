@@ -58,16 +58,19 @@ public class ProductPersistenceAdapter implements IProductPersistencePort {
     }
 
     /**
-     * Busca productos activos por ID de empresa.
+     * Busca productos activos por ID de empresa con paginación.
      *
      * @param enterpriseId el ID de la empresa
-     * @param state el estado del producto
-     * @return una lista de productos activos de la empresa
+     * @param pageNumber el número de página
+     * @param pageSize el tamaño de página
+     * @return una página de productos activos
      */
     @Override
-    public List<Product> findByEnterpriseIdAndState(String enterpriseId, boolean state) {
-        return productPersistenceMapper.toProductList(
-                productRepository.findByEnterpriseIdAndState(enterpriseId, state));
+    public Page<Product> findActivatedWithPagination(String enterpriseId, int pageNumber, int pageSize) {
+        Sort sort = Sort.by("name").ascending();
+        PageRequest pageRequest = PageRequest.of(pageNumber, pageSize, sort);
+        return productRepository.findByEnterpriseIdAndState(enterpriseId, true, pageRequest)
+                .map(productPersistenceMapper::toProduct);
     }
 
     /**
@@ -166,5 +169,16 @@ public class ProductPersistenceAdapter implements IProductPersistencePort {
     @Override
     public long countByEnterpriseId(String enterpriseId) {
         return productRepository.countByEnterpriseId(enterpriseId);
+    }
+    
+    /**
+     * Cuenta productos activos por ID de empresa.
+     *
+     * @param enterpriseId el ID de la empresa
+     * @return el número de productos activos
+     */
+    @Override
+    public long countActivatedByEnterpriseId(String enterpriseId) {
+        return productRepository.countByEnterpriseIdAndState(enterpriseId, true);
     }
 }

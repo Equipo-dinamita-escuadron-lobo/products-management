@@ -39,13 +39,14 @@ public interface IProductPersistencePort {
     void deleteById(Long id);
 
     /**
-     * Busca productos activos por ID de empresa.
+     * Busca productos activos por ID de empresa con paginación.
      *
      * @param enterpriseId el ID de la empresa.
-     * @param state el estado del producto.
-     * @return una lista de productos activos de la empresa.
+     * @param pageNumber el número de página.
+     * @param pageSize el tamaño de página.
+     * @return una página de productos activos.
      */
-    List<Product> findByEnterpriseIdAndState(String enterpriseId, boolean state);
+    Page<Product> findActivatedWithPagination(String enterpriseId, int pageNumber, int pageSize);
     
     /**
      * Busca productos por ID de categoría.
@@ -138,4 +139,12 @@ public interface IProductPersistencePort {
      * @return el número total de productos.
      */
     long countByEnterpriseId(String enterpriseId);
+    
+    /**
+     * Cuenta productos activos por ID de empresa.
+     *
+     * @param enterpriseId el ID de la empresa.
+     * @return el número de productos activos.
+     */
+    long countActivatedByEnterpriseId(String enterpriseId);
 }

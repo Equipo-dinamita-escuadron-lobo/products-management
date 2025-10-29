@@ -93,15 +93,27 @@ public class ProductService implements IProductServicePort {
     }
 
     /**
-     * Obtiene una lista de todos los productos activados asociados a una empresa.
+     * Cuenta productos activos por ID de empresa.
      *
      * @param enterpriseId el ID de la empresa.
-     * @return una lista de todos los productos activados de la empresa.
+     * @return el número de productos activos.
      */
-
     @Override
-    public List<Product> findActivated(String enterpriseId) {
-        return productPersistencePort.findByEnterpriseIdAndState(enterpriseId, true);
+    public long countActivatedByEnterpriseId(String enterpriseId) {
+        return productPersistencePort.countActivatedByEnterpriseId(enterpriseId);
+    }
+
+    /**
+     * Obtiene una página de productos activados asociados a una empresa con paginación.
+     *
+     * @param enterpriseId el ID de la empresa.
+     * @param pageNumber el número de página.
+     * @param pageSize el tamaño de página.
+     * @return una página de productos activados.
+     */
+    @Override
+    public Page<Product> findActivatedWithPagination(String enterpriseId, int pageNumber, int pageSize) {
+        return productPersistencePort.findActivatedWithPagination(enterpriseId, pageNumber, pageSize);
     }
 
     /**

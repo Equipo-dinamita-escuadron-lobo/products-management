@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.*;
 
 import com.products_management.infraestructure.utils.PaginationHelper;
 
-import java.util.List;
 import java.util.Optional;
 
 /**
@@ -66,8 +65,20 @@ public class ProductRestController {
         }
 
         @GetMapping("/findActivate/{enterpriseId}")
-        public List<ProductResponse> findActivate(@PathVariable String enterpriseId) {
-                return productRestMapper.toProductResponseList(productServicePort.findActivated(enterpriseId));
+        public ResponseEntity<Page<ProductResponse>> findActivate(
+                        @PathVariable String enterpriseId,
+                        @RequestParam(required = false) Optional<Integer> numPage,
+                        @RequestParam(required = false) Optional<Integer> size) {
+
+                long totalRecords = productServicePort.countActivatedByEnterpriseId(enterpriseId);
+
+                Pageable pageable = PaginationHelper.createFlexiblePageable(numPage, size, totalRecords);
+
+                Page<Product> productPage = productServicePort.findActivatedWithPagination(enterpriseId, pageable.getPageNumber(), pageable.getPageSize());
+
+                Page<ProductResponse> responsePage = productPage.map(productRestMapper::toProductResponse);
+
+                return new ResponseEntity<>(responsePage, HttpStatus.OK);
         }
 
         @PostMapping("/create")

@@ -26,9 +26,14 @@ public interface IProductRepository extends JpaRepository<ProductEntity, Long> {
     Optional<ProductEntity> findByIdAndEnterpriseId(Long id, String enterpriseId);
     
     /**
-     * Busca productos activos por ID de empresa.
+     * Busca productos activos por ID de empresa con paginación.
      */
-    List<ProductEntity> findByEnterpriseIdAndState(String enterpriseId, boolean state);
+    Page<ProductEntity> findByEnterpriseIdAndState(String enterpriseId, boolean state, Pageable pageable);
+    
+    /**
+     * Cuenta productos activos por ID de empresa.
+     */
+    long countByEnterpriseIdAndState(String enterpriseId, boolean state);
     
     /**
      * Busca productos por ID de categoría.

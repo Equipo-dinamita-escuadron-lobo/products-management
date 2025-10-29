@@ -53,12 +53,22 @@ public interface IProductServicePort {
   long countByEnterpriseId(String enterpriseId);
 
   /**
-   * Obtiene una lista de todos los productos activados asociados a una empresa.
+   * Cuenta productos activos por ID de empresa.
    *
    * @param enterpriseId el ID de la empresa.
-   * @return una lista de todos los productos activados de la empresa.
+   * @return el número de productos activos.
    */
-  List<Product> findActivated(String enterpriseId);
+  long countActivatedByEnterpriseId(String enterpriseId);
+
+  /**
+   * Obtiene una página de productos activados asociados a una empresa con paginación.
+   *
+   * @param enterpriseId el ID de la empresa.
+   * @param pageNumber el número de página.
+   * @param pageSize el tamaño de página.
+   * @return una página de productos activados.
+   */
+  Page<Product> findActivatedWithPagination(String enterpriseId, int pageNumber, int pageSize);
 
   /**
    * @brief Crea un nuevo producto.

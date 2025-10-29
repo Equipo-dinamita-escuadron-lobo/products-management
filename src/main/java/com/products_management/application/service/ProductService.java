@@ -39,16 +39,17 @@ public class ProductService implements IProductServicePort {
     private final IProductTypePersistencePort productTypePersistencePort;
 
     /**
-     * Busca un producto por su ID.
+     * Busca un producto por su ID y empresa.
      *
      * @param id el ID del producto a buscar.
+     * @param enterpriseId el ID de la empresa.
      * @return el producto encontrado.
      * @throws ProductNotFoundException si el producto no se encuentra.
      */
 
     @Override
-    public Product findById(Long id) {
-        return productPersistencePort.findById(id).orElseThrow(ProductNotFoundException::new);
+    public Product findById(Long id, String enterpriseId) {
+        return productPersistencePort.findByIdAndEnterpriseId(id, enterpriseId).orElseThrow(ProductNotFoundException::new);
     }
 
     /**
@@ -123,13 +124,14 @@ public class ProductService implements IProductServicePort {
      *
      * @param id      el ID del producto a actualizar.
      * @param product los datos del producto actualizado.
+     * @param enterpriseId el ID de la empresa.
      * @return el producto actualizado.
      * @throws ProductNotFoundException si el producto no se encuentra.
      */
 
     @Override
-    public Product update(Long id, Product product) {
-        return productPersistencePort.findById(id)
+    public Product update(Long id, Product product, String enterpriseId) {
+        return productPersistencePort.findByIdAndEnterpriseId(id, enterpriseId)
                 .map(existingProduct -> {
                     // Normalizar nombre y referencia de productos en mayúsculas (formato estándar para productos)
                     product.setName(StringNormalizer.normalizeCode(product.getName()));
@@ -170,12 +172,13 @@ public class ProductService implements IProductServicePort {
      * Cambia el estado de un producto (activado/desactivado).
      *
      * @param id el ID del producto cuyo estado se va a cambiar.
+     * @param enterpriseId el ID de la empresa.
      * @throws ProductNotFoundException si el producto no se encuentra.
      */
 
     @Override
-    public void changeState(Long id) {
-        Product product = productPersistencePort.findById(id)
+    public void changeState(Long id, String enterpriseId) {
+        Product product = productPersistencePort.findByIdAndEnterpriseId(id, enterpriseId)
                 .orElseThrow(() -> new ProductNotFoundException());
         product.setState(!product.isState());
         productPersistencePort.create(product);
@@ -185,12 +188,13 @@ public class ProductService implements IProductServicePort {
      * Elimina un producto por su ID.
      *
      * @param id el ID del producto a eliminar.
+     * @param enterpriseId el ID de la empresa.
      * @throws ProductNotFoundException si el producto no se encuentra.
      */
 
     @Override
-    public void deleteById(Long id) {
-        if (productPersistencePort.findById(id).isEmpty()) {
+    public void deleteById(Long id, String enterpriseId) {
+        if (productPersistencePort.findByIdAndEnterpriseId(id, enterpriseId).isEmpty()) {
             throw new ProductNotFoundException();
         }
         productPersistencePort.deleteById(id);

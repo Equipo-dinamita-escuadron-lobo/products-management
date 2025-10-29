@@ -12,12 +12,13 @@ import com.products_management.domain.model.Product;
 public interface IProductServicePort {
 
   /**
-   * Busca un producto por su ID.
+   * Busca un producto por su ID y empresa.
    *
    * @param id el ID del producto a buscar.
-   * @return el producto encontrado, o null si no se encuentra.
+   * @param enterpriseId el ID de la empresa.
+   * @return el producto encontrado.
    */
-  Product findById(Long id);
+  Product findById(Long id, String enterpriseId);
 
   /**
    * Obtiene una lista de todos los productos asociados a una empresa.
@@ -46,23 +47,26 @@ public interface IProductServicePort {
    * @brief Actualiza un producto existente.
    * @param id el ID del producto a actualizar.
    * @param product los datos del producto actualizado.
+   * @param enterpriseId el ID de la empresa.
    * @return el producto actualizado.
    */
-  Product update(Long id, Product product);
+  Product update(Long id, Product product, String enterpriseId);
 
   /**
    * @brief Elimina un producto por su ID.
    *
    * @param id el ID del producto a eliminar.
+   * @param enterpriseId el ID de la empresa.
    */
-  void deleteById(Long id);
+  void deleteById(Long id, String enterpriseId);
 
   /**
    * Cambia el estado de un producto (por ejemplo, activado/desactivado).
    *
    * @param id el ID del producto cuyo estado se va a cambiar.
+   * @param enterpriseId el ID de la empresa.
    */
-  void changeState(Long id);
+  void changeState(Long id, String enterpriseId);
 
   /**
    * Obtiene una lista de todos los productos asociados a una categoría.

@@ -33,6 +33,19 @@ public class ProductPersistenceAdapter implements IProductPersistencePort {
     }
 
     /**
+     * Busca un producto por su ID y empresa.
+     *
+     * @param id el ID del producto
+     * @param enterpriseId el ID de la empresa
+     * @return un Optional que contiene el producto si se encuentra, de lo contrario vacío
+     */
+    @Override
+    public Optional<Product> findByIdAndEnterpriseId(Long id, String enterpriseId) {
+        return productRepository.findByIdAndEnterpriseId(id, enterpriseId)
+                .map(productPersistenceMapper::toProduct);
+    }
+
+    /**
      * Obtiene una lista de todos los productos.
      *
      * @return una lista de productos

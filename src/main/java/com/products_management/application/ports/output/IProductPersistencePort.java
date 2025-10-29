@@ -21,6 +21,15 @@ public interface IProductPersistencePort {
     Optional<Product> findById(Long id);
 
     /**
+     * Busca un producto por su ID y empresa.
+     *
+     * @param id el ID del producto a buscar.
+     * @param enterpriseId el ID de la empresa.
+     * @return un Optional que contiene el producto encontrado, o un Optional vacío si no se encuentra.
+     */
+    Optional<Product> findByIdAndEnterpriseId(Long id, String enterpriseId);
+
+    /**
      * Obtiene una lista de todos los productos.
      *
      * @return una lista de todos los productos.

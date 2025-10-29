@@ -29,9 +29,9 @@ public class ProductRestController {
                 return productRestMapper.toProductResponseList(productServicePort.findAll(enterpriseId));
         }
 
-        @GetMapping("/findById/{id}")
-        public ProductResponse findById(@PathVariable Long id) {
-                return productRestMapper.toProductResponse(productServicePort.findById(id));
+        @GetMapping("/findById/{id}/{enterpriseId}")
+        public ProductResponse findById(@PathVariable Long id, @PathVariable String enterpriseId) {
+                return productRestMapper.toProductResponse(productServicePort.findById(id, enterpriseId));
         }
 
         @GetMapping("/findActivate/{enterpriseId}")
@@ -51,17 +51,17 @@ public class ProductRestController {
         public ProductResponse update(@PathVariable Long id,
                         @Valid @RequestBody ProductCreateRequest productCreateRequest) {
                 return productRestMapper.toProductResponse(
-                                productServicePort.update(id, productRestMapper.toProduct(productCreateRequest)));
+                                productServicePort.update(id, productRestMapper.toProduct(productCreateRequest), productCreateRequest.getEnterpriseId()));
         }
 
-        @PutMapping("/changeState/{id}")
-        public void changeState(@PathVariable Long id) {
-                productServicePort.changeState(id);
+        @PutMapping("/changeState/{id}/{enterpriseId}")
+        public void changeState(@PathVariable Long id, @PathVariable String enterpriseId) {
+                productServicePort.changeState(id, enterpriseId);
         }
 
-        @DeleteMapping("/delete/{id}")
-        public void deleteById(@PathVariable Long id) {
-                productServicePort.deleteById(id);
+        @DeleteMapping("/delete/{id}/{enterpriseId}")
+        public void deleteById(@PathVariable Long id, @PathVariable String enterpriseId) {
+                productServicePort.deleteById(id, enterpriseId);
         }
 
 }

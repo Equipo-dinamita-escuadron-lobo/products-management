@@ -4,6 +4,7 @@ import com.products_management.infraestructure.output.persistence.entity.Product
 
 import java.time.Instant;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -20,6 +21,11 @@ public interface IProductRepository extends JpaRepository<ProductEntity, Long> {
      * Busca productos por ID de empresa.
      */
     List<ProductEntity> findByEnterpriseId(String enterpriseId);
+    
+    /**
+     * Busca un producto por ID y empresa.
+     */
+    Optional<ProductEntity> findByIdAndEnterpriseId(Long id, String enterpriseId);
     
     /**
      * Busca productos activos por ID de empresa.

@@ -5,6 +5,9 @@ import com.products_management.domain.model.Product;
 import com.products_management.infraestructure.output.persistence.mapper.interfaces.IProductPersistenceMapper;
 import com.products_management.infraestructure.output.persistence.repository.IProductRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.Optional;
@@ -21,25 +24,16 @@ public class ProductPersistenceAdapter implements IProductPersistencePort {
     private final IProductPersistenceMapper productPersistenceMapper;
 
     /**
-     * Busca un producto por su ID.
+     * Busca un producto por su ID y empresa.
      *
      * @param id el ID del producto
+     * @param enterpriseId el ID de la empresa
      * @return un Optional que contiene el producto si se encuentra, de lo contrario vacío
      */
     @Override
-    public Optional<Product> findById(Long id) {
-        return productRepository.findById(Long.valueOf(id))
+    public Optional<Product> findByIdAndEnterpriseId(Long id, String enterpriseId) {
+        return productRepository.findByIdAndEnterpriseId(id, enterpriseId)
                 .map(productPersistenceMapper::toProduct);
-    }
-
-    /**
-     * Obtiene una lista de todos los productos.
-     *
-     * @return una lista de productos
-     */
-    @Override
-    public List<Product> findAll() {
-        return productPersistenceMapper.toProductList(productRepository.findAll());
     }
 
     /**
@@ -64,36 +58,19 @@ public class ProductPersistenceAdapter implements IProductPersistencePort {
     }
 
     /**
-     * Elimina todos los productos.
-     */
-    @Override
-    public void deleteAll() {
-        productRepository.deleteAll();
-    }
-
-    /**
-     * Busca productos por ID de empresa.
+     * Busca productos activos por ID de empresa con paginación.
      *
      * @param enterpriseId el ID de la empresa
-     * @return una lista de productos de la empresa
+     * @param pageNumber el número de página
+     * @param pageSize el tamaño de página
+     * @return una página de productos activos
      */
     @Override
-    public List<Product> findByEnterpriseId(String enterpriseId) {
-        return productPersistenceMapper.toProductList(
-                productRepository.findByEnterpriseId(enterpriseId));
-    }
-
-    /**
-     * Busca productos activos por ID de empresa.
-     *
-     * @param enterpriseId el ID de la empresa
-     * @param state el estado del producto
-     * @return una lista de productos activos de la empresa
-     */
-    @Override
-    public List<Product> findByEnterpriseIdAndState(String enterpriseId, boolean state) {
-        return productPersistenceMapper.toProductList(
-                productRepository.findByEnterpriseIdAndState(enterpriseId, state));
+    public Page<Product> findActivatedWithPagination(String enterpriseId, int pageNumber, int pageSize) {
+        Sort sort = Sort.by("name").ascending();
+        PageRequest pageRequest = PageRequest.of(pageNumber, pageSize, sort);
+        return productRepository.findByEnterpriseIdAndState(enterpriseId, true, pageRequest)
+                .map(productPersistenceMapper::toProduct);
     }
 
     /**
@@ -150,5 +127,58 @@ public class ProductPersistenceAdapter implements IProductPersistencePort {
     @Override
     public boolean existsByReferenceAndEnterpriseIdAndIdNot(String reference, String enterpriseId, Long id) {
         return productRepository.existsByReferenceAndEnterpriseIdAndIdNot(reference, enterpriseId, id);
+    }
+
+    /**
+     * Busca productos por ID de empresa con filtros de búsqueda y paginación.
+     *
+     * @param enterpriseId el ID de la empresa
+     * @param search el término de búsqueda
+     * @param pageNumber el número de página
+     * @param pageSize el tamaño de página
+     * @param sortField el campo de ordenamiento
+     * @param sortOrder el orden (asc/desc)
+     * @return una página de productos
+     */
+    @Override
+    public Page<Product> findByEnterpriseIdWithFilters(String enterpriseId, String search, int pageNumber, int pageSize, String sortField, String sortOrder) {
+        Sort sort = sortOrder.equalsIgnoreCase("desc") ? Sort.by(sortField).descending() : Sort.by(sortField).ascending();
+        PageRequest pageRequest = PageRequest.of(pageNumber, pageSize, sort);
+        return productRepository.findByEnterpriseIdWithFilters(enterpriseId, search, pageRequest)
+                .map(productPersistenceMapper::toProduct);
+    }
+
+    /**
+     * Cuenta productos por ID de empresa con filtros de búsqueda.
+     *
+     * @param enterpriseId el ID de la empresa
+     * @param search el término de búsqueda
+     * @return el número de productos que coinciden
+     */
+    @Override
+    public long countByEnterpriseIdWithFilters(String enterpriseId, String search) {
+        return productRepository.countByEnterpriseIdWithFilters(enterpriseId, search);
+    }
+
+    /**
+     * Cuenta todos los productos por ID de empresa.
+     *
+     * @param enterpriseId el ID de la empresa
+     * @return el número total de productos
+     */
+    @Override
+    public long countByEnterpriseId(String enterpriseId) {
+        return productRepository.countByEnterpriseId(enterpriseId);
+    }
+    
+    /**
+     * Cuenta productos activos por ID de empresa.
+     *
+     * @param enterpriseId el ID de la empresa
+     * @return el número de productos activos
+     */
+    @Override
+    public long countActivatedByEnterpriseId(String enterpriseId) {
+        return productRepository.countByEnterpriseIdAndState(enterpriseId, true);
     }
 }

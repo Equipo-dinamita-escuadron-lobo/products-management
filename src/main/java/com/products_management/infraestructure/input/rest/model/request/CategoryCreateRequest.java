@@ -24,8 +24,6 @@ public class CategoryCreateRequest {
     @NotBlank(message = "Descripción es requerida")
     private String description;
 
-    private Long taxId;
-
     @NotNull(message = "Id de la empresa es requerido")
     private String enterpriseId;
 

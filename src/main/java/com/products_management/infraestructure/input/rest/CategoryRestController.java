@@ -1,17 +1,22 @@
 package com.products_management.infraestructure.input.rest;
 
 import com.products_management.application.ports.input.ICategoryServicePort;
+import com.products_management.domain.model.Category;
 import com.products_management.infraestructure.input.rest.mapper.interfaces.ICategoryRestMapper;
 import com.products_management.infraestructure.input.rest.model.request.CategoryCreateRequest;
 import com.products_management.infraestructure.input.rest.model.response.CategoryResponse;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import com.products_management.infraestructure.utils.PaginationHelper;
+
+import java.util.Optional;
 
 /**
  * Controlador REST para la gestión de categorías de productos.
@@ -24,19 +29,55 @@ public class CategoryRestController {
         private final ICategoryServicePort categoryServicePort;
         private final ICategoryRestMapper categoryRestMapper;
 
-        @GetMapping("/findAll/{enterpriseId}")
-        public List<CategoryResponse> findAll(@PathVariable String enterpriseId) {
-                return categoryRestMapper.toCategoryResponseList(categoryServicePort.findAll(enterpriseId));
+        @GetMapping("/findById/{enterpriseId}/{id}")
+        public CategoryResponse findById(@PathVariable String enterpriseId, @PathVariable Long id) {
+                return categoryRestMapper.toCategoryResponse(categoryServicePort.findById(enterpriseId, id));
         }
 
-        @GetMapping("/findById/{id}")
-        public CategoryResponse findById(@PathVariable Long id) {
-                return categoryRestMapper.toCategoryResponse(categoryServicePort.findById(id));
+        @GetMapping("/findAll")
+        public ResponseEntity<Page<CategoryResponse>> getCategoriesList(
+                @RequestParam String enterpriseId,
+                @RequestParam(required = false) Optional<Integer> numPage,
+                @RequestParam(required = false) Optional<Integer> size,
+                @RequestParam(defaultValue = "name") String sortField,
+                @RequestParam(defaultValue = "asc") String sortOrder,
+                @RequestParam(required = false) String search) {
+
+                // Contar total de registros (con o sin filtro)
+                long totalRecords = (search != null && !search.trim().isEmpty())
+                        ? categoryServicePort.countByEntIdAndSearch(enterpriseId, search)
+                        : categoryServicePort.countAllCategoriesByEntId(enterpriseId);
+
+                // Crear Pageable flexible
+                Pageable pageable = PaginationHelper.createFlexiblePageable(numPage, size, totalRecords);
+
+                // Obtener página de datos (con o sin filtro)
+                Page<Category> page = (search != null && !search.trim().isEmpty())
+                        ? categoryServicePort.findByEntIdAndSearch(enterpriseId, search, pageable.getPageNumber(),
+                                pageable.getPageSize(), sortField, sortOrder)
+                        : categoryServicePort.getAllCategoriesByWithSort(enterpriseId, pageable.getPageNumber(),
+                                pageable.getPageSize(), sortField, sortOrder);
+
+                Page<CategoryResponse> responsePage = page.map(categoryRestMapper::toCategoryResponse);
+
+                return new ResponseEntity<>(responsePage, HttpStatus.OK);
         }
 
-        @GetMapping("/findActivate/{enterpriseId}")
-        public List<CategoryResponse> findActivate(@PathVariable String enterpriseId) {
-                return categoryRestMapper.toCategoryResponseList(categoryServicePort.findActivated(enterpriseId));
+        @GetMapping("/findActivate")
+        public ResponseEntity<Page<CategoryResponse>> findActivate(
+                @RequestParam String enterpriseId,
+                @RequestParam(required = false) Optional<Integer> numPage,
+                @RequestParam(required = false) Optional<Integer> size) {
+
+                long totalRecords = categoryServicePort.countActiveCategoriesByEntId(enterpriseId);
+                Pageable pageable = PaginationHelper.createFlexiblePageable(numPage, size, totalRecords);
+
+                Page<Category> page = categoryServicePort.getAllActiveCategoriesByWithSort(enterpriseId, pageable.getPageNumber(),
+                        pageable.getPageSize(), "name", "asc");
+
+                Page<CategoryResponse> responsePage = page.map(categoryRestMapper::toCategoryResponse);
+
+                return new ResponseEntity<>(responsePage, HttpStatus.OK);
         }
 
         @PostMapping("/create")
@@ -48,25 +89,20 @@ public class CategoryRestController {
                                                                 categoryRestMapper.toCategory(categoryCreateRequest))));
         }
 
-        @PutMapping("/update/{id}")
-        public CategoryResponse update(@PathVariable Long id,
+        @PutMapping("/update/{enterpriseId}/{id}")
+        public CategoryResponse update(@PathVariable String enterpriseId, @PathVariable Long id,
                         @Valid @RequestBody CategoryCreateRequest categoryCreateRequest) {
                 return categoryRestMapper.toCategoryResponse(
-                                categoryServicePort.update(id, categoryRestMapper.toCategory(categoryCreateRequest)));
+                                categoryServicePort.update(enterpriseId, id, categoryRestMapper.toCategory(categoryCreateRequest)));
         }
 
-        @PutMapping("/changeState/{id}")
-        public void changeState(@PathVariable Long id) {
-                categoryServicePort.changeState(id);
+        @PutMapping("/changeState/{enterpriseId}/{id}")
+        public void changeState(@PathVariable String enterpriseId, @PathVariable Long id) {
+                categoryServicePort.changeState(enterpriseId, id);
         }
 
-        @DeleteMapping("/delete/{id}")
-        public void deleteById(@PathVariable Long id) {
-                categoryServicePort.deleteById(id);
-        }
-
-        @DeleteMapping("/deleteAll")
-        public void deleteAll() {
-                categoryServicePort.deleteAll();
+        @DeleteMapping("/delete/{enterpriseId}/{id}")
+        public void deleteById(@PathVariable String enterpriseId, @PathVariable Long id) {
+                categoryServicePort.deleteById(enterpriseId, id);
         }
 }

@@ -1,12 +1,16 @@
 package com.products_management.infraestructure.input.rest;
 
+import com.products_management.application.ports.input.IProductTypeServicePort;
 import com.products_management.domain.model.ProductType;
 import com.products_management.infraestructure.input.rest.mapper.interfaces.IProductTypeRestMapper;
 import com.products_management.infraestructure.input.rest.model.request.ProductTypeRequest;
 import com.products_management.infraestructure.input.rest.model.response.ProductTypeResponse;
+import com.products_management.infraestructure.utils.PaginationHelper;
 
-import com.products_management.application.ports.input.IProductTypeServicePort;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -16,10 +20,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
 /**
  * Controlador REST para la gestión de tipos de producto.
@@ -33,44 +37,60 @@ public class ProductTypeRestController {
     private final IProductTypeRestMapper productTypeMapper;
 
     @PostMapping
-    public ResponseEntity<ProductTypeResponse> createProductType(@RequestBody ProductTypeRequest productTypeRequest) {
+    public ResponseEntity<ProductTypeResponse> createProductType(@Valid @RequestBody ProductTypeRequest productTypeRequest) {
         ProductType productType = productTypeMapper.toProductType(productTypeRequest);
         ProductType createdProductType = productTypeService.createProductType(productType);
         ProductTypeResponse response = productTypeMapper.toProductTypeResponse(createdProductType);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    @GetMapping
-    public ResponseEntity<List<ProductTypeResponse>> getAllProductTypes() {
-        List<ProductType> productTypes = productTypeService.listAllProductTypes();
-        List<ProductTypeResponse> responses = productTypes.stream()
-                .map(productTypeMapper::toProductTypeResponse)
-                .collect(Collectors.toList());
-        return ResponseEntity.ok(responses);
+    @GetMapping("/findActivate")
+    public ResponseEntity<Page<ProductTypeResponse>> findActivate(
+            @RequestParam String enterpriseId,
+            @RequestParam(required = false) Optional<Integer> numPage,
+            @RequestParam(required = false) Optional<Integer> size) {
+
+        long totalRecords = productTypeService.countActivatedByEnterpriseId(enterpriseId);
+
+        Pageable pageable = PaginationHelper.createFlexiblePageable(numPage, size, totalRecords);
+
+        Page<ProductType> page = productTypeService.findActivatedWithPagination(enterpriseId,
+                pageable.getPageNumber(), pageable.getPageSize());
+
+        Page<ProductTypeResponse> response = page.map(productTypeMapper::toProductTypeResponse);
+
+        return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/enterprise/{enterpriseId}")
-    public ResponseEntity<List<ProductTypeResponse>> getProductTypesByEnterpriseId(@PathVariable String enterpriseId) {
-        List<ProductType> productTypes = productTypeService.getProductTypesByEnterpriseId(enterpriseId);
-        List<ProductTypeResponse> responses = productTypes.stream()
-                .map(productTypeMapper::toProductTypeResponse)
-                .collect(Collectors.toList());
-        return ResponseEntity.ok(responses);
+    @GetMapping("/findAll")
+    public ResponseEntity<Page<ProductTypeResponse>> findAll(
+            @RequestParam String enterpriseId,
+            @RequestParam(required = false) String search,
+            @RequestParam(required = false) Optional<Integer> numPage,
+            @RequestParam(required = false) Optional<Integer> size,
+            @RequestParam(defaultValue = "name") String sortField,
+            @RequestParam(defaultValue = "asc") String sortOrder) {
+
+        long totalRecords = (search != null && !search.trim().isEmpty())
+                ? productTypeService.countByEnterpriseIdAndSearch(enterpriseId, search)
+                : productTypeService.countByEnterpriseId(enterpriseId);
+
+        Pageable pageable = PaginationHelper.createFlexiblePageable(numPage, size, totalRecords);
+
+        Page<ProductType> page = (search != null && !search.trim().isEmpty())
+                ? productTypeService.findByEnterpriseIdAndSearch(enterpriseId, search,
+                        pageable.getPageNumber(), pageable.getPageSize(), sortField, sortOrder)
+                : productTypeService.getAllProductTypesByWithSort(enterpriseId,
+                        pageable.getPageNumber(), pageable.getPageSize(), sortField, sortOrder);
+
+        Page<ProductTypeResponse> response = page.map(productTypeMapper::toProductTypeResponse);
+
+        return ResponseEntity.ok(response);
     }
-
-    @GetMapping("/findActivate/{enterpriseId}")
-    public List<ProductTypeResponse> findActivate(@PathVariable String enterpriseId) {
-        List<ProductType> productTypes = productTypeService.findActivated(enterpriseId);
-        return productTypes.stream()
-                .map(productTypeMapper::toProductTypeResponse)
-                .collect(Collectors.toList());
-    }
-
-
 
     @GetMapping("/{id}")
-    public ResponseEntity<ProductTypeResponse> getProductTypeById(@PathVariable Long id) {
-        ProductType productType = productTypeService.getProductTypeById(id);
+    public ResponseEntity<ProductTypeResponse> getProductTypeById(@PathVariable Long id, @RequestParam String enterpriseId) {
+        ProductType productType = productTypeService.getProductTypeByIdAndEnterpriseId(id, enterpriseId);
         ProductTypeResponse response = productTypeMapper.toProductTypeResponse(productType);
         return ResponseEntity.ok(response);
     }
@@ -78,21 +98,21 @@ public class ProductTypeRestController {
     @PutMapping("/{id}")
     public ResponseEntity<ProductTypeResponse> updateProductType(
             @PathVariable Long id,
-            @RequestBody ProductTypeRequest productTypeRequest) {
+            @Valid @RequestBody ProductTypeRequest productTypeRequest) {
         ProductType productType = productTypeMapper.toProductType(productTypeRequest);
-        ProductType updatedProductType = productTypeService.updateProductType(id, productType);
+        ProductType updatedProductType = productTypeService.updateProductType(id, productTypeRequest.getEnterpriseId(), productType);
         ProductTypeResponse response = productTypeMapper.toProductTypeResponse(updatedProductType);
         return ResponseEntity.ok(response);
     }
 
     @PutMapping("/changeState/{id}")
-    public void changeState(@PathVariable Long id) {
-        productTypeService.changeState(id);
+    public void changeState(@PathVariable Long id, @RequestParam String enterpriseId) {
+        productTypeService.changeState(id, enterpriseId);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteProductType(@PathVariable Long id) {
-        productTypeService.deleteProductType(id);
+    public ResponseEntity<Void> deleteProductType(@PathVariable Long id, @RequestParam String enterpriseId) {
+        productTypeService.deleteProductType(id, enterpriseId);
         return ResponseEntity.noContent().build();
     }
 }

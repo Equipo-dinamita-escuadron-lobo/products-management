@@ -9,6 +9,7 @@ import com.products_management.domain.exception.productType.ProductTypeNameAlrea
 import com.products_management.domain.model.Product;
 import com.products_management.domain.model.ProductType;
 import com.products_management.domain.utils.StringNormalizer;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -34,31 +35,9 @@ public class ProductTypeService implements IProductTypeServicePort {
     }
 
     @Override
-    public List<ProductType> getProductTypesByEnterpriseId(String enterpriseId) {
-        List<ProductType> productTypes = productTypeOutputPort.findByEnterpriseId(enterpriseId);
-        return productTypes;
-    }
-
-    /**
-     * Obtiene una lista de todos los tipos de producto activados asociados a una empresa.
-     *
-     * @param enterpriseId el ID de la empresa.
-     * @return una lista de todos los tipos de producto activados de la empresa.
-     */
-    @Override
-    public List<ProductType> findActivated(String enterpriseId) {
-        return productTypeOutputPort.findByEnterpriseIdAndState(enterpriseId, true);
-    }
-
-    @Override
-    public List<ProductType> listAllProductTypes() {
-        return productTypeOutputPort.findAll();
-    }
-
-    @Override
-    public ProductType updateProductType(Long id, ProductType productType) {
-        // Verificar que el tipo de producto existe antes de actualizar
-        Optional<ProductType> existingProductType = productTypeOutputPort.findById(id);
+    public ProductType updateProductType(Long id, String enterpriseId, ProductType productType) {
+        // Verificar que el tipo de producto existe y pertenece a la empresa antes de actualizar
+        Optional<ProductType> existingProductType = productTypeOutputPort.findByIdAndEnterpriseId(id, enterpriseId);
         if (existingProductType.isEmpty()) {
             throw new ProductTypeNotFoundException();
         }
@@ -71,9 +50,9 @@ public class ProductTypeService implements IProductTypeServicePort {
     }
 
     @Override
-    public void deleteProductType(Long id) {
-        // Verificar que el tipo de producto existe antes de eliminar
-        Optional<ProductType> existingProductType = productTypeOutputPort.findById(id);
+    public void deleteProductType(Long id, String enterpriseId) {
+        // Verificar que el tipo de producto existe y pertenece a la empresa antes de eliminar
+        Optional<ProductType> existingProductType = productTypeOutputPort.findByIdAndEnterpriseId(id, enterpriseId);
         if (existingProductType.isEmpty()) {
             throw new ProductTypeNotFoundException();
         }
@@ -91,14 +70,15 @@ public class ProductTypeService implements IProductTypeServicePort {
     }
     
     /**
-     * Busca un tipo de producto por ID y lanza excepción si no se encuentra.
+     * Busca un tipo de producto por ID y empresa, lanza excepción si no se encuentra.
      * 
      * @param id el ID del tipo de producto a buscar
+     * @param enterpriseId el ID de la empresa
      * @return el tipo de producto encontrado
      * @throws ProductTypeNotFoundException si no se encuentra el tipo de producto
      */
-    public ProductType getProductTypeById(Long id) {
-        return productTypeOutputPort.findById(id)
+    public ProductType getProductTypeByIdAndEnterpriseId(Long id, String enterpriseId) {
+        return productTypeOutputPort.findByIdAndEnterpriseId(id, enterpriseId)
                 .orElseThrow(() -> new ProductTypeNotFoundException());
     }
     
@@ -106,19 +86,45 @@ public class ProductTypeService implements IProductTypeServicePort {
      * Cambia el estado de un tipo de producto (activado/desactivado).
      *
      * @param id el ID del tipo de producto cuyo estado se va a cambiar.
+     * @param enterpriseId el ID de la empresa.
      * @throws ProductTypeNotFoundException si el tipo de producto no se encuentra.
      */
     @Override
-    public void changeState(Long id) {
-        ProductType productType = productTypeOutputPort.findById(id)
+    public void changeState(Long id, String enterpriseId) {
+        ProductType productType = productTypeOutputPort.findByIdAndEnterpriseId(id, enterpriseId)
                 .orElseThrow(() -> new ProductTypeNotFoundException());
         productType.setState(!productType.isState());
         productTypeOutputPort.save(productType);
     }
     
     @Override
-    public List<ProductType> getProductTypesByEnterpriseIdAndState(String enterpriseId, boolean state) {
-        return productTypeOutputPort.findByEnterpriseIdAndState(enterpriseId, state);
+    public Page<ProductType> getAllProductTypesByWithSort(String enterpriseId, int page, int size, String sortField, String sortOrder) {
+        return productTypeOutputPort.getAllProductTypesByWithSort(enterpriseId, page, size, sortField, sortOrder);
+    }
+
+    @Override
+    public Page<ProductType> findByEnterpriseIdAndSearch(String enterpriseId, String search, int page, int size, String sortField, String sortOrder) {
+        return productTypeOutputPort.findByEnterpriseIdAndSearch(enterpriseId, search, page, size, sortField, sortOrder);
+    }
+
+    @Override
+    public long countByEnterpriseIdAndSearch(String enterpriseId, String search) {
+        return productTypeOutputPort.countByEnterpriseIdAndSearch(enterpriseId, search);
+    }
+
+    @Override
+    public long countByEnterpriseId(String enterpriseId) {
+        return productTypeOutputPort.countByEnterpriseId(enterpriseId);
+    }
+
+    @Override
+    public Page<ProductType> findActivatedWithPagination(String enterpriseId, int page, int size) {
+        return productTypeOutputPort.findActivatedByEnterpriseId(enterpriseId, page, size);
+    }
+
+    @Override
+    public long countActivatedByEnterpriseId(String enterpriseId) {
+        return productTypeOutputPort.countActivatedByEnterpriseId(enterpriseId);
     }
     
     /**
@@ -131,7 +137,7 @@ public class ProductTypeService implements IProductTypeServicePort {
         // El nombre ya está normalizado, se usa directamente para validación
         if (productTypeOutputPort.existsByNameAndEnterpriseId(
                 productType.getName(), productType.getEnterpriseId())) {
-            throw new ProductTypeNameAlreadyExistsException();
+            throw new ProductTypeNameAlreadyExistsException(productType.getName());
         }
     }
     
@@ -147,7 +153,7 @@ public class ProductTypeService implements IProductTypeServicePort {
         // El nombre ya está normalizado, se usa directamente para validación
         if (productTypeOutputPort.existsByNameAndEnterpriseIdAndIdNot(
                 productType.getName(), productType.getEnterpriseId(), id)) {
-            throw new ProductTypeNameAlreadyExistsException();
+            throw new ProductTypeNameAlreadyExistsException(productType.getName());
         }
     }
 }

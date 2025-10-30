@@ -14,6 +14,6 @@ public class UnitOfMeasureAbbreviationAlreadyExistsException extends BaseBusines
     
     public UnitOfMeasureAbbreviationAlreadyExistsException(String abbreviation) {
         super(ErrorCode.UNITOFMEASURE_ABBREVIATION_ALREADY_EXISTS, 
-              String.format("Ya existe una unidad de medida con la abreviación: '%s'", abbreviation));
+              String.format("Ya existe una unidad de medida con la abreviación '%s'", abbreviation));
     }
 }

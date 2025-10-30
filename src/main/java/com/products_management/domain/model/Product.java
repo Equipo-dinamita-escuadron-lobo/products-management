@@ -1,6 +1,5 @@
 package com.products_management.domain.model;
 
-import java.util.Date;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
@@ -47,12 +46,7 @@ public class Product {
     /**
      * @brief Lista de impuestos aplicables al producto.
      */
-    private List<String> taxPercentage;
-
-    /**
-     * @brief Fecha de creación del producto.
-     */
-    private Date creationDate;
+    private List<Long> taxes;
 
     /**
      * @brief Identificador de la unidad de medida del producto.

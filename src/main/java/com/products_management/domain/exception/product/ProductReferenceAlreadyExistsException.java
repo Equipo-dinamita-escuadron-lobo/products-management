@@ -14,6 +14,6 @@ public class ProductReferenceAlreadyExistsException extends BaseBusinessExceptio
     
     public ProductReferenceAlreadyExistsException(String reference) {
         super(ErrorCode.PRODUCT_REFERENCE_ALREADY_EXISTS, 
-              String.format("Ya existe un producto con la referencia: '%s'", reference));
+              String.format("Ya existe un producto con la referencia '%s'", reference));
     }
 }

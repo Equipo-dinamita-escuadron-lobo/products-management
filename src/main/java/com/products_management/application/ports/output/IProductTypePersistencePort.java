@@ -1,31 +1,21 @@
 package com.products_management.application.ports.output;
 
 import com.products_management.domain.model.ProductType;
-import java.util.List;
+import org.springframework.data.domain.Page;
 import java.util.Optional;
 
 public interface  IProductTypePersistencePort {
 
     ProductType save(ProductType productType);
 
-    List<ProductType> findByEnterpriseId(String enterpriseId);
+    /**
+     * Busca un tipo de producto por ID e ID de empresa.
+     */
+    Optional<ProductType> findByIdAndEnterpriseId(Long id, String enterpriseId);
     
-    List<ProductType> findAll();
-
-    Optional<ProductType> findById(Long id);
-
-    ProductType update(Long id, ProductType productType);
+    Optional<ProductType> findById(Long id);    ProductType update(Long id, ProductType productType);
     
     void delete(Long id);
-    
-    /**
-     * Busca tipos de producto activos por ID de empresa.
-     *
-     * @param enterpriseId el ID de la empresa.
-     * @param state el estado del tipo de producto.
-     * @return una lista de tipos de producto activos de la empresa.
-     */
-    List<ProductType> findByEnterpriseIdAndState(String enterpriseId, boolean state);
     
     /**
      * Verifica si existe un tipo de producto con el nombre especificado para una empresa.
@@ -45,4 +35,64 @@ public interface  IProductTypePersistencePort {
      * @return true si existe, false en caso contrario.
      */
     boolean existsByNameAndEnterpriseIdAndIdNot(String name, String enterpriseId, Long id);
+
+    /**
+     * Obtiene todos los tipos de producto de una empresa con paginación y ordenamiento.
+     *
+     * @param enterpriseId ID de la empresa
+     * @param page Número de página
+     * @param size Tamaño de página
+     * @param sortField Campo por el que ordenar
+     * @param sortOrder Orden (asc/desc)
+     * @return Página de tipos de producto
+     */
+    Page<ProductType> getAllProductTypesByWithSort(String enterpriseId, int page, int size, String sortField, String sortOrder);
+
+    /**
+     * Busca tipos de producto por empresa y término de búsqueda con paginación.
+     *
+     * @param enterpriseId ID de la empresa
+     * @param search Término de búsqueda
+     * @param page Número de página
+     * @param size Tamaño de página
+     * @param sortField Campo por el que ordenar
+     * @param sortOrder Orden (asc/desc)
+     * @return Página de tipos de producto que coinciden con la búsqueda
+     */
+    Page<ProductType> findByEnterpriseIdAndSearch(String enterpriseId, String search, int page, int size, String sortField, String sortOrder);
+
+    /**
+     * Cuenta tipos de producto por empresa y término de búsqueda.
+     *
+     * @param enterpriseId ID de la empresa
+     * @param search Término de búsqueda
+     * @return Cantidad de tipos de producto que coinciden
+     */
+    long countByEnterpriseIdAndSearch(String enterpriseId, String search);
+
+    /**
+     * Cuenta todos los tipos de producto de una empresa.
+     *
+     * @param enterpriseId ID de la empresa
+     * @return Cantidad total de tipos de producto
+     */
+    long countByEnterpriseId(String enterpriseId);
+
+    /**
+     * Busca tipos de producto activados por empresa con paginación.
+     *
+     * @param enterpriseId ID de la empresa
+     * @param page Número de página
+     * @param size Tamaño de página
+     * @return Página de tipos de producto activados
+     */
+    Page<ProductType> findActivatedByEnterpriseId(String enterpriseId, int page, int size);
+
+    /**
+     * Cuenta tipos de producto activados por empresa.
+     *
+     * @param enterpriseId ID de la empresa
+     * @return Cantidad de tipos de producto activados
+     */
+    long countActivatedByEnterpriseId(String enterpriseId);
 }

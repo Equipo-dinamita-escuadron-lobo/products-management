@@ -14,6 +14,6 @@ public class ProductTypeNameAlreadyExistsException extends BaseBusinessException
     
     public ProductTypeNameAlreadyExistsException(String name) {
         super(ErrorCode.PRODUCT_TYPE_NAME_ALREADY_EXISTS, 
-              String.format("Ya existe un tipo de producto con el nombre: '%s'", name));
+              String.format("Ya existe un tipo de producto con el nombre '%s'", name));
     }
 }

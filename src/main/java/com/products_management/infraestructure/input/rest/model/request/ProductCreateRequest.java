@@ -1,6 +1,5 @@
 package com.products_management.infraestructure.input.rest.model.request;
 
-import java.util.Date;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -35,14 +34,10 @@ public class ProductCreateRequest {
     @NotBlank(message = "Descripción es requerida")
     private String description;
 
-    @NotNull(message = "Cantidad es requerida")
     private Integer quantity;
 
     @NotNull(message = "Lista de impuestos es requerida")
-    private List<String> taxPercentage;
-
-    @NotNull(message = "Fecha de creación es requerida")
-    private Date creationDate;
+    private List<Long> taxes;
 
     @NotNull(message = "Id de la unidad de medida es requerido")
     private Long unitOfMeasureId;
@@ -50,21 +45,23 @@ public class ProductCreateRequest {
     @NotNull(message = "Id de la categoría es requerido")
     private Long categoryId;
 
+    @NotNull(message = "El tipo de producto es requerido")
+    private Long productTypeId;
+
     @NotNull(message = "Id de la empresa es requerido")
     private String enterpriseId;
 
-    @NotNull(message = "Costo es requerido")
     private double cost;
 
     @JsonIgnore
     @Builder.Default
     private boolean state = true; // Por defecto activo
 
+    @NotNull(message = "La referencia es requerida")
     private String reference;
 
+    @NotNull(message = "La presentacion es requerida")
     private String presentation;
     
-    // Campo opcional para la relación con ProductType
-    private Long productTypeId; // Este campo es opcional
 
 }

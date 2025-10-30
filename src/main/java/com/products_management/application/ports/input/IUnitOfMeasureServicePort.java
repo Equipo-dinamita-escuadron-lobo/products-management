@@ -1,7 +1,7 @@
 package com.products_management.application.ports.input;
 
 import com.products_management.domain.model.UnitOfMeasure;
-import java.util.List;
+import org.springframework.data.domain.Page;
 
 /**
  * Interfaz que define los puertos de entrada para el servicio de unidades de medida.
@@ -11,28 +11,68 @@ import java.util.List;
 public interface IUnitOfMeasureServicePort {
 
     /**
-     * Busca una unidad de medida por su ID.
+     * Busca una unidad de medida por su ID y empresa.
      *
      * @param id el ID de la unidad de medida a buscar.
-     * @return la unidad de medida encontrada, o null si no se encuentra.
+     * @param enterpriseId el ID de la empresa.
+     * @return la unidad de medida encontrada.
      */
-    UnitOfMeasure findById(Long id);
+    UnitOfMeasure findByIdAndEnterpriseId(Long id, String enterpriseId);
 
     /**
-     * Obtiene una lista de todas las unidades de medida asociadas a una empresa.
-     *
-     * @param enterpriseId el ID de la empresa.
-     * @return una lista de todas las unidades de medida de la empresa.
+     * Cuenta el total de unidades de medida por empresa.
+     * @param enterpriseId El id de la empresa
+     * @return El número total de unidades de medida
      */
-    List<UnitOfMeasure> findAll(String enterpriseId);
+    long countAllUnitOfMeasuresByEntId(String enterpriseId);
 
     /**
-     * Obtiene una lista de todas las unidades de medida activadas asociadas a una empresa.
-     *
-     * @param enterpriseId el ID de la empresa.
-     * @return una lista de todas las unidades de medida activadas de la empresa.
+     * Busca unidades de medida por empresa y término de búsqueda con ordenamiento.
+     * @param enterpriseId El id de la empresa
+     * @param search Término de búsqueda
+     * @param page Número de página
+     * @param size Tamaño de página
+     * @param sortField Campo de ordenamiento
+     * @param sortOrder Orden (asc/desc)
+     * @return Página de unidades de medida que coinciden con la búsqueda
      */
-    List<UnitOfMeasure> findActivated(String enterpriseId);
+    Page<UnitOfMeasure> findByEntIdAndSearch(String enterpriseId, String search, int page, int size, String sortField, String sortOrder);
+
+    /**
+     * Cuenta unidades de medida por empresa y término de búsqueda.
+     * @param enterpriseId El id de la empresa
+     * @param search Término de búsqueda
+     * @return Cantidad de unidades de medida que coinciden
+     */
+    long countByEntIdAndSearch(String enterpriseId, String search);
+
+    /**
+     * Obtiene todas las unidades de medida con ordenamiento.
+     * @param enterpriseId El id de la empresa
+     * @param page Número de página
+     * @param size Tamaño de página
+     * @param sortField Campo de ordenamiento
+     * @param sortOrder Orden (asc/desc)
+     * @return Página de unidades de medida ordenadas
+     */
+    Page<UnitOfMeasure> getAllUnitOfMeasuresByWithSort(String enterpriseId, int page, int size, String sortField, String sortOrder);
+
+    /**
+     * Obtiene todas las unidades de medida activas con ordenamiento ascendente por nombre.
+     * @param enterpriseId El id de la empresa
+     * @param page Número de página
+     * @param size Tamaño de página
+     * @return Página de unidades de medida activas ordenadas por nombre ascendente
+     */
+    Page<UnitOfMeasure> getAllActiveUnitOfMeasuresBy(String enterpriseId, int page, int size);
+
+    /**
+     * Cuenta el total de unidades de medida activas por empresa.
+     * @param enterpriseId El id de la empresa
+     * @return El número total de unidades de medida activas
+     */
+    long countActiveUnitOfMeasuresByEntId(String enterpriseId);
+
 
     /**
      * Crea una nueva unidad de medida.
@@ -46,27 +86,25 @@ public interface IUnitOfMeasureServicePort {
      * Actualiza una unidad de medida existente.
      *
      * @param id el ID de la unidad de medida a actualizar.
+     * @param enterpriseId el ID de la empresa.
      * @param unitOfMeasure los datos de la unidad de medida actualizada.
      * @return la unidad de medida actualizada.
      */
-    UnitOfMeasure update(Long id, UnitOfMeasure unitOfMeasure);
+    UnitOfMeasure update(Long id, String enterpriseId, UnitOfMeasure unitOfMeasure);
 
     /**
      * Elimina una unidad de medida por su ID.
      *
      * @param id el ID de la unidad de medida a eliminar.
+     * @param enterpriseId el ID de la empresa.
      */
-    void deleteById(Long id);
+    void deleteById(Long id, String enterpriseId);
 
     /**
      * Cambia el estado de una unidad de medida (por ejemplo, activado/desactivado).
      *
      * @param id el ID de la unidad de medida cuyo estado se va a cambiar.
+     * @param enterpriseId el ID de la empresa.
      */
-    void changeState(Long id);
-
-    /**
-     * Elimina todas las unidades de medida.
-     */
-    void deleteAll();
+    void changeState(Long id, String enterpriseId);
 }

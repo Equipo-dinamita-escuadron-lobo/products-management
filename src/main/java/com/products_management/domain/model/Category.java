@@ -58,9 +58,4 @@ public class Category {
     @Builder.Default
     private boolean state = true;
 
-     /**
-     * ID de impuesto a la categoria
-     */
-    private Long taxId;
-
 }

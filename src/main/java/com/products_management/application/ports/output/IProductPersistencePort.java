@@ -5,6 +5,8 @@ import com.products_management.domain.model.Product;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+
 /**
  * Interfaz que define los puertos de persistencia para el servicio de productos.
  * Los puertos de persistencia representan las operaciones de almacenamiento y recuperación
@@ -13,19 +15,13 @@ import java.util.Optional;
 public interface IProductPersistencePort {
 
     /**
-     * Busca un producto por su ID.
+     * Busca un producto por su ID y empresa.
      *
      * @param id el ID del producto a buscar.
+     * @param enterpriseId el ID de la empresa.
      * @return un Optional que contiene el producto encontrado, o un Optional vacío si no se encuentra.
      */
-    Optional<Product> findById(Long id);
-
-    /**
-     * Obtiene una lista de todos los productos.
-     *
-     * @return una lista de todos los productos.
-     */
-    List<Product> findAll();
+    Optional<Product> findByIdAndEnterpriseId(Long id, String enterpriseId);
 
     /**
      * Crea un nuevo producto.
@@ -43,26 +39,14 @@ public interface IProductPersistencePort {
     void deleteById(Long id);
 
     /**
-     * Elimina todos los productos.
-     */
-    void deleteAll();
-    
-    /**
-     * Busca productos por ID de empresa.
+     * Busca productos activos por ID de empresa con paginación.
      *
      * @param enterpriseId el ID de la empresa.
-     * @return una lista de productos de la empresa.
+     * @param pageNumber el número de página.
+     * @param pageSize el tamaño de página.
+     * @return una página de productos activos.
      */
-    List<Product> findByEnterpriseId(String enterpriseId);
-    
-    /**
-     * Busca productos activos por ID de empresa.
-     *
-     * @param enterpriseId el ID de la empresa.
-     * @param state el estado del producto.
-     * @return una lista de productos activos de la empresa.
-     */
-    List<Product> findByEnterpriseIdAndState(String enterpriseId, boolean state);
+    Page<Product> findActivatedWithPagination(String enterpriseId, int pageNumber, int pageSize);
     
     /**
      * Busca productos por ID de categoría.
@@ -125,4 +109,42 @@ public interface IProductPersistencePort {
      * @return true si existe, false en caso contrario.
      */
     boolean existsByReferenceAndEnterpriseIdAndIdNot(String reference, String enterpriseId, Long id);
+    
+    /**
+     * Busca productos por ID de empresa con filtros de búsqueda y paginación.
+     *
+     * @param enterpriseId el ID de la empresa.
+     * @param search el término de búsqueda (opcional).
+     * @param pageNumber el número de página.
+     * @param pageSize el tamaño de página.
+     * @param sortField el campo de ordenamiento.
+     * @param sortOrder el orden (asc/desc).
+     * @return una página de productos.
+     */
+    Page<Product> findByEnterpriseIdWithFilters(String enterpriseId, String search, int pageNumber, int pageSize, String sortField, String sortOrder);
+    
+    /**
+     * Cuenta productos por ID de empresa con filtros de búsqueda.
+     *
+     * @param enterpriseId el ID de la empresa.
+     * @param search el término de búsqueda (opcional).
+     * @return el número de productos que coinciden.
+     */
+    long countByEnterpriseIdWithFilters(String enterpriseId, String search);
+    
+    /**
+     * Cuenta todos los productos por ID de empresa.
+     *
+     * @param enterpriseId el ID de la empresa.
+     * @return el número total de productos.
+     */
+    long countByEnterpriseId(String enterpriseId);
+    
+    /**
+     * Cuenta productos activos por ID de empresa.
+     *
+     * @param enterpriseId el ID de la empresa.
+     * @return el número de productos activos.
+     */
+    long countActivatedByEnterpriseId(String enterpriseId);
 }

@@ -14,11 +14,11 @@ public class UnitOfMeasureNotFoundException extends BaseBusinessException {
     
     public UnitOfMeasureNotFoundException(Long id) {
         super(ErrorCode.UNITOFMEASURE_NOT_FOUND, 
-              String.format("No se encontró la unidad de medida con ID: %d", id));
+              String.format("No se encontró la unidad de medida con ID %d", id));
     }
     
     public UnitOfMeasureNotFoundException(String name) {
         super(ErrorCode.UNITOFMEASURE_NOT_FOUND, 
-              String.format("No se encontró la unidad de medida con nombre: %s", name));
+              String.format("No se encontró la unidad de medida con nombre %s", name));
     }
 }

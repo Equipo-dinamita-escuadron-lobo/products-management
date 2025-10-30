@@ -4,8 +4,12 @@ import com.products_management.infraestructure.output.persistence.entity.Product
 
 import java.time.Instant;
 import java.util.List;
+import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
 /**
  * Interfaz para el repositorio de productos que extiende JpaRepository.
@@ -17,14 +21,19 @@ public interface IProductRepository extends JpaRepository<ProductEntity, Long> {
     List<ProductEntity> findByEnterpriseIdAndLastModifiedDateAfter(String enterpriseId, Instant lastSyncDate);
     
     /**
-     * Busca productos por ID de empresa.
+     * Busca un producto por ID y empresa.
      */
-    List<ProductEntity> findByEnterpriseId(String enterpriseId);
+    Optional<ProductEntity> findByIdAndEnterpriseId(Long id, String enterpriseId);
     
     /**
-     * Busca productos activos por ID de empresa.
+     * Busca productos activos por ID de empresa con paginación.
      */
-    List<ProductEntity> findByEnterpriseIdAndState(String enterpriseId, boolean state);
+    Page<ProductEntity> findByEnterpriseIdAndState(String enterpriseId, boolean state, Pageable pageable);
+    
+    /**
+     * Cuenta productos activos por ID de empresa.
+     */
+    long countByEnterpriseIdAndState(String enterpriseId, boolean state);
     
     /**
      * Busca productos por ID de categoría.
@@ -60,5 +69,30 @@ public interface IProductRepository extends JpaRepository<ProductEntity, Long> {
      * Verifica si existe un producto con la referencia especificada para una empresa, excluyendo un ID específico.
      */
     boolean existsByReferenceAndEnterpriseIdAndIdNot(String reference, String enterpriseId, Long id);
+    
+    /**
+     * Busca productos por ID de empresa con filtros de búsqueda y paginación.
+     */
+    @Query("SELECT p FROM ProductEntity p WHERE p.enterpriseId = :enterpriseId " +
+           "AND (:search IS NULL OR :search = '' OR " +
+           "LOWER(p.code) LIKE LOWER(CONCAT('%', :search, '%')) OR " +
+           "LOWER(p.name) LIKE LOWER(CONCAT('%', :search, '%')) OR " +
+           "LOWER(p.reference) LIKE LOWER(CONCAT('%', :search, '%')))")
+    Page<ProductEntity> findByEnterpriseIdWithFilters(String enterpriseId, String search, Pageable pageable);
+    
+    /**
+     * Cuenta productos por ID de empresa con filtros de búsqueda.
+     */
+    @Query("SELECT COUNT(p) FROM ProductEntity p WHERE p.enterpriseId = :enterpriseId " +
+           "AND (:search IS NULL OR :search = '' OR " +
+           "LOWER(p.code) LIKE LOWER(CONCAT('%', :search, '%')) OR " +
+           "LOWER(p.name) LIKE LOWER(CONCAT('%', :search, '%')) OR " +
+           "LOWER(p.reference) LIKE LOWER(CONCAT('%', :search, '%')))")
+    long countByEnterpriseIdWithFilters(String enterpriseId, String search);
+    
+    /**
+     * Cuenta todos los productos por ID de empresa.
+     */
+    long countByEnterpriseId(String enterpriseId);
     
 }

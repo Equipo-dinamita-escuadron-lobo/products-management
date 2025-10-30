@@ -1,7 +1,6 @@
 package com.products_management.infraestructure.output.persistence.entity;
 
 import java.time.Instant;
-import java.util.Date;
 import java.util.List;
 
 import org.hibernate.annotations.TenantId;
@@ -42,7 +41,6 @@ public class ProductEntity {
     @CollectionTable(name = "product_taxes", joinColumns = @JoinColumn(name = "product_id"))
     @Column(name = "tax_id")
     private List<Long> taxes;
-    private Date creationDate;
     private Long unitOfMeasureId;
     private Long categoryId;
     private String enterpriseId;

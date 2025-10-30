@@ -1,6 +1,5 @@
 package com.products_management.infraestructure.input.rest.model.response;
 
-import java.util.Date;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
@@ -48,11 +47,6 @@ public class ProductResponse {
      * Lista de impuestos aplicados al producto.
      */
     private List<Long> taxes;
-
-    /**
-     * Fecha de creación del producto.
-     */
-    private Date creationDate;
 
     /**
      * Identificador de la unidad de medida del producto.

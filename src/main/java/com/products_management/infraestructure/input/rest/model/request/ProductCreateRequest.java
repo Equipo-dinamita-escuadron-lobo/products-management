@@ -1,6 +1,5 @@
 package com.products_management.infraestructure.input.rest.model.request;
 
-import java.util.Date;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -39,9 +38,6 @@ public class ProductCreateRequest {
 
     @NotNull(message = "Lista de impuestos es requerida")
     private List<Long> taxes;
-
-    @NotNull(message = "Fecha de creación es requerida")
-    private Date creationDate;
 
     @NotNull(message = "Id de la unidad de medida es requerido")
     private Long unitOfMeasureId;

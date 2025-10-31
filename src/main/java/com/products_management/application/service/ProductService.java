@@ -265,7 +265,7 @@ public class ProductService implements IProductServicePort {
     @Override
     public void changeState(Long id, String enterpriseId) {
         Product product = productPersistencePort.findByIdAndEnterpriseId(id, enterpriseId)
-                .orElseThrow(() -> new ProductNotFoundException());
+                .orElseThrow(ProductNotFoundException::new);
         product.setState(!product.isState());
         productPersistencePort.create(product);
     }

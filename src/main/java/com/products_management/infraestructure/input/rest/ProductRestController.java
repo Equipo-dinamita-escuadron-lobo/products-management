@@ -103,10 +103,11 @@ public class ProductRestController {
         @GetMapping("/export/excel")
         public ResponseEntity<Resource> exportProductsWithValidations(
                         @RequestParam String entId,
+                        @RequestParam(required = false) String companyName,
                         @RequestParam(required = false) Boolean status) {
 
                 Resource excelFile = productExportUseCase.exportProductsWithValidations(entId, status);
-                String filename = fileNameGenerator.generateExportFileName(entId, null, status);
+                String filename = fileNameGenerator.generateExportFileName(entId, companyName, status);
 
                 return ResponseEntity.ok()
                                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + filename + "\"")

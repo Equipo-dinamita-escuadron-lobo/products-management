@@ -4,7 +4,7 @@ import com.products_management.application.ports.output.ICategoryPersistencePort
 import com.products_management.application.ports.output.IProductTypePersistencePort;
 import com.products_management.application.ports.output.IUnitOfMeasurePersistencePort;
 import com.products_management.domain.exception.ErrorCode;
-import com.products_management.domain.exception.ExcelValidationException;
+import com.products_management.domain.exception.product.ExcelValidationException;
 import com.products_management.domain.model.Category;
 import com.products_management.domain.model.ProductType;
 import com.products_management.domain.model.UnitOfMeasure;

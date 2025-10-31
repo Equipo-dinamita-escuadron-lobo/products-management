@@ -1,4 +1,4 @@
-package com.products_management.infraestructure.input.rest.advice;
+package com.products_management.infraestructure.input.rest.model.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,32 +16,32 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ErrorResponse {
-    
+
     /**
      * Timestamp cuando ocurrió el error.
      */
     private LocalDateTime timestamp;
-    
+
     /**
      * Código de estado HTTP.
      */
     private int status;
-    
+
     /**
      * Descripción del tipo de error.
      */
     private String error;
-    
+
     /**
      * Mensaje descriptivo del error.
      */
     private String message;
-    
+
     /**
      * Código de error específico de la aplicación.
      */
     private String code;
-    
+
     /**
      * Ruta donde ocurrió el error.
      */

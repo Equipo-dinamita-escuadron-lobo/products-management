@@ -6,7 +6,8 @@ import com.products_management.application.ports.output.IProductPersistencePort;
 import com.products_management.application.ports.output.IProductTypePersistencePort;
 import com.products_management.application.ports.output.IUnitOfMeasurePersistencePort;
 import com.products_management.domain.exception.ErrorCode;
-import com.products_management.domain.exception.ExcelValidationException;
+import com.products_management.domain.exception.product.ExcelValidationException;
+import com.products_management.domain.exception.product.ProductExportException;
 import com.products_management.domain.model.Category;
 import com.products_management.domain.model.Product;
 import com.products_management.domain.model.ProductType;
@@ -250,6 +251,8 @@ public class ProductExportService implements IProductExportUseCase {
         }
     }
 
+
+
     /**
      * Exporta una plantilla de productos con validaciones de datos (listas desplegables).
      */
@@ -275,8 +278,7 @@ public class ProductExportService implements IProductExportUseCase {
 
             // Validar que existan productos para exportar
             if (products.isEmpty()) {
-                throw new ExcelValidationException(ErrorCode.PRODUCT_NOT_FOUND,
-                        "No se encontraron productos para exportar");
+                throw ProductExportException.forNoData(status);
             }
 
             // Generar archivo Excel con datos y validaciones
@@ -284,7 +286,7 @@ public class ProductExportService implements IProductExportUseCase {
 
             return new ByteArrayResource(excelData);
 
-        } catch (ExcelValidationException e) {
+        } catch (ProductExportException e) {
             throw e;
         } catch (Exception e) {
             throw new ExcelValidationException(ErrorCode.EXCEL_VALIDATION_ERROR,
@@ -321,7 +323,6 @@ public class ProductExportService implements IProductExportUseCase {
     private CellStyle createTemplateStyle(Workbook workbook) {
         CellStyle style = workbook.createCellStyle();
         Font font = workbook.createFont();
-        font.setItalic(true);
         style.setFont(font);
         style.setBorderBottom(BorderStyle.THIN);
         style.setBorderTop(BorderStyle.THIN);

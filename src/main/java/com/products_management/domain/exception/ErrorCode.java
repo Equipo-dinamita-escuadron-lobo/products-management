@@ -33,7 +33,10 @@ public enum ErrorCode {
     PRODUCT_TYPE_NOT_FOUND("PRODUCT_TYPE_NOT_FOUND", "Tipo de producto no encontrado"),
     INVALID_PRODUCT_TYPE("INVALID_PRODUCT_TYPE", "Tipo de producto inválido"),
     PRODUCT_TYPE_ASSOCIATED("PRODUCT_TYPE_ASSOCIATED_WITH_PRODUCT", "El tipo de producto está asociado con un producto"),
-    PRODUCT_TYPE_NAME_ALREADY_EXISTS("PRODUCT_TYPE_NAME_ALREADY_EXISTS", "Ya existe un tipo de producto con este nombre");
+    PRODUCT_TYPE_NAME_ALREADY_EXISTS("PRODUCT_TYPE_NAME_ALREADY_EXISTS", "Ya existe un tipo de producto con este nombre"),
+
+    //Códigos de Excel
+    EXCEL_VALIDATION_ERROR("EXCEL_VALIDATION_ERROR", "Error de validación en archivo Excel");
 
     private final String code;
     private final String message;

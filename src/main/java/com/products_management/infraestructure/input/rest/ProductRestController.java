@@ -1,14 +1,19 @@
 package com.products_management.infraestructure.input.rest;
 
 import com.products_management.application.ports.input.IProductServicePort;
+import com.products_management.application.ports.input.IProductExportUseCase;
 import com.products_management.domain.model.Product;
 import com.products_management.infraestructure.input.rest.mapper.interfaces.IProductRestMapper;
 import com.products_management.infraestructure.input.rest.model.request.ProductCreateRequest;
 import com.products_management.infraestructure.input.rest.model.response.ProductResponse;
+import com.products_management.infraestructure.utils.ExcelFileNameGenerator;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 
 import org.springframework.web.bind.annotation.*;
@@ -25,6 +30,8 @@ public class ProductRestController {
 
         private final IProductServicePort productServicePort;
         private final IProductRestMapper productRestMapper;
+        private final IProductExportUseCase productExportUseCase;
+        private final ExcelFileNameGenerator fileNameGenerator;
 
         @GetMapping("/findAll")
         public ResponseEntity<Page<ProductResponse>> findAll(
@@ -80,6 +87,31 @@ public class ProductRestController {
         @DeleteMapping("/delete/{id}/{enterpriseId}")
         public void deleteById(@PathVariable Long id, @PathVariable String enterpriseId) {
                 productServicePort.deleteById(id, enterpriseId);
+        }
+
+        @GetMapping("/template/excel")
+        public ResponseEntity<Resource> exportProductTemplate(@RequestParam String entId) {
+                Resource templateFile = productExportUseCase.exportProductTemplateWithValidations(entId);
+                String filename = fileNameGenerator.generateTemplateFileName();
+
+                return ResponseEntity.ok()
+                                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + filename + "\"")
+                                .contentType(MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
+                                .body(templateFile);
+        }
+
+        @GetMapping("/export/excel")
+        public ResponseEntity<Resource> exportProductsWithValidations(
+                        @RequestParam String entId,
+                        @RequestParam(required = false) Boolean status) {
+
+                Resource excelFile = productExportUseCase.exportProductsWithValidations(entId, status);
+                String filename = fileNameGenerator.generateExportFileName(entId, null, status);
+
+                return ResponseEntity.ok()
+                                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + filename + "\"")
+                                .contentType(MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
+                                .body(excelFile);
         }
 
 }

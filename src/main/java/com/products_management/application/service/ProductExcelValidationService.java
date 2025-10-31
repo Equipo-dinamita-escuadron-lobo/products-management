@@ -60,13 +60,13 @@ public class ProductExcelValidationService {
     }
 
     /**
-     * Obtiene todas las unidades de medida activas para una entidad por abreviatura.
+     * Obtiene todas las unidades de medida activas para una entidad por nombre completo.
      */
     public List<String> getUnitOfMeasureOptions(String entId) {
         // Usar paginación con tamaño grande para obtener todas las unidades activas
         var page = unitOfMeasurePersistencePort.getActiveUnitOfMeasuresBy(entId, 0, 1000, "name", "asc");
         return page.getContent().stream()
-                .map(UnitOfMeasure::getAbbreviation)
+                .map(UnitOfMeasure::getName)
                 .toList();
     }
 

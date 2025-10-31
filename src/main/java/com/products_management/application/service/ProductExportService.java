@@ -184,7 +184,7 @@ public class ProductExportService implements IProductExportUseCase {
 
             createDataCell(row, colIndex++, product.getCost(), dataStyle);
             createDataCell(row, colIndex++, product.getQuantity(), dataStyle);
-            createDataCell(row, colIndex++, getUnitOfMeasureAbbreviation(product.getUnitOfMeasureId(), entId), dataStyle);
+            createDataCell(row, colIndex++, getUnitOfMeasureName(product.getUnitOfMeasureId(), entId), dataStyle);
             createDataCell(row, colIndex++, getCategoryName(product.getCategoryId(), entId), dataStyle);
             createDataCell(row, colIndex++, getProductTypeName(product.getProductTypeId(), entId), dataStyle);
             createDataCell(row, colIndex++, product.isState() ? "ACTIVO" : "INACTIVO", dataStyle);
@@ -205,10 +205,10 @@ public class ProductExportService implements IProductExportUseCase {
         cell.setCellStyle(style);
     }
 
-    private String getUnitOfMeasureAbbreviation(Long unitOfMeasureId, String entId) {
+    private String getUnitOfMeasureName(Long unitOfMeasureId, String entId) {
         if (unitOfMeasureId == null) return "";
         return unitOfMeasurePersistencePort.findByIdAndEnterpriseId(unitOfMeasureId, entId)
-                .map(UnitOfMeasure::getAbbreviation)
+                .map(UnitOfMeasure::getName)
                 .orElse("");
     }
 
@@ -385,15 +385,12 @@ public class ProductExportService implements IProductExportUseCase {
             CellStyle headerStyle = createHeaderStyle(workbook);
             CellStyle dataStyle = createDataStyle(workbook);
 
-            // Crear encabezados
             createHeaders(sheet, headerStyle, createOptionalHeaderStyle(workbook));
 
             fillData(sheet, products, dataStyle, entId);
 
-            // Aplicar validaciones de datos
             applyValidationsToDataSheet(sheet, entId, products.size());
 
-            // Ajustar ancho de columnas
             autoSizeColumns(sheet);
 
             workbook.write(outputStream);

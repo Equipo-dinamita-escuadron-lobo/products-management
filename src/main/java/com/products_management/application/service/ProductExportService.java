@@ -168,7 +168,7 @@ public class ProductExportService implements IProductExportUseCase {
         cell.setCellStyle(style);
     }
 
-    private void fillData(Sheet sheet, List<Product> products, CellStyle dataStyle) {
+    private void fillData(Sheet sheet, List<Product> products, CellStyle dataStyle, String entId) {
         int rowIndex = 1;
 
         for (Product product : products) {
@@ -184,9 +184,9 @@ public class ProductExportService implements IProductExportUseCase {
 
             createDataCell(row, colIndex++, product.getCost(), dataStyle);
             createDataCell(row, colIndex++, product.getQuantity(), dataStyle);
-            createDataCell(row, colIndex++, getUnitOfMeasureAbbreviation(product.getUnitOfMeasureId()), dataStyle);
-            createDataCell(row, colIndex++, getCategoryName(product.getCategoryId()), dataStyle);
-            createDataCell(row, colIndex++, getProductTypeName(product.getProductTypeId()), dataStyle);
+            createDataCell(row, colIndex++, getUnitOfMeasureAbbreviation(product.getUnitOfMeasureId(), entId), dataStyle);
+            createDataCell(row, colIndex++, getCategoryName(product.getCategoryId(), entId), dataStyle);
+            createDataCell(row, colIndex++, getProductTypeName(product.getProductTypeId(), entId), dataStyle);
             createDataCell(row, colIndex++, product.isState() ? "ACTIVO" : "INACTIVO", dataStyle);
         }
     }
@@ -205,23 +205,23 @@ public class ProductExportService implements IProductExportUseCase {
         cell.setCellStyle(style);
     }
 
-    private String getUnitOfMeasureAbbreviation(Long unitOfMeasureId) {
+    private String getUnitOfMeasureAbbreviation(Long unitOfMeasureId, String entId) {
         if (unitOfMeasureId == null) return "";
-        return unitOfMeasurePersistencePort.findByIdAndEnterpriseId(unitOfMeasureId, null)
+        return unitOfMeasurePersistencePort.findByIdAndEnterpriseId(unitOfMeasureId, entId)
                 .map(UnitOfMeasure::getAbbreviation)
                 .orElse("");
     }
 
-    private String getCategoryName(Long categoryId) {
+    private String getCategoryName(Long categoryId, String entId) {
         if (categoryId == null) return "";
-        return categoryPersistencePort.findByIdAndEnterpriseId(categoryId, null)
+        return categoryPersistencePort.findByIdAndEnterpriseId(categoryId, entId)
                 .map(Category::getName)
                 .orElse("");
     }
 
-    private String getProductTypeName(Long productTypeId) {
+    private String getProductTypeName(Long productTypeId, String entId) {
         if (productTypeId == null) return "";
-        return productTypePersistencePort.findByIdAndEnterpriseId(productTypeId, null)
+        return productTypePersistencePort.findByIdAndEnterpriseId(productTypeId, entId)
                 .map(ProductType::getName)
                 .orElse("");
     }
@@ -388,7 +388,7 @@ public class ProductExportService implements IProductExportUseCase {
             // Crear encabezados
             createHeaders(sheet, headerStyle, createOptionalHeaderStyle(workbook));
 
-            fillData(sheet, products, dataStyle);
+            fillData(sheet, products, dataStyle, entId);
 
             // Aplicar validaciones de datos
             applyValidationsToDataSheet(sheet, entId, products.size());

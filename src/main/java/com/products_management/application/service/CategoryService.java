@@ -87,6 +87,7 @@ public class CategoryService implements ICategoryServicePort {
                     existingCategory.setCostId(category.getCostId());
                     existingCategory.setSaleId(category.getSaleId());
                     existingCategory.setReturnId(category.getReturnId());
+                    existingCategory.setTaxes(category.getTaxes());
                     return categoryPersistencePort.create(existingCategory);
                 })
                 .orElseThrow(CategoryNotFoundException::new);

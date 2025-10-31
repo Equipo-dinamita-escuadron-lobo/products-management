@@ -1,5 +1,7 @@
 package com.products_management.infraestructure.input.rest.model.request;
 
+import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -38,6 +40,9 @@ public class CategoryCreateRequest {
 
     @NotNull(message = "Id de la devolución es requerido")
     private Long returnId;
+
+    @NotNull(message = "Lista de impuestos es requerida")
+    private List<Long> taxes;
 
     @JsonIgnore
     @Builder.Default

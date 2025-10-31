@@ -1,7 +1,5 @@
 package com.products_management.domain.model;
 
-import java.util.List;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -42,11 +40,6 @@ public class Product {
      * Cantidad permitida del producto.
      */
     private Integer quantity;
-
-    /**
-     * @brief Lista de impuestos aplicables al producto.
-     */
-    private List<Long> taxes;
 
     /**
      * @brief Identificador de la unidad de medida del producto.

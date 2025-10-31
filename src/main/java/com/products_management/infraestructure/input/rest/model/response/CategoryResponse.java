@@ -1,5 +1,7 @@
 package com.products_management.infraestructure.input.rest.model.response;
 
+import java.util.List;
+
 import lombok.*;
 
 /**
@@ -51,6 +53,11 @@ public class CategoryResponse {
      * Identificador de la devolución asociada a la categoría.
      */
     private Long returnId;
+
+    /**
+     * Lista de impuestos aplicables a la categoría.
+     */
+    private List<Long> taxes;
 
     /**
      * Estado de la categoría (activo/inactivo).

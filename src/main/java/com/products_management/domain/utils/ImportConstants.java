@@ -24,15 +24,13 @@ public final class ImportConstants {
      * Encabezados requeridos para importación de terceros.
      * Campos mínimos obligatorios para cualquier tipo de importación.
      */
-    public static final String[] REQUIRED_HEADERS = {
-        "Código", 
+    public static final String[] REQUIRED_HEADERS = {        
         "Nombre", 
         "Referencia/SKU", 
         "Presentación", 
         "Descripción", 
         "Unidad de Medida", 
-        "Categoría", 
-        "Estado",
+        "Categoría",
         "Tipo de Producto"
     };
     
@@ -41,8 +39,10 @@ public final class ImportConstants {
      * Estos campos pueden estar presentes o ausentes en el archivo Excel.
      */
     public static final String[] OPTIONAL_HEADERS = {
+        "Código", 
         "Costo",
-        "Cantidad"
+        "Cantidad",
+        "Estado",
     };
     
 

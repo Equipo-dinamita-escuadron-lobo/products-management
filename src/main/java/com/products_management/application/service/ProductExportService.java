@@ -42,15 +42,8 @@ public class ProductExportService implements IProductExportUseCase {
     private final IUnitOfMeasurePersistencePort unitOfMeasurePersistencePort;
     private final ProductExcelValidationService excelValidationService;
 
-    /**
-     * Tamaño de página óptimo para exportación.
-     * Balance entre rendimiento y uso de memoria.
-     */
-    private static final int EXPORT_PAGE_SIZE = 5000;
-
-    /**
-     * Texto placeholder para listas desplegables en plantillas.
-     */
+   
+    private static final int EXPORT_PAGE_SIZE = 1000;
     private static final String SELECT_PLACEHOLDER = "Seleccionar...";
 
     /**
@@ -152,30 +145,17 @@ public class ProductExportService implements IProductExportUseCase {
         Row headerRow = sheet.createRow(0);
         int colIndex = 0;
 
-        // Encabezados requeridos con indicativos de requerimiento
-        createHeaderCell(headerRow, colIndex++, "Código\n(Requerido)", requiredHeaderStyle);
+        createHeaderCell(headerRow, colIndex++, "Código\n(No se requiere)", optionalHeaderStyle);
         createHeaderCell(headerRow, colIndex++, "Nombre\n(Requerido)", requiredHeaderStyle);
         createHeaderCell(headerRow, colIndex++, "Referencia/SKU\n(Requerido)", requiredHeaderStyle);
         createHeaderCell(headerRow, colIndex++, "Presentación\n(Requerido)", requiredHeaderStyle);
         createHeaderCell(headerRow, colIndex++, "Descripción\n(Requerido)", requiredHeaderStyle);
-
-        // Costo - OPCIONAL (fondo gris)
         createHeaderCell(headerRow, colIndex++, "Costo\n(Opcional)", optionalHeaderStyle);
-
-        // Cantidad - OPCIONAL (fondo gris)
         createHeaderCell(headerRow, colIndex++, "Cantidad\n(Opcional)", optionalHeaderStyle);
-
-        // Unidad de Medida - Requerido
         createHeaderCell(headerRow, colIndex++, "Unidad de Medida\n(Requerido)", requiredHeaderStyle);
-
-        // Categoría - Requerido
         createHeaderCell(headerRow, colIndex++, "Categoría\n(Requerido)", requiredHeaderStyle);
-
-        // Tipo de Producto - Requerido
         createHeaderCell(headerRow, colIndex++, "Tipo de Producto\n(Requerido)", requiredHeaderStyle);
-
-        // Estado - Requerido
-        createHeaderCell(headerRow, colIndex++, "Estado\n(Requerido)", requiredHeaderStyle);
+        createHeaderCell(headerRow, colIndex++, "Estado\n(No se requiere)", optionalHeaderStyle);
 
         // Ajustar altura de la fila de encabezados para mostrar múltiples líneas
         headerRow.setHeightInPoints(35);
@@ -201,22 +181,11 @@ public class ProductExportService implements IProductExportUseCase {
             createDataCell(row, colIndex++, product.getPresentation() != null ? product.getPresentation() : "", dataStyle);
             createDataCell(row, colIndex++, product.getDescription(), dataStyle);
 
-            // Costo - OPCIONAL
             createDataCell(row, colIndex++, product.getCost(), dataStyle);
-
-            // Cantidad - OPCIONAL
             createDataCell(row, colIndex++, product.getQuantity(), dataStyle);
-
-            // Unidad de Medida - Requerido (por nombre de abreviatura)
             createDataCell(row, colIndex++, getUnitOfMeasureAbbreviation(product.getUnitOfMeasureId()), dataStyle);
-
-            // Categoría - Requerido (por nombre)
             createDataCell(row, colIndex++, getCategoryName(product.getCategoryId()), dataStyle);
-
-            // Tipo de Producto - Requerido (por nombre)
             createDataCell(row, colIndex++, getProductTypeName(product.getProductTypeId()), dataStyle);
-
-            // Estado
             createDataCell(row, colIndex++, product.isState() ? "ACTIVO" : "INACTIVO", dataStyle);
         }
     }
@@ -369,17 +338,17 @@ public class ProductExportService implements IProductExportUseCase {
 
             if (i == 1) {
                 // Primera fila con indicadores (estilo normal)
-                createHeaderCell(row, colIndex++, "PROD001", templateStyle);
+                createHeaderCell(row, colIndex++, "", templateStyle);
                 createHeaderCell(row, colIndex++, "Producto de Ejemplo", templateStyle);
                 createHeaderCell(row, colIndex++, "REF001", templateStyle);
                 createHeaderCell(row, colIndex++, "Caja x 12", templateStyle);
                 createHeaderCell(row, colIndex++, "Descripción del producto", templateStyle);
-                createHeaderCell(row, colIndex++, "150.50", templateStyle); // Costo
-                createHeaderCell(row, colIndex++, "100", templateStyle); // Cantidad
+                createHeaderCell(row, colIndex++, "0", templateStyle); // Costo
+                createHeaderCell(row, colIndex++, "0", templateStyle); // Cantidad
                 createHeaderCell(row, colIndex++, SELECT_PLACEHOLDER, templateStyle); // Unidad de Medida
                 createHeaderCell(row, colIndex++, SELECT_PLACEHOLDER, templateStyle); // Categoría
                 createHeaderCell(row, colIndex++, SELECT_PLACEHOLDER, templateStyle); // Tipo de Producto
-                createHeaderCell(row, colIndex++, "ACTIVO", templateStyle); // Estado
+                createHeaderCell(row, colIndex++, "", templateStyle); // Estado
             } else {
                 // Filas adicionales vacías con el mismo estilo
                 createEmptyTemplateRow(row, templateStyle);

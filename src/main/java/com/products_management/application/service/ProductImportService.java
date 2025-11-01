@@ -5,6 +5,7 @@ import com.products_management.domain.enums.ImportErrorType;
 import com.products_management.domain.model.ImportErrorDetail;
 import com.products_management.infraestructure.input.rest.dto.request.ProductImportRequest;
 import com.products_management.infraestructure.input.rest.dto.response.ProductImportResponse;
+import com.products_management.infraestructure.input.validation.ExcelFileValidator;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -20,7 +21,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ProductImportService implements IProductImportUseCase {
 
-    private final ProductFileValidationService fileValidationService;
+    private final ExcelFileValidator excelFileValidator;
     private final ProductExcelParsingService excelParsingService;
     private final ProductBatchValidationService batchValidationService;
     private final ProductBatchProcessor batchProcessor;
@@ -37,7 +38,7 @@ public class ProductImportService implements IProductImportUseCase {
 
         try {
             // 1. Validación de archivo
-            fileValidationService.validate(request.getExcelFile());
+            excelFileValidator.validate(request.getExcelFile());
 
             // 2. Parseo de Excel
             ProductExcelParsingService.ExcelParsingResult parsingResult =
@@ -85,15 +86,13 @@ public class ProductImportService implements IProductImportUseCase {
             allErrors.addAll(processingResult.getErrors());
 
             // 5. Construir respuesta final
-            ProductImportResponse response = buildFinalResponse(
+            return buildFinalResponse(
                     entId,
                     fileName,
                     parsingResult,
                     validationResult,
                     processingResult,
                     allErrors);
-
-            return response;
 
         } catch (Exception e) {
 

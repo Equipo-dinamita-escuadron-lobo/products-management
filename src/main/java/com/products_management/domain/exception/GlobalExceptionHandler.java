@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
+import com.products_management.domain.exception.product.ProductFileSizeExceededException;
 import com.products_management.infraestructure.input.rest.dto.response.ErrorResponse;
 
 import jakarta.validation.ConstraintViolation;
@@ -134,16 +135,15 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleMaxUploadSizeExceeded(
             MaxUploadSizeExceededException ex, WebRequest request) {
 
-        ErrorResponse errorResponse = ErrorResponse.builder()
-                .timestamp(LocalDateTime.now())
-                .status(HttpStatus.PAYLOAD_TOO_LARGE.value())
-                .error("Payload Too Large")
-                .message("El archivo excede el tamaño máximo permitido")
-                .code("FILE_SIZE_EXCEEDED")
-                .path(request.getDescription(false).replace("uri=", ""))
-                .build();
+        // Extraer el tamaño máximo permitido
+        long maxSize = ex.getMaxUploadSize();
+        
+        // Crear excepción personalizada
+        ProductFileSizeExceededException customEx = new ProductFileSizeExceededException(
+            maxSize > 0 ? maxSize : 5242880
+        );
 
-        return new ResponseEntity<>(errorResponse, HttpStatus.PAYLOAD_TOO_LARGE);
+        return handleBusinessExceptions(customEx, request);
     }
 
     /**

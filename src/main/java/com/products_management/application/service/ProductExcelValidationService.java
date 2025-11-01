@@ -45,7 +45,7 @@ public class ProductExcelValidationService {
         if (totalActive == 0) {
             return List.of();
         }
-        
+
         var page = categoryServicePort.getAllActiveCategoriesByWithSort(entId, 0, (int) totalActive, "name", "asc");
         return page.getContent().stream()
                 .map(Category::getName)

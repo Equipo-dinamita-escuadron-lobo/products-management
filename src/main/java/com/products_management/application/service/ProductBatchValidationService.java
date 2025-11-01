@@ -146,6 +146,24 @@ public class ProductBatchValidationService {
                     REQUIRED_FIELD_MISSING, "La presentación es requerida",
                     COLUMN_PRESENTATION, columnMap.get(COLUMN_PRESENTATION)));
         }
+
+        if (isNullOrEmpty(productData.getUnitOfMeasureName())) {
+            errors.add(createValidationError(productData.getRowNumber(),
+                    REQUIRED_FIELD_MISSING, "La Unidad de Medida es requerida",
+                    COLUMN_UNIT_MEASURE, columnMap.get(COLUMN_UNIT_MEASURE)));
+        }
+
+        if (isNullOrEmpty(productData.getCategoryName())) {
+            errors.add(createValidationError(productData.getRowNumber(),
+                    REQUIRED_FIELD_MISSING, "La Categoría es requerida",
+                    COLUMN_CATEGORY, columnMap.get(COLUMN_CATEGORY)));
+        }
+
+        if (isNullOrEmpty(productData.getProductTypeName())) {
+            errors.add(createValidationError(productData.getRowNumber(),
+                    REQUIRED_FIELD_MISSING, "El Tipo de Producto es requerido",
+                    COLUMN_PRODUCT_TYPE, columnMap.get(COLUMN_PRODUCT_TYPE)));
+        }
     }
 
     /**

@@ -1,7 +1,7 @@
 package com.products_management.infraestructure.input.rest.data.response;
 
 import com.products_management.domain.enums.ImportStatus;
-import com.products_management.domain.models.ImportErrorDetail;
+import com.products_management.domain.model.ImportErrorDetail;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

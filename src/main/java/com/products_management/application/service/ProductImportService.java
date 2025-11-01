@@ -2,8 +2,8 @@ package com.products_management.application.service;
 
 import com.products_management.application.ports.input.IProductImportUseCase;
 import com.products_management.domain.enums.ImportErrorType;
-import com.products_management.domain.models.ImportErrorDetail;
-import com.products_management.domain.models.ProductExcelData;
+import com.products_management.domain.model.ImportErrorDetail;
+import com.products_management.domain.model.ProductExcelData;
 import com.products_management.infraestructure.input.rest.data.request.ProductImportRequest;
 import com.products_management.infraestructure.input.rest.data.response.ProductImportResponse;
 

@@ -1,7 +1,7 @@
 package com.products_management.application.service;
 
 import com.products_management.domain.enums.ImportStatus;
-import com.products_management.domain.models.ImportErrorDetail;
+import com.products_management.domain.model.ImportErrorDetail;
 import com.products_management.infraestructure.input.rest.data.response.ProductImportResponse;
 
 import lombok.extern.slf4j.Slf4j;

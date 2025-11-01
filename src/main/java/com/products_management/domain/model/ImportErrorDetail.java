@@ -1,4 +1,4 @@
-package com.products_management.domain.models;
+package com.products_management.domain.model;
 
 import com.products_management.domain.enums.ImportErrorType;
 import lombok.AllArgsConstructor;

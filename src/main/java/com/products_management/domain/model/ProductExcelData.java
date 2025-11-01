@@ -1,4 +1,4 @@
-package com.products_management.domain.models;
+package com.products_management.domain.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

@@ -17,7 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Servicio para procesamiento por lotes de productos importados.
@@ -34,7 +33,7 @@ public class ProductBatchProcessor {
      * Procesa un lote de productos válidos.
      *
      * @param productsData lista de datos de productos a procesar
-     * @param entId ID de la empresa
+     * @param entId        ID de la empresa
      * @return resultado del procesamiento por lotes
      */
     @Transactional
@@ -49,7 +48,7 @@ public class ProductBatchProcessor {
         List<List<ProductExcelData>> batches = partitionList(productsData, ImportConstants.Defaults.BATCH_SIZE);
 
         for (List<ProductExcelData> batch : batches) {
-            BatchProcessingResult batchResult = processSingleBatch(batch, entId);
+            BatchProcessingResult batchResult = processSingleBatch(batch);
             successCount += batchResult.getSuccessCount();
             failureCount += batchResult.getFailureCount();
             errors.addAll(batchResult.getErrors());
@@ -65,7 +64,7 @@ public class ProductBatchProcessor {
     /**
      * Procesa un lote individual de productos.
      */
-    private BatchProcessingResult processSingleBatch(List<ProductExcelData> batch, String entId) {
+    private BatchProcessingResult processSingleBatch(List<ProductExcelData> batch) {
         List<ImportErrorDetail> errors = new ArrayList<>();
         int successCount = 0;
         int failureCount = 0;
@@ -73,7 +72,10 @@ public class ProductBatchProcessor {
         for (ProductExcelData productData : batch) {
             try {
                 Product product = convertToProduct(productData);
-                productPersistencePort.create(product);
+                Product createdProduct = productPersistencePort.create(product);
+                createdProduct.generateCode();
+                productPersistencePort.create(createdProduct);
+
                 successCount++;
 
                 log.debug("Successfully created product: {}", product.getName());

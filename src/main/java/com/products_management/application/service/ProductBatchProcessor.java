@@ -11,7 +11,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,7 +21,6 @@ import java.util.List;
  * Servicio para procesamiento por lotes de productos importados.
  * Maneja la inserción en BD en lotes transaccionales.
  */
-@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ProductBatchProcessor {
@@ -41,8 +39,6 @@ public class ProductBatchProcessor {
         List<ImportErrorDetail> errors = new ArrayList<>();
         int successCount = 0;
         int failureCount = 0;
-
-        log.debug("Processing batch of {} products for enterprise {}", productsData.size(), entId);
 
         // Dividir en lotes más pequeños para procesamiento
         List<List<ProductExcelData>> batches = partitionList(productsData, ImportConstants.Defaults.BATCH_SIZE);
@@ -78,8 +74,6 @@ public class ProductBatchProcessor {
 
                 successCount++;
 
-                log.debug("Successfully created product: {}", product.getName());
-
             } catch (Exception e) {
                 failureCount++;
                 errors.add(ImportErrorDetail.builder()
@@ -88,8 +82,6 @@ public class ProductBatchProcessor {
                         .errorMessage("Error creando producto '" + productData.getName() + "': " + e.getMessage())
                         .errorType(ImportErrorType.SYSTEM_ERROR)
                         .build());
-
-                log.error("Error creating product at row {}: {}", productData.getRowNumber(), e.getMessage(), e);
 
                 // Si no se debe continuar en error, detener el procesamiento
                 if (!ImportConstants.Defaults.CONTINUE_ON_ERROR) {

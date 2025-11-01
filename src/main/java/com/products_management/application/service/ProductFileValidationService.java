@@ -2,7 +2,6 @@ package com.products_management.application.service;
 
 import com.products_management.domain.exception.product.ProductFileValidationException;
 import com.products_management.domain.utils.ImportConstants;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -12,7 +11,6 @@ import java.util.Arrays;
  * Servicio especializado en la validación de archivos para importación de productos.
  * Valida tamaño, extensión y formato del archivo Excel.
  */
-@Slf4j
 @Service
 public class ProductFileValidationService {
 
@@ -23,7 +21,6 @@ public class ProductFileValidationService {
      * @throws ProductFileValidationException si la validación falla
      */
     public void validate(MultipartFile file) {
-        log.debug("Validating file: {}", file.getOriginalFilename());
 
         // Validar que el archivo no sea null o vacío
         if (file == null || file.isEmpty()) {
@@ -50,7 +47,6 @@ public class ProductFileValidationService {
                     extension, Arrays.toString(ImportConstants.SUPPORTED_EXTENSIONS)));
         }
 
-        log.debug("File validation successful for: {}", fileName);
     }
 
     /**

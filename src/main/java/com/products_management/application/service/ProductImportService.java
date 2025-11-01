@@ -7,7 +7,6 @@ import com.products_management.infraestructure.input.rest.dto.request.ProductImp
 import com.products_management.infraestructure.input.rest.dto.response.ProductImportResponse;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -17,7 +16,6 @@ import java.util.List;
  * Servicio principal para la importación de productos desde archivos Excel.
  * Orquesta todos los servicios auxiliares para completar el proceso de importación.
  */
-@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ProductImportService implements IProductImportUseCase {
@@ -38,8 +36,6 @@ public class ProductImportService implements IProductImportUseCase {
         List<ImportErrorDetail> allErrors = new ArrayList<>();
 
         try {
-            log.info("Starting product import for enterprise {} with file {}", entId, fileName);
-
             // 1. Validación de archivo
             fileValidationService.validate(request.getExcelFile());
 
@@ -97,14 +93,9 @@ public class ProductImportService implements IProductImportUseCase {
                     processingResult,
                     allErrors);
 
-            log.info("Product import completed for enterprise {}. Success: {}, Failed: {}, Duplicates: {}",
-                    entId, processingResult.getSuccessCount(), processingResult.getFailureCount(),
-                    validationResult.getDuplicateCount());
-
             return response;
 
         } catch (Exception e) {
-            log.error("Unexpected error during product import for enterprise {}: {}", entId, e.getMessage(), e);
 
             allErrors.add(ImportErrorDetail.builder()
                     .errorCode("SYSTEM_ERROR")

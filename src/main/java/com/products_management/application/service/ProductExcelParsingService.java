@@ -9,7 +9,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.stereotype.Service;
@@ -22,7 +21,6 @@ import java.util.*;
  * Servicio especializado en el parseo de archivos Excel para importación de productos.
  * Maneja la lectura, validación de formato y conversión de datos desde Excel.
  */
-@Slf4j
 @Service
 public class ProductExcelParsingService {
 
@@ -104,31 +102,18 @@ public class ProductExcelParsingService {
                 String headerValue = cell.getStringCellValue();
                 if (headerValue != null) {
                 String header = StringNormalizer.normalizeHeaderName(headerValue.trim());
-                    log.debug("Header original: '{}', normalizado: '{}'", headerValue.trim(), header);
                     if (header != null && !header.isEmpty()) {
                         columnMap.put(header, i);
                         foundHeaders.add(header);
-                        log.debug("Header agregado a foundHeaders: '{}'", header);
                     }
                 }
             }
         }
 
         // Validar que existan los encabezados requeridos
-        log.debug("Headers encontrados: {}", foundHeaders);
-        log.debug("Headers requeridos: {}", Arrays.toString(ImportConstants.REQUIRED_HEADERS));
         for (String requiredHeader : ImportConstants.REQUIRED_HEADERS) {
-            log.debug("Verificando header requerido: '{}' (length: {})", requiredHeader, requiredHeader.length());
             boolean found = foundHeaders.contains(requiredHeader);
-            log.debug("Header '{}' encontrado: {}", requiredHeader, found);
             if (!found) {
-                log.error("Header requerido '{}' no encontrado en headers encontrados: {}", requiredHeader, foundHeaders);
-                // Mostrar comparación detallada
-                for (String foundHeader : foundHeaders) {
-                    log.debug("Comparando '{}' con '{}' - equals: {}, length: {} vs {}", 
-                             requiredHeader, foundHeader, requiredHeader.equals(foundHeader), 
-                             requiredHeader.length(), foundHeader.length());
-                }
                 errors.add(ImportErrorDetail.builder()
                         .rowNumber(1)
                         .columnName(requiredHeader)

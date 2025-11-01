@@ -9,7 +9,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -18,7 +17,6 @@ import java.util.*;
  * Servicio para detección de duplicados en importación de productos.
  * Detecta duplicados tanto en el archivo Excel como en el sistema existente.
  */
-@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ProductDuplicateDetectionService {
@@ -39,7 +37,6 @@ public class ProductDuplicateDetectionService {
         Set<String> processedReferences = new HashSet<>();
         int duplicateCount = 0;
 
-        log.debug("Detecting duplicates for {} products in enterprise {}", productsData.size(), entId);
 
         // Verificar duplicados en el sistema existente usando existsByReferenceAndEnterpriseId
         for (ProductExcelData productData : productsData) {
@@ -48,14 +45,12 @@ public class ProductDuplicateDetectionService {
             if (reference != null) {
                 // Verificar duplicado en el sistema existente
                 if (productPersistencePort.existsByReferenceAndEnterpriseId(reference, entId)) {
-                    log.debug("Skipping duplicate product with reference {} (already exists in system)", reference);
                     duplicateCount++;
                     continue;
                 }
 
                 // Verificar duplicado dentro del mismo archivo
                 if (processedReferences.contains(reference)) {
-                    log.debug("Skipping duplicate product with reference {} (duplicate in file)", reference);
                     duplicateCount++;
                     continue;
                 }

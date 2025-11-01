@@ -61,20 +61,22 @@ public class ProductImportService implements IProductImportUseCase {
             allErrors.addAll(validationResult.getErrors());
 
             if (validationResult.getValidRecords().isEmpty()) {
-                // Si no hay registros válidos, verificar si todos fueron duplicados o errores
+                // Si no hay registros válidos para procesar
                 int validationFailures = calculateUniqueFailedRecords(validationResult.getErrors());
-                if (validationFailures == 0 && validationResult.getDuplicateCount() > 0) {
-                    // Todos son duplicados
+                int duplicatesFound = validationResult.getDuplicateCount();
+
+                if (duplicatesFound > 0) {
+                    // Hay duplicados (y posiblemente errores)
                     return responseBuilder.buildSuccessResponse(
                             entId,
                             fileName,
                             parsingResult.getTotalRows(),
                             0, // successCount
-                            0, // failureCount
-                            validationResult.getDuplicateCount(),
-                            null); // No mostrar errores si solo son duplicados
+                            validationFailures, // failureCount (errores de validación)
+                            duplicatesFound, // duplicatesSkipped
+                            validationFailures > 0 ? allErrors : null); // Mostrar errores solo si hay fallos
                 } else {
-                    // Hay errores de validación
+                    // Solo hay errores de validación
                     return responseBuilder.buildFailedResponse(entId, fileName,
                             parsingResult.getTotalRows(), allErrors);
                 }

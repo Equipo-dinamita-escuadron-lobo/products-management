@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.function.LongConsumer;
 
 /**
  * Servicio para validación por lotes de datos de productos importados.
@@ -46,6 +47,13 @@ public class ProductBatchValidationService {
     private static final String COLUMN_UNIT_MEASURE = "Unidad de Medida";
     private static final String COLUMN_CATEGORY = "Categoría";
     private static final String COLUMN_PRODUCT_TYPE = "Tipo de Producto";
+
+    // Constantes para códigos de error
+    private static final String REQUIRED_FIELD_MISSING = "REQUIRED_FIELD_MISSING";
+
+    // Constantes para mensajes de error
+    private static final String ENTITY_NOT_ACTIVE_SUFFIX = " no existe o está inactiva.";
+    private static final String ENTITY_NOT_ACTIVE_SUFFIX_MASC = " no existe o está inactivo.";
 
     /**
      * Valida un lote de datos de productos.
@@ -117,25 +125,25 @@ public class ProductBatchValidationService {
                                        Map<String, Integer> columnMap) {
         if (isNullOrEmpty(productData.getName())) {
             errors.add(createValidationError(productData.getRowNumber(),
-                    "REQUIRED_FIELD_MISSING", "El nombre es requerido",
+                    REQUIRED_FIELD_MISSING, "El nombre es requerido",
                     COLUMN_NAME, columnMap.get(COLUMN_NAME)));
         }
 
         if (isNullOrEmpty(productData.getDescription())) {
             errors.add(createValidationError(productData.getRowNumber(),
-                    "REQUIRED_FIELD_MISSING", "La descripción es requerida",
+                    REQUIRED_FIELD_MISSING, "La descripción es requerida",
                     COLUMN_DESCRIPTION, columnMap.get(COLUMN_DESCRIPTION)));
         }
 
         if (isNullOrEmpty(productData.getReference())) {
             errors.add(createValidationError(productData.getRowNumber(),
-                    "REQUIRED_FIELD_MISSING", "La referencia es requerida",
+                    REQUIRED_FIELD_MISSING, "La referencia es requerida",
                     COLUMN_REFERENCE, columnMap.get(COLUMN_REFERENCE)));
         }
 
         if (isNullOrEmpty(productData.getPresentation())) {
             errors.add(createValidationError(productData.getRowNumber(),
-                    "REQUIRED_FIELD_MISSING", "La presentación es requerida",
+                    REQUIRED_FIELD_MISSING, "La presentación es requerida",
                     COLUMN_PRESENTATION, columnMap.get(COLUMN_PRESENTATION)));
         }
     }
@@ -191,57 +199,21 @@ public class ProductBatchValidationService {
             ProductExcelData.ProductExcelDataBuilder builder = productData.toBuilder();
 
             // Resolver ID de unidad de medida
-            if (productData.getUnitOfMeasureName() != null && !productData.getUnitOfMeasureName().trim().isEmpty()) {
-                Long unitOfMeasureId = resolveUnitOfMeasureId(productData.getUnitOfMeasureName().trim(), entId);
-                if (unitOfMeasureId != null) {
-                    builder.unitOfMeasureId(unitOfMeasureId);
-                } else {
-                    errors.add(ImportErrorDetail.builder()
-                            .rowNumber(productData.getRowNumber())
-                            .columnNumber(columnMap.get(COLUMN_UNIT_MEASURE) != null ? columnMap.get(COLUMN_UNIT_MEASURE) + 1 : null)
-                            .columnName(COLUMN_UNIT_MEASURE)
-                            .errorCode("UNIT_OF_MEASURE_NOT_FOUND")
-                            .errorMessage("La unidad de medida " + productData.getUnitOfMeasureName() + " no existe o está inactiva.")
-                            .errorType(ImportErrorType.VALIDATION_ERROR)
-                            .build());
-                    return null; // No continuar si no se puede resolver la unidad de medida
-                }
+            if (!resolveEntityId(productData.getUnitOfMeasureName(), entId, builder::unitOfMeasureId,
+                    COLUMN_UNIT_MEASURE, columnMap, errors, productData.getRowNumber())) {
+                return null;
             }
 
             // Resolver ID de categoría
-            if (productData.getCategoryName() != null && !productData.getCategoryName().trim().isEmpty()) {
-                Long categoryId = resolveCategoryId(productData.getCategoryName().trim(), entId);
-                if (categoryId != null) {
-                    builder.categoryId(categoryId);
-                } else {
-                    errors.add(ImportErrorDetail.builder()
-                            .rowNumber(productData.getRowNumber())
-                            .columnNumber(columnMap.get(COLUMN_CATEGORY) != null ? columnMap.get(COLUMN_CATEGORY) + 1 : null)
-                            .columnName(COLUMN_CATEGORY)
-                            .errorCode("CATEGORY_NOT_FOUND")
-                            .errorMessage("La categoría " + productData.getCategoryName() + " no existe o está inactiva.")
-                            .errorType(ImportErrorType.VALIDATION_ERROR)
-                            .build());
-                    return null; // No continuar si no se puede resolver la categoría
-                }
+            if (!resolveEntityId(productData.getCategoryName(), entId, builder::categoryId,
+                    COLUMN_CATEGORY, columnMap, errors, productData.getRowNumber())) {
+                return null;
             }
 
             // Resolver ID de tipo de producto
-            if (productData.getProductTypeName() != null && !productData.getProductTypeName().trim().isEmpty()) {
-                Long productTypeId = resolveProductTypeId(productData.getProductTypeName().trim(), entId);
-                if (productTypeId != null) {
-                    builder.productTypeId(productTypeId);
-                } else {
-                    errors.add(ImportErrorDetail.builder()
-                            .rowNumber(productData.getRowNumber())
-                            .columnNumber(columnMap.get(COLUMN_PRODUCT_TYPE) != null ? columnMap.get(COLUMN_PRODUCT_TYPE) + 1 : null)
-                            .columnName(COLUMN_PRODUCT_TYPE)
-                            .errorCode("PRODUCT_TYPE_NOT_FOUND")
-                            .errorMessage("El tipo de producto " + productData.getProductTypeName() + " no existe o está inactivo.")
-                            .errorType(ImportErrorType.VALIDATION_ERROR)
-                            .build());
-                    return null; // No continuar si no se puede resolver el tipo de producto
-                }
+            if (!resolveEntityId(productData.getProductTypeName(), entId, builder::productTypeId,
+                    COLUMN_PRODUCT_TYPE, columnMap, errors, productData.getRowNumber())) {
+                return null;
             }
 
             return builder.build();
@@ -255,6 +227,80 @@ public class ProductBatchValidationService {
                     .build());
             return null;
         }
+    }
+
+    /**
+     * Método genérico para resolver IDs de entidades.
+     */
+    private boolean resolveEntityId(String entityName, String entId,
+                                   LongConsumer idSetter,
+                                   String columnConstant, Map<String, Integer> columnMap,
+                                   List<ImportErrorDetail> errors, int rowNumber) {
+        if (isNullOrEmpty(entityName)) {
+            return true; // No hay entidad que resolver, continuar
+        }
+
+        Long entityId = resolveEntityByName(entityName.trim(), entId, columnConstant);
+        if (entityId != null) {
+            idSetter.accept(entityId);
+            return true;
+        } else {
+            addEntityNotFoundError(rowNumber, columnConstant, columnMap, errors, entityName.trim());
+            return false;
+        }
+    }
+
+    /**
+     * Resuelve una entidad por nombre usando el tipo apropiado.
+     */
+    private Long resolveEntityByName(String name, String entId, String entityType) {
+        switch (entityType) {
+            case COLUMN_UNIT_MEASURE:
+                return resolveUnitOfMeasureId(name, entId);
+            case COLUMN_CATEGORY:
+                return resolveCategoryId(name, entId);
+            case COLUMN_PRODUCT_TYPE:
+                return resolveProductTypeId(name, entId);
+            default:
+                return null;
+        }
+    }
+
+    /**
+     * Agrega un error cuando una entidad no se encuentra.
+     */
+    private void addEntityNotFoundError(int rowNumber, String columnConstant,
+                                       Map<String, Integer> columnMap, List<ImportErrorDetail> errors,
+                                       String entityName) {
+        String errorCode;
+        String errorMessage;
+
+        switch (columnConstant) {
+            case COLUMN_UNIT_MEASURE:
+                errorCode = "UNIT_OF_MEASURE_NOT_FOUND";
+                errorMessage = "La unidad de medida " + entityName + ENTITY_NOT_ACTIVE_SUFFIX;
+                break;
+            case COLUMN_CATEGORY:
+                errorCode = "CATEGORY_NOT_FOUND";
+                errorMessage = "La categoría " + entityName + ENTITY_NOT_ACTIVE_SUFFIX;
+                break;
+            case COLUMN_PRODUCT_TYPE:
+                errorCode = "PRODUCT_TYPE_NOT_FOUND";
+                errorMessage = "El tipo de producto " + entityName + ENTITY_NOT_ACTIVE_SUFFIX_MASC;
+                break;
+            default:
+                errorCode = "ENTITY_NOT_FOUND";
+                errorMessage = "La entidad " + entityName + ENTITY_NOT_ACTIVE_SUFFIX;
+        }
+
+        errors.add(ImportErrorDetail.builder()
+                .rowNumber(rowNumber)
+                .columnNumber(columnMap.get(columnConstant) != null ? columnMap.get(columnConstant) + 1 : null)
+                .columnName(columnConstant)
+                .errorCode(errorCode)
+                .errorMessage(errorMessage)
+                .errorType(ImportErrorType.VALIDATION_ERROR)
+                .build());
     }
 
     /**

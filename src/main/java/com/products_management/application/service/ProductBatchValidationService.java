@@ -34,6 +34,7 @@ public class ProductBatchValidationService {
     private final ICategoryPersistencePort categoryPersistencePort;
     private final IUnitOfMeasurePersistencePort unitOfMeasurePersistencePort;
     private final IProductTypePersistencePort productTypePersistencePort;
+    private final IProductPersistencePort productPersistencePort;
 
     /**
      * Valida un lote de datos de productos.
@@ -47,6 +48,7 @@ public class ProductBatchValidationService {
                                                Map<String, Integer> columnMap) {
         List<ProductExcelData> validRecords = new ArrayList<>();
         List<ImportErrorDetail> errors = new ArrayList<>();
+        int duplicateCount = 0;
 
         log.debug("Validating batch of {} products for enterprise {}", productsData.size(), entId);
 
@@ -54,10 +56,16 @@ public class ProductBatchValidationService {
             List<ImportErrorDetail> productErrors = validateProduct(productData, columnMap);
 
             if (productErrors.isEmpty()) {
-                // Resolver IDs de entidades relacionadas
-                ProductExcelData resolvedData = resolveEntityIds(productData, entId, errors);
-                if (resolvedData != null) {
-                    validRecords.add(resolvedData);
+                // Verificar si es duplicado por referencia
+                String reference = productData.getReference();
+                if (reference != null && productPersistencePort.existsByReferenceAndEnterpriseId(reference, entId)) {
+                    duplicateCount++;
+                } else {
+                    // No es duplicado, resolver IDs de entidades relacionadas
+                    ProductExcelData resolvedData = resolveEntityIds(productData, entId, errors);
+                    if (resolvedData != null) {
+                        validRecords.add(resolvedData);
+                    }
                 }
             } else {
                 errors.addAll(productErrors);
@@ -67,6 +75,8 @@ public class ProductBatchValidationService {
         return BatchValidationResult.builder()
                 .validRecords(validRecords)
                 .errors(errors)
+                .duplicateCount(duplicateCount)
+                .validCount(validRecords.size())
                 .build();
     }
 
@@ -336,5 +346,7 @@ public class ProductBatchValidationService {
     public static class BatchValidationResult {
         private List<ProductExcelData> validRecords;
         private List<ImportErrorDetail> errors;
+        private int duplicateCount;
+        private int validCount;
     }
 }

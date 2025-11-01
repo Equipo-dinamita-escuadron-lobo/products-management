@@ -25,7 +25,6 @@ public class ProductImportService implements IProductImportUseCase {
     private final ProductFileValidationService fileValidationService;
     private final ProductExcelParsingService excelParsingService;
     private final ProductBatchValidationService batchValidationService;
-    private final ProductDuplicateDetectionService duplicateDetectionService;
     private final ProductBatchProcessor batchProcessor;
     private final ProductImportResponseBuilder responseBuilder;
 
@@ -54,7 +53,7 @@ public class ProductImportService implements IProductImportUseCase {
                 return responseBuilder.buildEmptyFileResponse(entId, fileName);
             }
 
-            // 3. Validación por lotes
+            // 3. Validación por lotes (incluye detección de duplicados)
             ProductBatchValidationService.BatchValidationResult validationResult =
                     batchValidationService.validateBatch(
                             parsingResult.getProductsData(), entId, parsingResult.getColumnMap());
@@ -62,40 +61,43 @@ public class ProductImportService implements IProductImportUseCase {
             allErrors.addAll(validationResult.getErrors());
 
             if (validationResult.getValidRecords().isEmpty()) {
-                return responseBuilder.buildFailedResponse(entId, fileName,
-                        parsingResult.getTotalRows(), allErrors);
+                // Si no hay registros válidos, verificar si todos fueron duplicados o errores
+                int validationFailures = calculateUniqueFailedRecords(validationResult.getErrors());
+                if (validationFailures == 0 && validationResult.getDuplicateCount() > 0) {
+                    // Todos son duplicados
+                    return responseBuilder.buildSuccessResponse(
+                            entId,
+                            fileName,
+                            parsingResult.getTotalRows(),
+                            0, // successCount
+                            0, // failureCount
+                            validationResult.getDuplicateCount(),
+                            null); // No mostrar errores si solo son duplicados
+                } else {
+                    // Hay errores de validación
+                    return responseBuilder.buildFailedResponse(entId, fileName,
+                            parsingResult.getTotalRows(), allErrors);
+                }
             }
 
-            // 4. Detección de duplicados
-            ProductDuplicateDetectionService.DuplicateDetectionResult duplicateResult =
-                    duplicateDetectionService.detectDuplicates(validationResult.getValidRecords(), entId);
-
-            allErrors.addAll(duplicateResult.getErrors());
-
-            // Si no hay registros únicos, manejar según la configuración
-            if (duplicateResult.getUniqueRecords().isEmpty()) {
-                return handleNoUniqueRecords(entId, fileName, parsingResult, duplicateResult, allErrors);
-            }
-
-            // 5. Procesamiento por lotes
+            // 4. Procesamiento por lotes (ya no hay detección de duplicados separada)
             ProductBatchProcessor.BatchProcessingResult processingResult =
-                    batchProcessor.processBatch(duplicateResult.getUniqueRecords(), entId);
+                    batchProcessor.processBatch(validationResult.getValidRecords(), entId);
 
             allErrors.addAll(processingResult.getErrors());
 
-            // 6. Construir respuesta final
+            // 5. Construir respuesta final
             ProductImportResponse response = buildFinalResponse(
                     entId,
                     fileName,
                     parsingResult,
                     validationResult,
-                    duplicateResult,
                     processingResult,
                     allErrors);
 
             log.info("Product import completed for enterprise {}. Success: {}, Failed: {}, Duplicates: {}",
                     entId, processingResult.getSuccessCount(), processingResult.getFailureCount(),
-                    duplicateResult.getDuplicateCount());
+                    validationResult.getDuplicateCount());
 
             return response;
 
@@ -109,31 +111,6 @@ public class ProductImportService implements IProductImportUseCase {
                     .build());
 
             return responseBuilder.buildFailedResponse(entId, fileName, 0, allErrors);
-        }
-    }
-
-    /**
-     * Maneja el caso cuando no hay registros únicos después de detectar duplicados.
-     */
-    private ProductImportResponse handleNoUniqueRecords(String entId, String fileName,
-                                                       ProductExcelParsingService.ExcelParsingResult parsingResult,
-                                                       ProductDuplicateDetectionService.DuplicateDetectionResult duplicateResult,
-                                                       List<ImportErrorDetail> allErrors) {
-
-        int validationFailures = calculateUniqueFailedRecords(allErrors);
-
-        if (validationFailures == 0) {
-            return responseBuilder.buildSuccessResponse(
-                    entId,
-                    fileName,
-                    parsingResult.getTotalRows(),
-                    0, 
-                    0,
-                    duplicateResult.getDuplicateCount(),
-                    null); 
-        } else {
-            return responseBuilder.buildFailedResponse(entId, fileName,
-                    parsingResult.getTotalRows(), allErrors);
         }
     }
 
@@ -157,7 +134,6 @@ public class ProductImportService implements IProductImportUseCase {
     private ProductImportResponse buildFinalResponse(String entId, String fileName,
             ProductExcelParsingService.ExcelParsingResult parsingResult,
             ProductBatchValidationService.BatchValidationResult validationResult,
-            ProductDuplicateDetectionService.DuplicateDetectionResult duplicateResult,
             ProductBatchProcessor.BatchProcessingResult processingResult,
             List<ImportErrorDetail> allErrors) {
 
@@ -176,7 +152,7 @@ public class ProductImportService implements IProductImportUseCase {
                 parsingResult.getTotalRows(),
                 processingResult.getSuccessCount(),
                 totalFailures,
-                duplicateResult.getDuplicateCount(),
+                validationResult.getDuplicateCount(),
                 allErrors);
     }
 }

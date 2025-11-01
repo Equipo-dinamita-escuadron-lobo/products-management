@@ -103,18 +103,32 @@ public class ProductExcelParsingService {
             if (cell != null && cell.getCellType() == CellType.STRING) {
                 String headerValue = cell.getStringCellValue();
                 if (headerValue != null) {
-                    String header = StringNormalizer.normalizeHeaderName(headerValue.trim());
+                String header = StringNormalizer.normalizeHeaderName(headerValue.trim());
+                    log.debug("Header original: '{}', normalizado: '{}'", headerValue.trim(), header);
                     if (header != null && !header.isEmpty()) {
                         columnMap.put(header, i);
                         foundHeaders.add(header);
+                        log.debug("Header agregado a foundHeaders: '{}'", header);
                     }
                 }
             }
         }
 
         // Validar que existan los encabezados requeridos
+        log.debug("Headers encontrados: {}", foundHeaders);
+        log.debug("Headers requeridos: {}", Arrays.toString(ImportConstants.REQUIRED_HEADERS));
         for (String requiredHeader : ImportConstants.REQUIRED_HEADERS) {
-            if (!foundHeaders.contains(requiredHeader)) {
+            log.debug("Verificando header requerido: '{}' (length: {})", requiredHeader, requiredHeader.length());
+            boolean found = foundHeaders.contains(requiredHeader);
+            log.debug("Header '{}' encontrado: {}", requiredHeader, found);
+            if (!found) {
+                log.error("Header requerido '{}' no encontrado en headers encontrados: {}", requiredHeader, foundHeaders);
+                // Mostrar comparación detallada
+                for (String foundHeader : foundHeaders) {
+                    log.debug("Comparando '{}' con '{}' - equals: {}, length: {} vs {}", 
+                             requiredHeader, foundHeader, requiredHeader.equals(foundHeader), 
+                             requiredHeader.length(), foundHeader.length());
+                }
                 errors.add(ImportErrorDetail.builder()
                         .rowNumber(1)
                         .columnName(requiredHeader)

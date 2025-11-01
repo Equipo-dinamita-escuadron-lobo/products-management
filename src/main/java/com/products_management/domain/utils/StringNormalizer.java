@@ -72,8 +72,19 @@ public final class StringNormalizer {
             return null;
         }
 
+        // Remover saltos de línea y texto adicional como "(Requerido)", "(Opcional)", etc.
+        String cleaned = header.replaceAll("\\s*\\([^)]*\\)\\s*", "") // Remover texto entre paréntesis
+                              .replaceAll("\\n.*", "") // Remover todo después del primer salto de línea
+                              .trim();
+
+        // Reemplazar caracteres especiales comunes por encoding issues
+        cleaned = cleaned.replace('Ý', 'í')  // categoría
+                        .replace('¾', 'ó')  // descripción, presentación
+                        .replace('Ã', 'í')  // categoría alternativo
+                        .replace('³', 'ó'); // descripción alternativo
+
         // Normalizar acentos y diacríticos
-        String normalized = Normalizer.normalize(header, Normalizer.Form.NFD)
+        String normalized = Normalizer.normalize(cleaned, Normalizer.Form.NFD)
                 .replaceAll("\\p{InCombiningDiacriticalMarks}+", "");
 
         // Convertir a minúsculas
@@ -96,6 +107,7 @@ public final class StringNormalizer {
                 return ImportConstants.NAME_COLUMN;
             case "descripcion":
             case "descripción":
+            case "descripci¾n": // Manejar caracteres especiales por encoding
             case "description":
                 return ImportConstants.DESCRIPTION_COLUMN;
             case "unidad de medida":
@@ -104,18 +116,21 @@ public final class StringNormalizer {
                 return ImportConstants.UNIT_MEASURE_COLUMN;
             case "categoria":
             case "categoría":
+            case "categorÝa": // Manejar caracteres especiales por encoding
             case "category":
                 return ImportConstants.CATEGORY_COLUMN;
             case "tipo de producto":
             case "tipo":
             case "product type":
                 return ImportConstants.PRODUCT_TYPE_COLUMN;
+            case "referencia/sku": // Manejar el formato de exportación primero (más específico)
             case "referencia":
             case "sku":
             case "reference":
                 return ImportConstants.REFERENCE_COLUMN;
             case "presentacion":
             case "presentación":
+            case "presentaci¾n": // Manejar caracteres especiales por encoding
             case "presentation":
                 return ImportConstants.PRESENTATION_COLUMN;
             case "cantidad":
@@ -125,6 +140,13 @@ public final class StringNormalizer {
             case "cost":
             case "price":
                 return ImportConstants.COST_COLUMN;
+            case "codigo":
+            case "code":
+                return "Código"; // Campo opcional
+            case "estado":
+            case "state":
+            case "status":
+                return "Estado"; // Campo opcional
             default:
                 return header;
         }

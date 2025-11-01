@@ -69,8 +69,6 @@ public class ProductBatchValidationService {
         List<ImportErrorDetail> errors = new ArrayList<>();
         int duplicateCount = 0;
 
-        log.debug("Validating batch of {} products for enterprise {}", productsData.size(), entId);
-
         for (ProductExcelData productData : productsData) {
             List<ImportErrorDetail> productErrors = validateProduct(productData, columnMap);
 
@@ -364,7 +362,6 @@ public class ProductBatchValidationService {
                     .map(UnitOfMeasure::getId)
                     .orElse(null);
         } catch (Exception e) {
-            log.warn("Error resolviendo unidad de medida '{}' para empresa {}: {}", name, entId, e.getMessage());
             return null;
         }
     }
@@ -389,7 +386,6 @@ public class ProductBatchValidationService {
                     .map(Category::getId)
                     .orElse(null);
         } catch (Exception e) {
-            log.warn("Error resolviendo categoría '{}' para empresa {}: {}", name, entId, e.getMessage());
             return null;
         }
     }
@@ -414,7 +410,6 @@ public class ProductBatchValidationService {
                     .map(ProductType::getId)
                     .orElse(null);
         } catch (Exception e) {
-            log.warn("Error resolviendo tipo de producto '{}' para empresa {}: {}", name, entId, e.getMessage());
             return null;
         }
     }

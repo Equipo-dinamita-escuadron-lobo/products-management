@@ -161,7 +161,6 @@ public class ProductExcelParsingService {
             // Parsear campos opcionales
             builder.quantity(parseIntegerField(getCellValueAsString(row, columnMap.get(ImportConstants.QUANTITY_COLUMN))));
             builder.cost(parseDoubleField(getCellValueAsString(row, columnMap.get(ImportConstants.COST_COLUMN))));
-
       
             builder.unitOfMeasureName(getCellValueAsString(row, columnMap.get(ImportConstants.UNIT_MEASURE_COLUMN)));
             builder.categoryName(getCellValueAsString(row, columnMap.get(ImportConstants.CATEGORY_COLUMN)));

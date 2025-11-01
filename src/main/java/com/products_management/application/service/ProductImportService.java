@@ -3,7 +3,6 @@ package com.products_management.application.service;
 import com.products_management.application.ports.input.IProductImportUseCase;
 import com.products_management.domain.enums.ImportErrorType;
 import com.products_management.domain.model.ImportErrorDetail;
-import com.products_management.domain.model.ProductExcelData;
 import com.products_management.infraestructure.input.rest.dto.request.ProductImportRequest;
 import com.products_management.infraestructure.input.rest.dto.response.ProductImportResponse;
 
@@ -85,13 +84,13 @@ public class ProductImportService implements IProductImportUseCase {
             allErrors.addAll(processingResult.getErrors());
 
             // 6. Construir respuesta final
-            ProductImportResponse response = responseBuilder.buildSuccessResponse(
+            ProductImportResponse response = buildFinalResponse(
                     entId,
                     fileName,
-                    parsingResult.getTotalRows(),
-                    processingResult.getSuccessCount(),
-                    processingResult.getFailureCount(),
-                    duplicateResult.getDuplicateCount(),
+                    parsingResult,
+                    validationResult,
+                    duplicateResult,
+                    processingResult,
                     allErrors);
 
             log.info("Product import completed for enterprise {}. Success: {}, Failed: {}, Duplicates: {}",
@@ -121,20 +120,60 @@ public class ProductImportService implements IProductImportUseCase {
                                                        ProductDuplicateDetectionService.DuplicateDetectionResult duplicateResult,
                                                        List<ImportErrorDetail> allErrors) {
 
-        if (duplicateResult.getDuplicateCount() > 0) {
-            // Todos son duplicados
+        int validationFailures = calculateUniqueFailedRecords(allErrors);
+
+        if (validationFailures == 0) {
             return responseBuilder.buildSuccessResponse(
                     entId,
                     fileName,
                     parsingResult.getTotalRows(),
-                    0, // successCount
-                    0, // failureCount
+                    0, 
+                    0,
                     duplicateResult.getDuplicateCount(),
-                    allErrors);
+                    null); 
+        } else {
+            return responseBuilder.buildFailedResponse(entId, fileName,
+                    parsingResult.getTotalRows(), allErrors);
         }
+    }
 
-        // No hay registros válidos
-        return responseBuilder.buildFailedResponse(entId, fileName,
-                parsingResult.getTotalRows(), allErrors);
+    /**
+     * Calcula el número de registros únicos que tienen errores de validación.
+     * Un registro puede tener múltiples errores, pero solo cuenta como 1 fallo.
+     */
+    private int calculateUniqueFailedRecords(List<ImportErrorDetail> errors) {
+        return (int) errors.stream()
+                .mapToInt(ImportErrorDetail::getRowNumber)
+                .distinct()
+                .count();
+    }
+
+    /**
+     * Construye la respuesta final consolidada calculando correctamente las estadísticas.
+     */
+    private ProductImportResponse buildFinalResponse(String entId, String fileName,
+            ProductExcelParsingService.ExcelParsingResult parsingResult,
+            ProductBatchValidationService.BatchValidationResult validationResult,
+            ProductDuplicateDetectionService.DuplicateDetectionResult duplicateResult,
+            ProductBatchProcessor.BatchProcessingResult processingResult,
+            List<ImportErrorDetail> allErrors) {
+
+        // Calcular fallos de validación: registros únicos con errores
+        int validationFailures = calculateUniqueFailedRecords(validationResult.getErrors());
+
+        // Calcular fallos de procesamiento
+        int processingFailures = processingResult.getFailureCount();
+
+        // Total de fallos
+        int totalFailures = validationFailures + processingFailures;
+
+        return responseBuilder.buildSuccessResponse(
+                entId,
+                fileName,
+                parsingResult.getTotalRows(),
+                processingResult.getSuccessCount(),
+                totalFailures,
+                duplicateResult.getDuplicateCount(),
+                allErrors);
     }
 }

@@ -1,9 +1,7 @@
 package com.products_management.application.service;
 
 import com.products_management.application.ports.output.IProductPersistencePort;
-import com.products_management.domain.enums.ImportErrorType;
 import com.products_management.domain.model.ImportErrorDetail;
-import com.products_management.domain.model.Product;
 import com.products_management.domain.model.ProductExcelData;
 
 import lombok.AllArgsConstructor;
@@ -15,7 +13,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * Servicio para detección de duplicados en importación de productos.
@@ -30,6 +27,7 @@ public class ProductDuplicateDetectionService {
 
     /**
      * Detecta duplicados en una lista de productos.
+     * Los duplicados se cuentan pero NO generan errores, solo se omiten.
      *
      * @param productsData lista de datos de productos a verificar
      * @param entId ID de la empresa
@@ -50,26 +48,14 @@ public class ProductDuplicateDetectionService {
             if (reference != null) {
                 // Verificar duplicado en el sistema existente
                 if (productPersistencePort.existsByReferenceAndEnterpriseId(reference, entId)) {
-                    errors.add(ImportErrorDetail.builder()
-                            .rowNumber(productData.getRowNumber())
-                            .errorCode("DUPLICATE_PRODUCT")
-                            .errorMessage("Ya existe un producto con la referencia: " + reference)
-                            .errorType(ImportErrorType.BUSINESS_RULE_VIOLATION)
-                            .fieldValue(reference)
-                            .build());
+                    log.debug("Skipping duplicate product with reference {} (already exists in system)", reference);
                     duplicateCount++;
                     continue;
                 }
 
                 // Verificar duplicado dentro del mismo archivo
                 if (processedReferences.contains(reference)) {
-                    errors.add(ImportErrorDetail.builder()
-                            .rowNumber(productData.getRowNumber())
-                            .errorCode("DUPLICATE_IN_FILE")
-                            .errorMessage("Referencia duplicada en el archivo: " + reference)
-                            .errorType(ImportErrorType.BUSINESS_RULE_VIOLATION)
-                            .fieldValue(reference)
-                            .build());
+                    log.debug("Skipping duplicate product with reference {} (duplicate in file)", reference);
                     duplicateCount++;
                     continue;
                 }

@@ -44,7 +44,7 @@ public class ProductImportResponseBuilder {
         return ProductImportResponse.builder()
                 .entId(entId)
                 .fileName(fileName)
-                .status(ImportStatus.EMPTY_FILE)
+                .status(ImportStatus.FAILED)
                 .totalRecords(0)
                 .successfulImports(0)
                 .failedImports(0)
@@ -75,9 +75,9 @@ public class ProductImportResponseBuilder {
     private ImportStatus determineStatus(int successCount, int failureCount, int duplicatesSkipped) {
         if (successCount > 0) {
             if (failureCount > 0 || duplicatesSkipped > 0) {
-                return ImportStatus.PARTIAL_SUCCESS;
+                return ImportStatus.COMPLETED_WITH_ERRORS;
             } else {
-                return ImportStatus.SUCCESS;
+                return ImportStatus.COMPLETED;
             }
         } else {
             return ImportStatus.FAILED;

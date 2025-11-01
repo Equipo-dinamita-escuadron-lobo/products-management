@@ -51,7 +51,7 @@ public class ProductBatchValidationService {
         log.debug("Validating batch of {} products for enterprise {}", productsData.size(), entId);
 
         for (ProductExcelData productData : productsData) {
-            List<ImportErrorDetail> productErrors = validateProduct(productData, entId, columnMap);
+            List<ImportErrorDetail> productErrors = validateProduct(productData, columnMap);
 
             if (productErrors.isEmpty()) {
                 // Resolver IDs de entidades relacionadas
@@ -73,7 +73,7 @@ public class ProductBatchValidationService {
     /**
      * Valida un producto individual.
      */
-    private List<ImportErrorDetail> validateProduct(ProductExcelData productData, String entId,
+    private List<ImportErrorDetail> validateProduct(ProductExcelData productData,
                                                     Map<String, Integer> columnMap) {
         List<ImportErrorDetail> errors = new ArrayList<>();
 
@@ -264,9 +264,9 @@ public class ProductBatchValidationService {
             var page = unitOfMeasurePersistencePort.findByEnterpriseIdAndSearch(
                     entId, name.trim(), 0, 10, "name", "asc");
 
-            // Buscar coincidencia exacta (case-insensitive)
+            // Buscar coincidencia exacta (case-insensitive) y verificar que esté activa
             return page.getContent().stream()
-                    .filter(unit -> unit.getName().equalsIgnoreCase(name.trim()))
+                    .filter(unit -> unit.getName().equalsIgnoreCase(name.trim()) && unit.isState())
                     .findFirst()
                     .map(UnitOfMeasure::getId)
                     .orElse(null);
@@ -289,9 +289,9 @@ public class ProductBatchValidationService {
             var page = categoryPersistencePort.findByEnterpriseIdAndSearch(
                     entId, name.trim(), PageRequest.of(0, 10));
 
-            // Buscar coincidencia exacta (case-insensitive)
+            // Buscar coincidencia exacta (case-insensitive) y verificar que esté activa
             return page.getContent().stream()
-                    .filter(category -> category.getName().equalsIgnoreCase(name.trim()))
+                    .filter(category -> category.getName().equalsIgnoreCase(name.trim()) && category.isState())
                     .findFirst()
                     .map(Category::getId)
                     .orElse(null);
@@ -314,9 +314,9 @@ public class ProductBatchValidationService {
             var page = productTypePersistencePort.findByEnterpriseIdAndSearch(
                     entId, name.trim(), 0, 10, "name", "asc");
 
-            // Buscar coincidencia exacta (case-insensitive)
+            // Buscar coincidencia exacta (case-insensitive) y verificar que esté activo
             return page.getContent().stream()
-                    .filter(productType -> productType.getName().equalsIgnoreCase(name.trim()))
+                    .filter(productType -> productType.getName().equalsIgnoreCase(name.trim()) && productType.isState())
                     .findFirst()
                     .map(ProductType::getId)
                     .orElse(null);

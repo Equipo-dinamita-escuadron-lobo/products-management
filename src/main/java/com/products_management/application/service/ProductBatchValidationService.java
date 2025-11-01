@@ -194,16 +194,16 @@ public class ProductBatchValidationService {
     private void validateNumericFields(ProductExcelData productData, List<ImportErrorDetail> errors,
                                       Map<String, Integer> columnMap) {
         // Validar cantidad
-        if (productData.getQuantity() != null && productData.getQuantity() < 0) {
+        if (productData.getQuantity() == null || productData.getQuantity() < 0) {
             errors.add(createValidationError(productData.getRowNumber(),
-                    "INVALID_NUMBER", "La cantidad no puede ser negativa",
+                    "INVALID_NUMBER", "La cantidad debe ser un valor numerico y positivo",
                     COLUMN_QUANTITY, columnMap.get(COLUMN_QUANTITY)));
         }
 
         // Validar costo
-        if (productData.getCost() != null && productData.getCost() < 0) {
+        if (productData.getCost() == null || productData.getCost() < 0) {
             errors.add(createValidationError(productData.getRowNumber(),
-                    "INVALID_NUMBER", "El costo no puede ser negativo",
+                    "INVALID_NUMBER", "El costo debe ser un valor numerico y positivo",
                     COLUMN_COST, columnMap.get(COLUMN_COST)));
         }
     }

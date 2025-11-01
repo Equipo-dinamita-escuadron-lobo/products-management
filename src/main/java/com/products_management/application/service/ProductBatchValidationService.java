@@ -74,14 +74,15 @@ public class ProductBatchValidationService {
         for (ProductExcelData productData : productsData) {
             List<ImportErrorDetail> productErrors = validateProduct(productData, columnMap);
 
+            ProductExcelData resolvedData = resolveEntityIds(productData, entId, productErrors, columnMap);
+
             if (productErrors.isEmpty()) {
                 // Verificar si es duplicado por referencia
                 String reference = productData.getReference();
                 if (reference != null && productPersistencePort.existsByReferenceAndEnterpriseId(reference, entId)) {
                     duplicateCount++;
                 } else {
-                    // No es duplicado, resolver IDs de entidades relacionadas
-                    ProductExcelData resolvedData = resolveEntityIds(productData, entId, errors, columnMap);
+                    // No es duplicado, agregar a registros válidos
                     if (resolvedData != null) {
                         validRecords.add(resolvedData);
                     }

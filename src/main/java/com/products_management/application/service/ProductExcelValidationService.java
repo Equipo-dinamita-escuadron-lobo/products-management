@@ -141,7 +141,9 @@ public class ProductExcelValidationService {
             CellRangeAddressList addressList = new CellRangeAddressList(startRow, endRow, columnIndex, columnIndex);
 
             // Validación personalizada: texto no vacío
-            String formula = "LEN(TRIM(A" + (startRow + 1) + ")) > 0";
+            // Convertir índice de columna a letra de columna (0=A, 1=B, etc.)
+            String columnLetter = getColumnLetter(columnIndex);
+            String formula = "LEN(TRIM(" + columnLetter + (startRow + 1) + ")) > 0";
 
             DataValidationConstraint constraint = validationHelper.createCustomConstraint(formula);
 
@@ -174,7 +176,9 @@ public class ProductExcelValidationService {
             CellRangeAddressList addressList = new CellRangeAddressList(startRow, endRow, columnIndex, columnIndex);
 
             // Validación personalizada: texto no vacío
-            String formula = "LEN(TRIM(A" + (startRow + 1) + ")) > 0";
+            // Convertir índice de columna a letra de columna (0=A, 1=B, etc.)
+            String columnLetter = getColumnLetter(columnIndex);
+            String formula = "LEN(TRIM(" + columnLetter + (startRow + 1) + ")) > 0";
 
             DataValidationConstraint constraint = validationHelper.createCustomConstraint(formula);
 
@@ -309,5 +313,20 @@ public class ProductExcelValidationService {
             throw new ExcelValidationException(ErrorCode.EXCEL_VALIDATION_ERROR,
                     "Error al aplicar validación en columna " + columnIndex, e);
         }
+    }
+
+    /**
+     * Convierte un índice de columna (0-based) a la letra de columna de Excel (A, B, C, ..., Z, AA, AB, etc.).
+     */
+    private String getColumnLetter(int columnIndex) {
+        StringBuilder columnLetter = new StringBuilder();
+        int temp = columnIndex;
+
+        while (temp >= 0) {
+            columnLetter.insert(0, (char) ('A' + (temp % 26)));
+            temp = (temp / 26) - 1;
+        }
+
+        return columnLetter.toString();
     }
 }

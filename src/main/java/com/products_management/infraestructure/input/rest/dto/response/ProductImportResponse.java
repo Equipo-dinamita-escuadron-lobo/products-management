@@ -1,4 +1,4 @@
-package com.products_management.infraestructure.input.rest.data.response;
+package com.products_management.infraestructure.input.rest.dto.response;
 
 import com.products_management.domain.enums.ImportStatus;
 import com.products_management.domain.model.ImportErrorDetail;

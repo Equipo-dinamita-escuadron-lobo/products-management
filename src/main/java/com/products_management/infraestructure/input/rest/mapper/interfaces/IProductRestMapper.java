@@ -1,8 +1,8 @@
 package com.products_management.infraestructure.input.rest.mapper.interfaces;
 
 import com.products_management.domain.model.Product;
-import com.products_management.infraestructure.input.rest.data.request.ProductCreateRequest;
-import com.products_management.infraestructure.input.rest.data.response.ProductResponse;
+import com.products_management.infraestructure.input.rest.dto.request.ProductCreateRequest;
+import com.products_management.infraestructure.input.rest.dto.response.ProductResponse;
 
 import java.util.List;
 

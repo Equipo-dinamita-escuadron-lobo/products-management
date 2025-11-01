@@ -2,8 +2,8 @@ package com.products_management.infraestructure.input.rest.controller;
 
 import com.products_management.application.ports.input.ICategoryServicePort;
 import com.products_management.domain.model.Category;
-import com.products_management.infraestructure.input.rest.data.request.CategoryCreateRequest;
-import com.products_management.infraestructure.input.rest.data.response.CategoryResponse;
+import com.products_management.infraestructure.input.rest.dto.request.CategoryCreateRequest;
+import com.products_management.infraestructure.input.rest.dto.response.CategoryResponse;
 import com.products_management.infraestructure.input.rest.mapper.interfaces.ICategoryRestMapper;
 
 import jakarta.validation.Valid;

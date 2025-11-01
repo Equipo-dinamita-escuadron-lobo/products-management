@@ -1,8 +1,8 @@
 package com.products_management.infraestructure.input.rest.mapper.interfaces;
 
 import com.products_management.domain.model.UnitOfMeasure;
-import com.products_management.infraestructure.input.rest.data.request.UnitOfMeasureCreateRequest;
-import com.products_management.infraestructure.input.rest.data.response.UnitOfMeasureResponse;
+import com.products_management.infraestructure.input.rest.dto.request.UnitOfMeasureCreateRequest;
+import com.products_management.infraestructure.input.rest.dto.response.UnitOfMeasureResponse;
 
 import java.util.List;
 

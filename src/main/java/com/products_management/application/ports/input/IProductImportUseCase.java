@@ -1,7 +1,7 @@
 package com.products_management.application.ports.input;
 
-import com.products_management.infraestructure.input.rest.data.request.ProductImportRequest;
-import com.products_management.infraestructure.input.rest.data.response.ProductImportResponse;
+import com.products_management.infraestructure.input.rest.dto.request.ProductImportRequest;
+import com.products_management.infraestructure.input.rest.dto.response.ProductImportResponse;
 
 /**
  * Puerto de entrada para la funcionalidad de importación de productos.

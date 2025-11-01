@@ -1,4 +1,4 @@
-package com.products_management.infraestructure.input.rest.data.request;
+package com.products_management.infraestructure.input.rest.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

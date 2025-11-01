@@ -4,8 +4,8 @@ import com.products_management.application.ports.input.IProductImportUseCase;
 import com.products_management.domain.enums.ImportErrorType;
 import com.products_management.domain.model.ImportErrorDetail;
 import com.products_management.domain.model.ProductExcelData;
-import com.products_management.infraestructure.input.rest.data.request.ProductImportRequest;
-import com.products_management.infraestructure.input.rest.data.response.ProductImportResponse;
+import com.products_management.infraestructure.input.rest.dto.request.ProductImportRequest;
+import com.products_management.infraestructure.input.rest.dto.response.ProductImportResponse;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

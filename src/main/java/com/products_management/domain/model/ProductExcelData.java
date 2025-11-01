@@ -69,4 +69,11 @@ public class ProductExcelData {
      * Presentación del producto.
      */
     private String presentation;
+
+    /**
+     * Nombres temporales para lookup (se convierten a IDs después).
+     */
+    private String unitOfMeasureName;
+    private String categoryName;
+    private String productTypeName;
 }

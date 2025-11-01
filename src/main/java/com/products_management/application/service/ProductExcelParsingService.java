@@ -162,8 +162,10 @@ public class ProductExcelParsingService {
             builder.quantity(parseIntegerField(getCellValueAsString(row, columnMap.get(ImportConstants.QUANTITY_COLUMN))));
             builder.cost(parseDoubleField(getCellValueAsString(row, columnMap.get(ImportConstants.COST_COLUMN))));
 
-            // Los IDs de unidad de medida, categoría y tipo de producto se validarán después
-            // por ahora solo guardamos los nombres para lookup posterior
+      
+            builder.unitOfMeasureName(getCellValueAsString(row, columnMap.get(ImportConstants.UNIT_MEASURE_COLUMN)));
+            builder.categoryName(getCellValueAsString(row, columnMap.get(ImportConstants.CATEGORY_COLUMN)));
+            builder.productTypeName(getCellValueAsString(row, columnMap.get(ImportConstants.PRODUCT_TYPE_COLUMN)));
 
             return builder.build();
 

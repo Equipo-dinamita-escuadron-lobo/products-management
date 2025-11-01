@@ -2,8 +2,11 @@ package com.products_management.application.service;
 
 import com.products_management.application.ports.output.*;
 import com.products_management.domain.enums.ImportErrorType;
+import com.products_management.domain.model.Category;
 import com.products_management.domain.model.ImportErrorDetail;
 import com.products_management.domain.model.ProductExcelData;
+import com.products_management.domain.model.ProductType;
+import com.products_management.domain.model.UnitOfMeasure;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,6 +14,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -164,8 +169,53 @@ public class ProductBatchValidationService {
         try {
             ProductExcelData.ProductExcelDataBuilder builder = productData.toBuilder();
 
-            // Aquí iría la lógica para resolver IDs desde los nombres
-            // Por ahora, dejamos los campos como están para que se manejen en el procesamiento
+            // Resolver ID de unidad de medida
+            if (productData.getUnitOfMeasureName() != null && !productData.getUnitOfMeasureName().trim().isEmpty()) {
+                Long unitOfMeasureId = resolveUnitOfMeasureId(productData.getUnitOfMeasureName().trim(), entId);
+                if (unitOfMeasureId != null) {
+                    builder.unitOfMeasureId(unitOfMeasureId);
+                } else {
+                    errors.add(ImportErrorDetail.builder()
+                            .rowNumber(productData.getRowNumber())
+                            .errorCode("UNIT_OF_MEASURE_NOT_FOUND")
+                            .errorMessage("La unidad de medida " + productData.getUnitOfMeasureName() + " no existe o está inactiva.")
+                            .errorType(ImportErrorType.VALIDATION_ERROR)
+                            .build());
+                    return null; // No continuar si no se puede resolver la unidad de medida
+                }
+            }
+
+            // Resolver ID de categoría
+            if (productData.getCategoryName() != null && !productData.getCategoryName().trim().isEmpty()) {
+                Long categoryId = resolveCategoryId(productData.getCategoryName().trim(), entId);
+                if (categoryId != null) {
+                    builder.categoryId(categoryId);
+                } else {
+                    errors.add(ImportErrorDetail.builder()
+                            .rowNumber(productData.getRowNumber())
+                            .errorCode("CATEGORY_NOT_FOUND")
+                            .errorMessage("La categoría " + productData.getCategoryName() + " no existe o está inactiva.")
+                            .errorType(ImportErrorType.VALIDATION_ERROR)
+                            .build());
+                    return null; // No continuar si no se puede resolver la categoría
+                }
+            }
+
+            // Resolver ID de tipo de producto
+            if (productData.getProductTypeName() != null && !productData.getProductTypeName().trim().isEmpty()) {
+                Long productTypeId = resolveProductTypeId(productData.getProductTypeName().trim(), entId);
+                if (productTypeId != null) {
+                    builder.productTypeId(productTypeId);
+                } else {
+                    errors.add(ImportErrorDetail.builder()
+                            .rowNumber(productData.getRowNumber())
+                            .errorCode("PRODUCT_TYPE_NOT_FOUND")
+                            .errorMessage("El tipo de producto " + productData.getProductTypeName() + " no existe o está inactivo.")
+                            .errorType(ImportErrorType.VALIDATION_ERROR)
+                            .build());
+                    return null; // No continuar si no se puede resolver el tipo de producto
+                }
+            }
 
             return builder.build();
 
@@ -199,6 +249,81 @@ public class ProductBatchValidationService {
      */
     private boolean isNullOrEmpty(String value) {
         return value == null || value.trim().isEmpty();
+    }
+
+    /**
+     * Resuelve el ID de unidad de medida por nombre.
+     */
+    private Long resolveUnitOfMeasureId(String name, String entId) {
+        if (name == null || name.trim().isEmpty()) {
+            return null;
+        }
+
+        try {
+            // Usar búsqueda exacta con paginación pequeña
+            var page = unitOfMeasurePersistencePort.findByEnterpriseIdAndSearch(
+                    entId, name.trim(), 0, 10, "name", "asc");
+
+            // Buscar coincidencia exacta (case-insensitive)
+            return page.getContent().stream()
+                    .filter(unit -> unit.getName().equalsIgnoreCase(name.trim()))
+                    .findFirst()
+                    .map(UnitOfMeasure::getId)
+                    .orElse(null);
+        } catch (Exception e) {
+            log.warn("Error resolviendo unidad de medida '{}' para empresa {}: {}", name, entId, e.getMessage());
+            return null;
+        }
+    }
+
+    /**
+     * Resuelve el ID de categoría por nombre.
+     */
+    private Long resolveCategoryId(String name, String entId) {
+        if (name == null || name.trim().isEmpty()) {
+            return null;
+        }
+
+        try {
+            // Usar búsqueda exacta con paginación pequeña
+            var page = categoryPersistencePort.findByEnterpriseIdAndSearch(
+                    entId, name.trim(), PageRequest.of(0, 10));
+
+            // Buscar coincidencia exacta (case-insensitive)
+            return page.getContent().stream()
+                    .filter(category -> category.getName().equalsIgnoreCase(name.trim()))
+                    .findFirst()
+                    .map(Category::getId)
+                    .orElse(null);
+        } catch (Exception e) {
+            log.warn("Error resolviendo categoría '{}' para empresa {}: {}", name, entId, e.getMessage());
+            return null;
+        }
+    }
+
+    /**
+     * Resuelve el ID de tipo de producto por nombre.
+     */
+    private Long resolveProductTypeId(String name, String entId) {
+        if (name == null || name.trim().isEmpty()) {
+            return null;
+        }
+
+        try {
+            // Usar búsqueda exacta con paginación pequeña
+            var page = productTypePersistencePort.findByEnterpriseIdAndSearch(
+                    entId, name.trim(), 0, 10, "name", "asc");
+
+            // Buscar coincidencia exacta (case-insensitive)
+            return page.getContent().stream()
+                    .filter(productType -> productType.getName().equalsIgnoreCase(name.trim()))
+                    .findFirst()
+                    .map(ProductType::getId)
+                    .orElse(null);
+        } catch (Exception e) {
+            log.warn("Error resolviendo tipo de producto '{}' para empresa {}: {}", name, entId, e.getMessage());
+            return null;
+        }
     }
 
     /**

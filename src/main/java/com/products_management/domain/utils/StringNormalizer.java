@@ -64,6 +64,73 @@ public final class StringNormalizer {
     }
 
     /**
+     * Normaliza un nombre de header removiendo acentos, convirtiendo a minúsculas y
+     * aplicando reglas específicas para comparación.
+     */
+    public static String normalizeHeaderName(String header) {
+        if (header == null) {
+            return null;
+        }
+
+        // Normalizar acentos y diacríticos
+        String normalized = Normalizer.normalize(header, Normalizer.Form.NFD)
+                .replaceAll("\\p{InCombiningDiacriticalMarks}+", "");
+
+        // Convertir a minúsculas
+        normalized = normalized.toLowerCase();
+
+        // Aplicar reglas específicas para headers conocidos
+        normalized = applyHeaderRules(normalized);
+
+        return normalized.trim();
+    }
+
+    /**
+     * Aplica reglas específicas para normalizar headers de Excel.
+     */
+    private static String applyHeaderRules(String header) {
+        // Reglas específicas para headers de productos
+        switch (header) {
+            case "nombre":
+            case "name":
+                return ImportConstants.NAME_COLUMN;
+            case "descripcion":
+            case "descripción":
+            case "description":
+                return ImportConstants.DESCRIPTION_COLUMN;
+            case "unidad de medida":
+            case "unidad":
+            case "uom":
+                return ImportConstants.UNIT_MEASURE_COLUMN;
+            case "categoria":
+            case "categoría":
+            case "category":
+                return ImportConstants.CATEGORY_COLUMN;
+            case "tipo de producto":
+            case "tipo":
+            case "product type":
+                return ImportConstants.PRODUCT_TYPE_COLUMN;
+            case "referencia":
+            case "sku":
+            case "reference":
+                return ImportConstants.REFERENCE_COLUMN;
+            case "presentacion":
+            case "presentación":
+            case "presentation":
+                return ImportConstants.PRESENTATION_COLUMN;
+            case "cantidad":
+            case "quantity":
+                return ImportConstants.QUANTITY_COLUMN;
+            case "costo":
+            case "cost":
+            case "price":
+                return ImportConstants.COST_COLUMN;
+            default:
+                return header;
+        }
+    }
+
+    /**
      * Capitaliza la primera letra de una cadena.
      *
      * @param input el texto a capitalizar
@@ -73,11 +140,11 @@ public final class StringNormalizer {
         if (input == null || input.isEmpty()) {
             return input;
         }
-        
+
         if (input.length() == 1) {
             return input.toUpperCase();
         }
-        
+
         return input.substring(0, 1).toUpperCase() + input.substring(1);
     }
 }

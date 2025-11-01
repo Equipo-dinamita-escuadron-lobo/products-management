@@ -2,9 +2,9 @@ package com.products_management.infraestructure.input.rest;
 
 import com.products_management.application.ports.input.IProductTypeServicePort;
 import com.products_management.domain.model.ProductType;
+import com.products_management.infraestructure.input.rest.data.request.ProductTypeRequest;
+import com.products_management.infraestructure.input.rest.data.response.ProductTypeResponse;
 import com.products_management.infraestructure.input.rest.mapper.interfaces.IProductTypeRestMapper;
-import com.products_management.infraestructure.input.rest.model.request.ProductTypeRequest;
-import com.products_management.infraestructure.input.rest.model.response.ProductTypeResponse;
 import com.products_management.infraestructure.utils.PaginationHelper;
 
 import jakarta.validation.Valid;

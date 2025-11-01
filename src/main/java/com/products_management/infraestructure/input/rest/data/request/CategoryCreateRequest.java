@@ -1,4 +1,4 @@
-package com.products_management.infraestructure.input.rest.model.request;
+package com.products_management.infraestructure.input.rest.data.request;
 
 import java.util.List;
 

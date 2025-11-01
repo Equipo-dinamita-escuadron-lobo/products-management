@@ -1,4 +1,4 @@
-package com.products_management.infraestructure.input.rest.model.response;
+package com.products_management.infraestructure.input.rest.data.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

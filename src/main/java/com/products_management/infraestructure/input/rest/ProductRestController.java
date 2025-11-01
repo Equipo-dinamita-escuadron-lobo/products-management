@@ -2,10 +2,13 @@ package com.products_management.infraestructure.input.rest;
 
 import com.products_management.application.ports.input.IProductServicePort;
 import com.products_management.application.ports.input.IProductExportUseCase;
+import com.products_management.application.ports.input.IProductImportUseCase;
 import com.products_management.domain.model.Product;
+import com.products_management.infraestructure.input.rest.data.request.ProductCreateRequest;
+import com.products_management.infraestructure.input.rest.data.request.ProductImportRequest;
+import com.products_management.infraestructure.input.rest.data.response.ProductImportResponse;
+import com.products_management.infraestructure.input.rest.data.response.ProductResponse;
 import com.products_management.infraestructure.input.rest.mapper.interfaces.IProductRestMapper;
-import com.products_management.infraestructure.input.rest.model.request.ProductCreateRequest;
-import com.products_management.infraestructure.input.rest.model.response.ProductResponse;
 import com.products_management.infraestructure.utils.ExcelFileNameGenerator;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +20,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 
 import org.springframework.web.bind.annotation.*;
+
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Optional;
 
@@ -31,6 +36,7 @@ public class ProductRestController {
         private final IProductServicePort productServicePort;
         private final IProductRestMapper productRestMapper;
         private final IProductExportUseCase productExportUseCase;
+        private final IProductImportUseCase productImportUseCase;
         private final ExcelFileNameGenerator fileNameGenerator;
 
         @GetMapping("/findAll")
@@ -113,6 +119,17 @@ public class ProductRestController {
                                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + filename + "\"")
                                 .contentType(MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
                                 .body(excelFile);
+        }
+
+        @PostMapping("/import/excel")
+        public ResponseEntity<ProductImportResponse> importProductsFromExcel(
+                        @RequestParam String entId,
+                        @RequestParam("excelFile") MultipartFile excelFile) {
+
+                ProductImportRequest request = ProductImportRequest.from(entId, excelFile);
+                ProductImportResponse response = productImportUseCase.importProductsFromExcel(request);
+
+                return ResponseEntity.ok(response);
         }
 
 }

@@ -37,6 +37,7 @@ public enum ErrorCode implements ErrorCodeDefinition {
 
     //Códigos de Excel
     EXCEL_VALIDATION_ERROR("EXCEL_VALIDATION_ERROR", "Error de validación en archivo Excel"),
+    FILE_VALIDATION_ERROR("FILE_VALIDATION_ERROR", "Error de validación de archivo"),
     PRODUCT_EXPORT_NO_DATA("PRODUCT_EXPORT_NO_DATA", "No hay productos para exportar");
 
     private final String code;

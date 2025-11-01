@@ -5,6 +5,13 @@ spring:
     password: ${DB_PASSWORD:root}
     driver-class-name: ${DB_DRIVER:org.postgresql.Driver}
 
+  jpa:
+    hibernate:
+      ddl-auto: ${DB_HIBERNATE_DDL_AUTO:create-drop}
+    properties:
+      hibernate:
+        dialect: ${DB_HIBERNATE_DIALECT:org.hibernate.dialect.PostgreSQLDialect}
+
   servlet:
     multipart:
       max-file-size: 5MB

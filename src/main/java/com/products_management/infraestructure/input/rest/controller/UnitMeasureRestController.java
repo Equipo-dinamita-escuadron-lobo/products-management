@@ -1,10 +1,10 @@
-package com.products_management.infraestructure.input.rest;
+package com.products_management.infraestructure.input.rest.controller;
 
 import com.products_management.application.ports.input.IUnitOfMeasureServicePort;
 import com.products_management.domain.model.UnitOfMeasure;
+import com.products_management.infraestructure.input.rest.dto.request.UnitOfMeasureCreateRequest;
+import com.products_management.infraestructure.input.rest.dto.response.UnitOfMeasureResponse;
 import com.products_management.infraestructure.input.rest.mapper.interfaces.IUnitOfMeasureRestMapper;
-import com.products_management.infraestructure.input.rest.model.request.UnitOfMeasureCreateRequest;
-import com.products_management.infraestructure.input.rest.model.response.UnitOfMeasureResponse;
 import com.products_management.infraestructure.utils.PaginationHelper;
 
 import jakarta.validation.Valid;

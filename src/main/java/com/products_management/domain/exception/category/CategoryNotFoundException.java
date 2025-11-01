@@ -17,8 +17,9 @@ public class CategoryNotFoundException extends BaseBusinessException {
               String.format("No se encontró la categoría con ID %d", id));
     }
     
-    public CategoryNotFoundException(String name) {
+    public CategoryNotFoundException(String nameOrMessage, boolean isCustomMessage) {
         super(ErrorCode.CATEGORY_NOT_FOUND, 
-              String.format("No se encontró la categoría con nombre %s", name));
+              isCustomMessage ? nameOrMessage : 
+              String.format("No se encontró la categoría con nombre %s", nameOrMessage));
     }
 }

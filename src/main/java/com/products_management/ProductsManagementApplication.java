@@ -2,7 +2,12 @@ package com.products_management;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
+import org.springframework.data.web.config.EnableSpringDataWebSupport;
+import org.springframework.data.web.config.EnableSpringDataWebSupport.PageSerializationMode;
+
+import com.products_management.infraestructure.config.FileUploadProperties;
 
 /**
  * Clase principal de la aplicación de gestión de productos.
@@ -10,6 +15,8 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
  */
 @SpringBootApplication
 @EnableDiscoveryClient
+@EnableConfigurationProperties(FileUploadProperties.class)
+@EnableSpringDataWebSupport(pageSerializationMode = PageSerializationMode.VIA_DTO)
 public class ProductsManagementApplication {
 
 	public static void main(String[] args) {

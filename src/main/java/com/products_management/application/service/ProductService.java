@@ -17,6 +17,9 @@ import com.products_management.application.ports.output.IUnitOfMeasurePersistenc
 import com.products_management.domain.exception.category.CategoryNotFoundException;
 import com.products_management.domain.exception.productType.ProductTypeNotFoundException;
 import com.products_management.domain.exception.unitOfMeasure.UnitOfMeasureNotFoundException;
+import com.products_management.domain.model.Category;
+import com.products_management.domain.model.ProductType;
+import com.products_management.domain.model.UnitOfMeasure;
 import com.products_management.domain.exception.product.ProductNotFoundException;
 import com.products_management.domain.exception.product.ProductNameAlreadyExistsException;
 import com.products_management.domain.exception.product.ProductReferenceAlreadyExistsException;
@@ -239,7 +242,6 @@ public class ProductService implements IProductServicePort {
                     existingProduct.setName(product.getName());
                     existingProduct.setDescription(product.getDescription());
                     existingProduct.setQuantity(product.getQuantity());
-                    existingProduct.setTaxes(product.getTaxes());
                     existingProduct.setUnitOfMeasureId(product.getUnitOfMeasureId());
                     existingProduct.setCategoryId(product.getCategoryId());
                     existingProduct.setCost(product.getCost());
@@ -266,7 +268,7 @@ public class ProductService implements IProductServicePort {
     @Override
     public void changeState(Long id, String enterpriseId) {
         Product product = productPersistencePort.findByIdAndEnterpriseId(id, enterpriseId)
-                .orElseThrow(() -> new ProductNotFoundException());
+                .orElseThrow(ProductNotFoundException::new);
         product.setState(!product.isState());
         productPersistencePort.create(product);
     }
@@ -375,33 +377,36 @@ public class ProductService implements IProductServicePort {
 
     /**
      * Valida que las entidades relacionadas (unidad de medida, categoría, tipo de
-     * producto) existan.
+     * producto) existan y estén activas.
      *
      * @param product el producto cuyas entidades relacionadas se van a validar.
-     * @throws UnitOfMeasureNotFoundException si la unidad de medida no existe.
-     * @throws CategoryNotFoundException      si la categoría no existe.
-     * @throws ProductTypeNotFoundException   si el tipo de producto no existe.
+     * @throws UnitOfMeasureNotFoundException si la unidad de medida no existe o no está activa.
+     * @throws CategoryNotFoundException      si la categoría no existe o no está activa.
+     * @throws ProductTypeNotFoundException   si el tipo de producto no existe o no está activo.
      */
     private void validateRelatedEntitiesExistence(Product product) {
         if (product.getUnitOfMeasureId() != null) {
-            if (unitOfMeasurePersistencePort.findByIdAndEnterpriseId(
-                    product.getUnitOfMeasureId(), product.getEnterpriseId()).isEmpty()) {
-                throw new UnitOfMeasureNotFoundException(product.getUnitOfMeasureId());
-            }
+            unitOfMeasurePersistencePort.findByIdAndEnterpriseId(
+                    product.getUnitOfMeasureId(), product.getEnterpriseId())
+                    .filter(UnitOfMeasure::isState) // Verificar que esté activa
+                    .orElseThrow(() -> new UnitOfMeasureNotFoundException(
+                            "Unidad de medida inactiva o no encontrada", true));
         }
 
         if (product.getCategoryId() != null) {
-            if (categoryPersistencePort.findByIdAndEnterpriseId(
-                    product.getCategoryId(), product.getEnterpriseId()).isEmpty()) {
-                throw new CategoryNotFoundException(product.getCategoryId());
-            }
+            categoryPersistencePort.findByIdAndEnterpriseId(
+                    product.getCategoryId(), product.getEnterpriseId())
+                    .filter(Category::isState) // Verificar que esté activa
+                    .orElseThrow(() -> new CategoryNotFoundException(
+                            "Categoría inactiva o no encontrada", true));
         }
 
         if (product.getProductTypeId() != null) {
-            if (productTypePersistencePort.findByIdAndEnterpriseId(
-                    product.getProductTypeId(), product.getEnterpriseId()).isEmpty()) {
-                throw new ProductTypeNotFoundException(product.getProductTypeId());
-            }
+            productTypePersistencePort.findByIdAndEnterpriseId(
+                    product.getProductTypeId(), product.getEnterpriseId())
+                    .filter(ProductType::isState) // Verificar que esté activo
+                    .orElseThrow(() -> new ProductTypeNotFoundException(
+                            "Tipo de producto inactivo o no encontrado", true));
         }
     }
 }

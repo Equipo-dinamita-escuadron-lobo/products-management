@@ -1,6 +1,4 @@
-package com.products_management.infraestructure.input.rest.model.response;
-
-import java.util.List;
+package com.products_management.infraestructure.input.rest.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -42,11 +40,6 @@ public class ProductResponse {
      * Cantidad del producto.
      */
     private Integer quantity;
-
-    /**
-     * Lista de impuestos aplicados al producto.
-     */
-    private List<Long> taxes;
 
     /**
      * Identificador de la unidad de medida del producto.

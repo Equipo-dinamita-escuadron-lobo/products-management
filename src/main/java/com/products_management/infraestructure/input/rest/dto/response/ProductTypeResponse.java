@@ -1,4 +1,4 @@
-package com.products_management.infraestructure.input.rest.model.response;
+package com.products_management.infraestructure.input.rest.dto.response;
 
 import lombok.Getter;
 import lombok.Setter;

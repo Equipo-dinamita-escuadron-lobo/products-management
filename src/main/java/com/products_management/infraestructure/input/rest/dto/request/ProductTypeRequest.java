@@ -1,4 +1,4 @@
-package com.products_management.infraestructure.input.rest.model.request;
+package com.products_management.infraestructure.input.rest.dto.request;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 

@@ -1,5 +1,7 @@
 package com.products_management.infraestructure.output.persistence.entity;
 
+import java.util.List;
+
 import org.hibernate.annotations.TenantId;
 
 import jakarta.persistence.*;
@@ -29,6 +31,10 @@ public class CategoryEntity {
     private Long costId;
     private Long saleId;
     private Long returnId;
+    @ElementCollection
+    @CollectionTable(name = "category_taxes", joinColumns = @JoinColumn(name = "category_id"))
+    @Column(name = "tax_id")
+    private List<Long> taxes;
     private boolean state;
 
     @TenantId

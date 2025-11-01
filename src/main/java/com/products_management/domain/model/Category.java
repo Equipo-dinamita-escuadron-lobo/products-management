@@ -1,5 +1,7 @@
 package com.products_management.domain.model;
 
+import java.util.List;
+
 import lombok.*;
 
 /**
@@ -51,6 +53,11 @@ public class Category {
      * Identificador del retorno asociado a la categoría.
      */
     private Long returnId;
+
+    /**
+     * @brief Lista de impuestos aplicables a la categoría.
+     */
+    private List<Long> taxes;
 
     /**
      * Estado de la categoría (true si está activa, false si está inactiva).

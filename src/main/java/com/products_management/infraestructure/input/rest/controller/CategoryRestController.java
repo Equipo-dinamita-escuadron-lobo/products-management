@@ -1,10 +1,10 @@
-package com.products_management.infraestructure.input.rest;
+package com.products_management.infraestructure.input.rest.controller;
 
 import com.products_management.application.ports.input.ICategoryServicePort;
 import com.products_management.domain.model.Category;
+import com.products_management.infraestructure.input.rest.dto.request.CategoryCreateRequest;
+import com.products_management.infraestructure.input.rest.dto.response.CategoryResponse;
 import com.products_management.infraestructure.input.rest.mapper.interfaces.ICategoryRestMapper;
-import com.products_management.infraestructure.input.rest.model.request.CategoryCreateRequest;
-import com.products_management.infraestructure.input.rest.model.response.CategoryResponse;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

@@ -1,6 +1,4 @@
-package com.products_management.infraestructure.input.rest.model.request;
-
-import java.util.List;
+package com.products_management.infraestructure.input.rest.dto.request;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -35,9 +33,6 @@ public class ProductCreateRequest {
     private String description;
 
     private Integer quantity;
-
-    @NotNull(message = "Lista de impuestos es requerida")
-    private List<Long> taxes;
 
     @NotNull(message = "Id de la unidad de medida es requerido")
     private Long unitOfMeasureId;

@@ -64,6 +64,95 @@ public final class StringNormalizer {
     }
 
     /**
+     * Normaliza un nombre de header removiendo acentos, convirtiendo a minúsculas y
+     * aplicando reglas específicas para comparación.
+     */
+    public static String normalizeHeaderName(String header) {
+        if (header == null) {
+            return null;
+        }
+
+        // Remover saltos de línea y texto adicional como "(Requerido)", "(Opcional)", etc.
+        String cleaned = header.replaceAll("\\s*\\([^)]*?\\)\\s*", "") // Remover texto entre paréntesis (usando lazy matching para evitar backtracking excesivo)
+                              .replaceAll("\\n.*", "") // Remover todo después del primer salto de línea
+                              .trim();
+
+        // Reemplazar caracteres especiales comunes por encoding issues
+        cleaned = cleaned.replace('Ý', 'í')  // categoría
+                        .replace('¾', 'ó')  // descripción, presentación
+                        .replace('Ã', 'í')  // categoría alternativo
+                        .replace('³', 'ó'); // descripción alternativo
+
+        // Normalizar acentos y diacríticos
+        String normalized = Normalizer.normalize(cleaned, Normalizer.Form.NFD)
+                .replaceAll("\\p{InCombiningDiacriticalMarks}+", "");
+
+        // Convertir a minúsculas
+        normalized = normalized.toLowerCase();
+
+        // Aplicar reglas específicas para headers conocidos
+        normalized = applyHeaderRules(normalized);
+
+        return normalized.trim();
+    }
+
+    /**
+     * Aplica reglas específicas para normalizar headers de Excel.
+     */
+    private static String applyHeaderRules(String header) {
+        // Reglas específicas para headers de productos
+        switch (header) {
+            case "nombre":
+            case "name":
+                return ImportConstants.NAME_COLUMN;
+            case "descripcion":
+            case "descripción":
+            case "descripci¾n": // Manejar caracteres especiales por encoding
+            case "description":
+                return ImportConstants.DESCRIPTION_COLUMN;
+            case "unidad de medida":
+            case "unidad":
+            case "uom":
+                return ImportConstants.UNIT_MEASURE_COLUMN;
+            case "categoria":
+            case "categoría":
+            case "categorÝa": // Manejar caracteres especiales por encoding
+            case "category":
+                return ImportConstants.CATEGORY_COLUMN;
+            case "tipo de producto":
+            case "tipo":
+            case "product type":
+                return ImportConstants.PRODUCT_TYPE_COLUMN;
+            case "referencia/sku": // Manejar el formato de exportación primero (más específico)
+            case "referencia":
+            case "sku":
+            case "reference":
+                return ImportConstants.REFERENCE_COLUMN;
+            case "presentacion":
+            case "presentación":
+            case "presentaci¾n": // Manejar caracteres especiales por encoding
+            case "presentation":
+                return ImportConstants.PRESENTATION_COLUMN;
+            case "cantidad":
+            case "quantity":
+                return ImportConstants.QUANTITY_COLUMN;
+            case "costo":
+            case "cost":
+            case "price":
+                return ImportConstants.COST_COLUMN;
+            case "codigo":
+            case "code":
+                return "Código"; // Campo opcional
+            case "estado":
+            case "state":
+            case "status":
+                return "Estado"; // Campo opcional
+            default:
+                return header;
+        }
+    }
+
+    /**
      * Capitaliza la primera letra de una cadena.
      *
      * @param input el texto a capitalizar
@@ -73,11 +162,11 @@ public final class StringNormalizer {
         if (input == null || input.isEmpty()) {
             return input;
         }
-        
+
         if (input.length() == 1) {
             return input.toUpperCase();
         }
-        
+
         return input.substring(0, 1).toUpperCase() + input.substring(1);
     }
 }

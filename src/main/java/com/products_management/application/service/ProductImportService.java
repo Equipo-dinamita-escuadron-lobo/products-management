@@ -142,6 +142,9 @@ public class ProductImportService implements IProductImportUseCase {
      * Un registro puede tener múltiples errores, pero solo cuenta como 1 fallo.
      */
     private int calculateUniqueFailedRecords(List<ImportErrorDetail> errors) {
+        if (errors == null || errors.isEmpty()) {
+            return 0;
+        }
         return (int) errors.stream()
                 .mapToInt(ImportErrorDetail::getRowNumber)
                 .distinct()

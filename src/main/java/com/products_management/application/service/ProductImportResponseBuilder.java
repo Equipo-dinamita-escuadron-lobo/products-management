@@ -33,7 +33,7 @@ public class ProductImportResponseBuilder {
                 .successfulImports(successCount)
                 .failedImports(failureCount)
                 .duplicatesSkipped(duplicatesSkipped)
-                .errors(errors.isEmpty() ? null : errors)
+                .errors(errors == null || errors.isEmpty() ? null : errors)
                 .build();
     }
 
@@ -65,7 +65,7 @@ public class ProductImportResponseBuilder {
                 .successfulImports(0)
                 .failedImports(totalRecords)
                 .duplicatesSkipped(0)
-                .errors(errors.isEmpty() ? null : errors)
+                .errors(errors == null || errors.isEmpty() ? null : errors)
                 .build();
     }
 
@@ -79,6 +79,8 @@ public class ProductImportResponseBuilder {
             } else {
                 return ImportStatus.COMPLETED;
             }
+        } else if (failureCount == 0 && duplicatesSkipped > 0) {
+            return ImportStatus.COMPLETED;
         } else {
             return ImportStatus.FAILED;
         }

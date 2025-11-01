@@ -1,8 +1,8 @@
 package com.products_management.application.service;
 
-import com.products_management.application.ports.output.ICategoryPersistencePort;
-import com.products_management.application.ports.output.IProductTypePersistencePort;
-import com.products_management.application.ports.output.IUnitOfMeasurePersistencePort;
+import com.products_management.application.ports.input.ICategoryServicePort;
+import com.products_management.application.ports.input.IProductTypeServicePort;
+import com.products_management.application.ports.input.IUnitOfMeasureServicePort;
 import com.products_management.domain.exception.ErrorCode;
 import com.products_management.domain.exception.product.ExcelValidationException;
 import com.products_management.domain.model.Category;
@@ -27,9 +27,9 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ProductExcelValidationService {
 
-    private final ICategoryPersistencePort categoryPersistencePort;
-    private final IProductTypePersistencePort productTypePersistencePort;
-    private final IUnitOfMeasurePersistencePort unitOfMeasurePersistencePort;
+    private final ICategoryServicePort categoryServicePort;
+    private final IProductTypeServicePort productTypeServicePort;
+    private final IUnitOfMeasureServicePort unitOfMeasureServicePort;
 
     // Constantes para mensajes
     private static final String VALIDATION_ERROR_TITLE = "Error de Validación";
@@ -41,8 +41,12 @@ public class ProductExcelValidationService {
      * Obtiene todas las categorías activas para una entidad.
      */
     public List<String> getCategoryOptions(String entId) {
-        // Usar paginación con tamaño grande para obtener todas las categorías activas
-        var page = categoryPersistencePort.getActiveCategoriesBy(entId, 0, 1000, "name", "asc");
+        long totalActive = categoryServicePort.countActiveCategoriesByEntId(entId);
+        if (totalActive == 0) {
+            return List.of();
+        }
+        
+        var page = categoryServicePort.getAllActiveCategoriesByWithSort(entId, 0, (int) totalActive, "name", "asc");
         return page.getContent().stream()
                 .map(Category::getName)
                 .toList();
@@ -52,8 +56,12 @@ public class ProductExcelValidationService {
      * Obtiene todos los tipos de producto activos para una entidad.
      */
     public List<String> getProductTypeOptions(String entId) {
-        // Usar paginación con tamaño grande para obtener todos los tipos activos
-        var page = productTypePersistencePort.findActivatedByEnterpriseId(entId, 0, 1000);
+        long totalActive = productTypeServicePort.countActivatedByEnterpriseId(entId);
+        if (totalActive == 0) {
+            return List.of();
+        }
+
+        var page = productTypeServicePort.findActivatedWithPagination(entId, 0, (int) totalActive);
         return page.getContent().stream()
                 .map(ProductType::getName)
                 .toList();
@@ -63,8 +71,12 @@ public class ProductExcelValidationService {
      * Obtiene todas las unidades de medida activas para una entidad por nombre completo.
      */
     public List<String> getUnitOfMeasureOptions(String entId) {
-        // Usar paginación con tamaño grande para obtener todas las unidades activas
-        var page = unitOfMeasurePersistencePort.getActiveUnitOfMeasuresBy(entId, 0, 1000, "name", "asc");
+        long totalActive = unitOfMeasureServicePort.countActiveUnitOfMeasuresByEntId(entId);
+        if (totalActive == 0) {
+            return List.of();
+        }
+
+        var page = unitOfMeasureServicePort.getAllActiveUnitOfMeasuresBy(entId, 0, (int) totalActive);
         return page.getContent().stream()
                 .map(UnitOfMeasure::getName)
                 .toList();

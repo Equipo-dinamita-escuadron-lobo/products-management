@@ -36,6 +36,17 @@ public class ProductBatchValidationService {
     private final IProductTypePersistencePort productTypePersistencePort;
     private final IProductPersistencePort productPersistencePort;
 
+    // Constantes para nombres de columnas
+    private static final String COLUMN_NAME = "Nombre";
+    private static final String COLUMN_DESCRIPTION = "Descripción";
+    private static final String COLUMN_REFERENCE = "Referencia";
+    private static final String COLUMN_PRESENTATION = "Presentación";
+    private static final String COLUMN_QUANTITY = "Cantidad";
+    private static final String COLUMN_COST = "Costo";
+    private static final String COLUMN_UNIT_MEASURE = "Unidad de Medida";
+    private static final String COLUMN_CATEGORY = "Categoría";
+    private static final String COLUMN_PRODUCT_TYPE = "Tipo de Producto";
+
     /**
      * Valida un lote de datos de productos.
      *
@@ -62,7 +73,7 @@ public class ProductBatchValidationService {
                     duplicateCount++;
                 } else {
                     // No es duplicado, resolver IDs de entidades relacionadas
-                    ProductExcelData resolvedData = resolveEntityIds(productData, entId, errors);
+                    ProductExcelData resolvedData = resolveEntityIds(productData, entId, errors, columnMap);
                     if (resolvedData != null) {
                         validRecords.add(resolvedData);
                     }
@@ -107,25 +118,25 @@ public class ProductBatchValidationService {
         if (isNullOrEmpty(productData.getName())) {
             errors.add(createValidationError(productData.getRowNumber(),
                     "REQUIRED_FIELD_MISSING", "El nombre es requerido",
-                    columnMap.get("Nombre")));
+                    COLUMN_NAME, columnMap.get(COLUMN_NAME)));
         }
 
         if (isNullOrEmpty(productData.getDescription())) {
             errors.add(createValidationError(productData.getRowNumber(),
                     "REQUIRED_FIELD_MISSING", "La descripción es requerida",
-                    columnMap.get("Descripción")));
+                    COLUMN_DESCRIPTION, columnMap.get(COLUMN_DESCRIPTION)));
         }
 
         if (isNullOrEmpty(productData.getReference())) {
             errors.add(createValidationError(productData.getRowNumber(),
                     "REQUIRED_FIELD_MISSING", "La referencia es requerida",
-                    columnMap.get("Referencia")));
+                    COLUMN_REFERENCE, columnMap.get(COLUMN_REFERENCE)));
         }
 
         if (isNullOrEmpty(productData.getPresentation())) {
             errors.add(createValidationError(productData.getRowNumber(),
                     "REQUIRED_FIELD_MISSING", "La presentación es requerida",
-                    columnMap.get("Presentación")));
+                    COLUMN_PRESENTATION, columnMap.get(COLUMN_PRESENTATION)));
         }
     }
 
@@ -139,7 +150,7 @@ public class ProductBatchValidationService {
             productData.getReference().length() > 255) {
             errors.add(createValidationError(productData.getRowNumber(),
                     "INVALID_REFERENCE", "La referencia excede la longitud máxima de 255 caracteres",
-                    columnMap.get("Referencia")));
+                    COLUMN_REFERENCE, columnMap.get(COLUMN_REFERENCE)));
         }
 
         // Validar longitud de presentación
@@ -147,7 +158,7 @@ public class ProductBatchValidationService {
             productData.getPresentation().length() > 255) {
             errors.add(createValidationError(productData.getRowNumber(),
                     "INVALID_PRESENTATION", "La presentación excede la longitud máxima de 255 caracteres",
-                    columnMap.get("Presentación")));
+                    COLUMN_PRESENTATION, columnMap.get(COLUMN_PRESENTATION)));
         }
     }
 
@@ -160,14 +171,14 @@ public class ProductBatchValidationService {
         if (productData.getQuantity() != null && productData.getQuantity() < 0) {
             errors.add(createValidationError(productData.getRowNumber(),
                     "INVALID_NUMBER", "La cantidad no puede ser negativa",
-                    columnMap.get("Cantidad")));
+                    COLUMN_QUANTITY, columnMap.get(COLUMN_QUANTITY)));
         }
 
         // Validar costo
         if (productData.getCost() != null && productData.getCost() < 0) {
             errors.add(createValidationError(productData.getRowNumber(),
                     "INVALID_NUMBER", "El costo no puede ser negativo",
-                    columnMap.get("Costo")));
+                    COLUMN_COST, columnMap.get(COLUMN_COST)));
         }
     }
 
@@ -175,7 +186,7 @@ public class ProductBatchValidationService {
      * Resuelve los IDs de entidades relacionadas (categoría, unidad de medida, tipo de producto).
      */
     private ProductExcelData resolveEntityIds(ProductExcelData productData, String entId,
-                                             List<ImportErrorDetail> errors) {
+                                             List<ImportErrorDetail> errors, Map<String, Integer> columnMap) {
         try {
             ProductExcelData.ProductExcelDataBuilder builder = productData.toBuilder();
 
@@ -187,6 +198,8 @@ public class ProductBatchValidationService {
                 } else {
                     errors.add(ImportErrorDetail.builder()
                             .rowNumber(productData.getRowNumber())
+                            .columnNumber(columnMap.get(COLUMN_UNIT_MEASURE) != null ? columnMap.get(COLUMN_UNIT_MEASURE) + 1 : null)
+                            .columnName(COLUMN_UNIT_MEASURE)
                             .errorCode("UNIT_OF_MEASURE_NOT_FOUND")
                             .errorMessage("La unidad de medida " + productData.getUnitOfMeasureName() + " no existe o está inactiva.")
                             .errorType(ImportErrorType.VALIDATION_ERROR)
@@ -203,6 +216,8 @@ public class ProductBatchValidationService {
                 } else {
                     errors.add(ImportErrorDetail.builder()
                             .rowNumber(productData.getRowNumber())
+                            .columnNumber(columnMap.get(COLUMN_CATEGORY) != null ? columnMap.get(COLUMN_CATEGORY) + 1 : null)
+                            .columnName(COLUMN_CATEGORY)
                             .errorCode("CATEGORY_NOT_FOUND")
                             .errorMessage("La categoría " + productData.getCategoryName() + " no existe o está inactiva.")
                             .errorType(ImportErrorType.VALIDATION_ERROR)
@@ -219,6 +234,8 @@ public class ProductBatchValidationService {
                 } else {
                     errors.add(ImportErrorDetail.builder()
                             .rowNumber(productData.getRowNumber())
+                            .columnNumber(columnMap.get(COLUMN_PRODUCT_TYPE) != null ? columnMap.get(COLUMN_PRODUCT_TYPE) + 1 : null)
+                            .columnName(COLUMN_PRODUCT_TYPE)
                             .errorCode("PRODUCT_TYPE_NOT_FOUND")
                             .errorMessage("El tipo de producto " + productData.getProductTypeName() + " no existe o está inactivo.")
                             .errorType(ImportErrorType.VALIDATION_ERROR)
@@ -244,10 +261,11 @@ public class ProductBatchValidationService {
      * Crea un error de validación.
      */
     private ImportErrorDetail createValidationError(int rowNumber, String errorCode, String message,
-                                                   Integer columnNumber) {
+                                                   String columnName, Integer columnNumber) {
         return ImportErrorDetail.builder()
                 .rowNumber(rowNumber)
                 .columnNumber(columnNumber != null ? columnNumber + 1 : null)
+                .columnName(columnName)
                 .errorCode(errorCode)
                 .errorMessage(message)
                 .errorType(ImportErrorType.VALIDATION_ERROR)

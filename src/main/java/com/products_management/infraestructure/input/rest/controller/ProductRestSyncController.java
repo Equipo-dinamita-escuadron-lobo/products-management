@@ -1,4 +1,4 @@
-package com.products_management.infraestructure.input.rest;
+package com.products_management.infraestructure.input.rest.controller;
 
 import java.time.Instant;
 import java.util.List;

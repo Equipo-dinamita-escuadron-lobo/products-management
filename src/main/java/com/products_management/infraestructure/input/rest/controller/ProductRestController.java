@@ -1,4 +1,4 @@
-package com.products_management.infraestructure.input.rest;
+package com.products_management.infraestructure.input.rest.controller;
 
 import com.products_management.application.ports.input.IProductServicePort;
 import com.products_management.application.ports.input.IProductExportUseCase;

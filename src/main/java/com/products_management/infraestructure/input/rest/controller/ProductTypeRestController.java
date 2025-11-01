@@ -1,4 +1,4 @@
-package com.products_management.infraestructure.input.rest;
+package com.products_management.infraestructure.input.rest.controller;
 
 import com.products_management.application.ports.input.IProductTypeServicePort;
 import com.products_management.domain.model.ProductType;

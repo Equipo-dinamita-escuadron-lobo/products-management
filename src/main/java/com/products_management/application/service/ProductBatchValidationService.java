@@ -37,7 +37,6 @@ public class ProductBatchValidationService {
     private final IProductTypePersistencePort productTypePersistencePort;
     private final IProductPersistencePort productPersistencePort;
 
-    // Constantes para nombres de columnas
     private static final String COLUMN_NAME = "Nombre";
     private static final String COLUMN_DESCRIPTION = "Descripción";
     private static final String COLUMN_REFERENCE = "Referencia";
@@ -48,10 +47,7 @@ public class ProductBatchValidationService {
     private static final String COLUMN_CATEGORY = "Categoría";
     private static final String COLUMN_PRODUCT_TYPE = "Tipo de Producto";
 
-    // Constantes para códigos de error
     private static final String REQUIRED_FIELD_MISSING = "REQUIRED_FIELD_MISSING";
-
-    // Constantes para mensajes de error
     private static final String ENTITY_NOT_ACTIVE_SUFFIX = " no existe o está inactiva.";
     private static final String ENTITY_NOT_ACTIVE_SUFFIX_MASC = " no existe o está inactivo.";
 

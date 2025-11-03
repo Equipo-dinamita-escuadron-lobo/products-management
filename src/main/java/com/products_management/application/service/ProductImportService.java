@@ -156,7 +156,7 @@ public class ProductImportService implements IProductImportUseCase {
         // Filtrar productos que NO están en las filas con errores
         return allProducts.stream()
                 .filter(product -> !errorRows.contains(product.getRowNumber()))
-                .collect(Collectors.toList());
+                .toList();
     }
 
     /**

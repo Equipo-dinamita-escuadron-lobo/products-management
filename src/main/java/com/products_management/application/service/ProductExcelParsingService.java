@@ -184,18 +184,18 @@ public class ProductExcelParsingService {
             long longValue = Long.parseLong(value.trim());
             if (longValue > ImportConstants.Validations.MAX_QUANTITY) {
                 errors.add(createValidationError(rowNumber, "INVALID_NUMBER",
-                    "La cantidad excede el valor máximo permitido", ImportConstants.QUANTITY_COLUMN, columnIndex));
+                    "La cantidad excede el valor máximo permitido", ImportConstants.QUANTITY_COLUMN, columnIndex, value.trim()));
                 return null;
             }
             if (longValue < 0) {
                 errors.add(createValidationError(rowNumber, "INVALID_NUMBER",
-                    "La cantidad debe ser un valor positivo", ImportConstants.QUANTITY_COLUMN, columnIndex));
+                    "La cantidad debe ser un valor positivo", ImportConstants.QUANTITY_COLUMN, columnIndex, value.trim()));
                 return null;
             }
             return (int) longValue;
         } catch (NumberFormatException e) {
             errors.add(createValidationError(rowNumber, "INVALID_FORMAT",
-                "La cantidad debe contener solo números", ImportConstants.QUANTITY_COLUMN, columnIndex));
+                "La cantidad debe contener solo números", ImportConstants.QUANTITY_COLUMN, columnIndex, value.trim()));
             return null;
         }
     }
@@ -211,18 +211,18 @@ public class ProductExcelParsingService {
             double doubleValue = Double.parseDouble(value.trim());
             if (doubleValue > ImportConstants.Validations.MAX_COST) {
                 errors.add(createValidationError(rowNumber, "INVALID_NUMBER",
-                    "El costo excede el valor máximo permitido", ImportConstants.COST_COLUMN, columnIndex));
+                    "El costo excede el valor máximo permitido", ImportConstants.COST_COLUMN, columnIndex, value.trim()));
                 return null;
             }
             if (doubleValue < 0) {
                 errors.add(createValidationError(rowNumber, "INVALID_NUMBER",
-                    "El costo debe ser un valor positivo", ImportConstants.COST_COLUMN, columnIndex));
+                    "El costo debe ser un valor positivo", ImportConstants.COST_COLUMN, columnIndex, value.trim()));
                 return null;
             }
             return doubleValue;
         } catch (NumberFormatException e) {
             errors.add(createValidationError(rowNumber, "INVALID_FORMAT",
-                "El costo debe contener solo números", ImportConstants.COST_COLUMN, columnIndex));
+                "El costo debe contener solo números", ImportConstants.COST_COLUMN, columnIndex, value.trim()));
             return null;
         }
     }
@@ -267,7 +267,7 @@ public class ProductExcelParsingService {
      * Crea un error de validación.
      */
     private ImportErrorDetail createValidationError(int rowNumber, String errorCode, String message,
-                                                   String columnName, Integer columnNumber) {
+                                                   String columnName, Integer columnNumber, String fieldValue) {
         return ImportErrorDetail.builder()
                 .rowNumber(rowNumber)
                 .columnNumber(columnNumber != null ? columnNumber + 1 : null)
@@ -275,6 +275,7 @@ public class ProductExcelParsingService {
                 .errorCode(errorCode)
                 .errorMessage(message)
                 .errorType(ImportErrorType.FORMAT_ERROR)
+                .fieldValue(fieldValue)
                 .build();
     }
 

@@ -125,43 +125,43 @@ public class ProductBatchValidationService {
         if (isNullOrEmpty(productData.getName())) {
             errors.add(createValidationError(productData.getRowNumber(),
                     REQUIRED_FIELD_MISSING, "El nombre es requerido",
-                    COLUMN_NAME, columnMap.get(COLUMN_NAME)));
+                    COLUMN_NAME, columnMap.get(COLUMN_NAME), productData.getName()));
         }
 
         if (isNullOrEmpty(productData.getDescription())) {
             errors.add(createValidationError(productData.getRowNumber(),
                     REQUIRED_FIELD_MISSING, "La descripción es requerida",
-                    COLUMN_DESCRIPTION, columnMap.get(COLUMN_DESCRIPTION)));
+                    COLUMN_DESCRIPTION, columnMap.get(COLUMN_DESCRIPTION), productData.getDescription()));
         }
 
         if (isNullOrEmpty(productData.getReference())) {
             errors.add(createValidationError(productData.getRowNumber(),
                     REQUIRED_FIELD_MISSING, "La referencia es requerida",
-                    COLUMN_REFERENCE, columnMap.get(COLUMN_REFERENCE)));
+                    COLUMN_REFERENCE, columnMap.get(COLUMN_REFERENCE), productData.getReference()));
         }
 
         if (isNullOrEmpty(productData.getPresentation())) {
             errors.add(createValidationError(productData.getRowNumber(),
                     REQUIRED_FIELD_MISSING, "La presentación es requerida",
-                    COLUMN_PRESENTATION, columnMap.get(COLUMN_PRESENTATION)));
+                    COLUMN_PRESENTATION, columnMap.get(COLUMN_PRESENTATION), productData.getPresentation()));
         }
 
         if (isNullOrEmpty(productData.getUnitOfMeasureName())) {
             errors.add(createValidationError(productData.getRowNumber(),
                     REQUIRED_FIELD_MISSING, "La Unidad de Medida es requerida",
-                    COLUMN_UNIT_MEASURE, columnMap.get(COLUMN_UNIT_MEASURE)));
+                    COLUMN_UNIT_MEASURE, columnMap.get(COLUMN_UNIT_MEASURE), productData.getUnitOfMeasureName()));
         }
 
         if (isNullOrEmpty(productData.getCategoryName())) {
             errors.add(createValidationError(productData.getRowNumber(),
                     REQUIRED_FIELD_MISSING, "La Categoría es requerida",
-                    COLUMN_CATEGORY, columnMap.get(COLUMN_CATEGORY)));
+                    COLUMN_CATEGORY, columnMap.get(COLUMN_CATEGORY), productData.getCategoryName()));
         }
 
         if (isNullOrEmpty(productData.getProductTypeName())) {
             errors.add(createValidationError(productData.getRowNumber(),
                     REQUIRED_FIELD_MISSING, "El Tipo de Producto es requerido",
-                    COLUMN_PRODUCT_TYPE, columnMap.get(COLUMN_PRODUCT_TYPE)));
+                    COLUMN_PRODUCT_TYPE, columnMap.get(COLUMN_PRODUCT_TYPE), productData.getProductTypeName()));
         }
     }
 
@@ -175,7 +175,7 @@ public class ProductBatchValidationService {
             productData.getReference().length() > 255) {
             errors.add(createValidationError(productData.getRowNumber(),
                     "INVALID_REFERENCE", "La referencia excede la longitud máxima de 255 caracteres",
-                    COLUMN_REFERENCE, columnMap.get(COLUMN_REFERENCE)));
+                    COLUMN_REFERENCE, columnMap.get(COLUMN_REFERENCE), productData.getReference()));
         }
 
         // Validar longitud de presentación
@@ -183,7 +183,7 @@ public class ProductBatchValidationService {
             productData.getPresentation().length() > 255) {
             errors.add(createValidationError(productData.getRowNumber(),
                     "INVALID_PRESENTATION", "La presentación excede la longitud máxima de 255 caracteres",
-                    COLUMN_PRESENTATION, columnMap.get(COLUMN_PRESENTATION)));
+                    COLUMN_PRESENTATION, columnMap.get(COLUMN_PRESENTATION), productData.getPresentation()));
         }
     }
 
@@ -196,14 +196,14 @@ public class ProductBatchValidationService {
         if (productData.getQuantity() != null && productData.getQuantity() < 0) {
             errors.add(createValidationError(productData.getRowNumber(),
                     "INVALID_NUMBER", "La cantidad debe ser un valor numerico y positivo",
-                    COLUMN_QUANTITY, columnMap.get(COLUMN_QUANTITY)));
+                    COLUMN_QUANTITY, columnMap.get(COLUMN_QUANTITY), productData.getQuantity().toString()));
         }
 
         // Validar costo (opcional, pero si tiene valor debe ser positivo)
         if (productData.getCost() != null && productData.getCost() < 0) {
             errors.add(createValidationError(productData.getRowNumber(),
                     "INVALID_NUMBER", "El costo debe ser un valor numerico y positivo",
-                    COLUMN_COST, columnMap.get(COLUMN_COST)));
+                    COLUMN_COST, columnMap.get(COLUMN_COST), productData.getCost().toString()));
         }
     }
 
@@ -241,6 +241,7 @@ public class ProductBatchValidationService {
                     .errorCode("ENTITY_RESOLUTION_ERROR")
                     .errorMessage("Error resolviendo entidades relacionadas: " + e.getMessage())
                     .errorType(ImportErrorType.SYSTEM_ERROR)
+                    .fieldValue(null)
                     .build());
             return null;
         }
@@ -317,6 +318,7 @@ public class ProductBatchValidationService {
                 .errorCode(errorCode)
                 .errorMessage(errorMessage)
                 .errorType(ImportErrorType.VALIDATION_ERROR)
+                .fieldValue(entityName)
                 .build());
     }
 
@@ -324,7 +326,7 @@ public class ProductBatchValidationService {
      * Crea un error de validación.
      */
     private ImportErrorDetail createValidationError(int rowNumber, String errorCode, String message,
-                                                   String columnName, Integer columnNumber) {
+                                                   String columnName, Integer columnNumber, String fieldValue) {
         return ImportErrorDetail.builder()
                 .rowNumber(rowNumber)
                 .columnNumber(columnNumber != null ? columnNumber + 1 : null)
@@ -332,6 +334,7 @@ public class ProductBatchValidationService {
                 .errorCode(errorCode)
                 .errorMessage(message)
                 .errorType(ImportErrorType.VALIDATION_ERROR)
+                .fieldValue(fieldValue)
                 .build();
     }
 

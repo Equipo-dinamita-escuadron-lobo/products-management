@@ -143,10 +143,19 @@ public class ProductExcelParsingService {
             builder.reference(getCellValueAsString(row, columnMap.get(ImportConstants.REFERENCE_COLUMN)));
             builder.presentation(getCellValueAsString(row, columnMap.get(ImportConstants.PRESENTATION_COLUMN)));
 
-            // Parsear campos opcionales
-            builder.quantity(parseIntegerField(getCellValueAsString(row, columnMap.get(ImportConstants.QUANTITY_COLUMN))));
-            builder.cost(parseDoubleField(getCellValueAsString(row, columnMap.get(ImportConstants.COST_COLUMN))));
-      
+            // Parsear campos opcionales con validación de formato
+            String quantityValue = getCellValueAsString(row, columnMap.get(ImportConstants.QUANTITY_COLUMN));
+            if (quantityValue != null && !quantityValue.trim().isEmpty()) {
+                Integer quantity = parseIntegerField(quantityValue, rowNumber, columnMap.get(ImportConstants.QUANTITY_COLUMN), errors);
+                builder.quantity(quantity);
+            }
+
+            String costValue = getCellValueAsString(row, columnMap.get(ImportConstants.COST_COLUMN));
+            if (costValue != null && !costValue.trim().isEmpty()) {
+                Double cost = parseDoubleField(costValue, rowNumber, columnMap.get(ImportConstants.COST_COLUMN), errors);
+                builder.cost(cost);
+            }
+
             builder.unitOfMeasureName(getCellValueAsString(row, columnMap.get(ImportConstants.UNIT_MEASURE_COLUMN)));
             builder.categoryName(getCellValueAsString(row, columnMap.get(ImportConstants.CATEGORY_COLUMN)));
             builder.productTypeName(getCellValueAsString(row, columnMap.get(ImportConstants.PRODUCT_TYPE_COLUMN)));
@@ -165,37 +174,55 @@ public class ProductExcelParsingService {
     }
 
     /**
-     * Parsea un campo entero desde String.
+     * Parsea un campo entero desde String con validación de errores.
      */
-    private Integer parseIntegerField(String value) {
+    private Integer parseIntegerField(String value, int rowNumber, Integer columnIndex, List<ImportErrorDetail> errors) {
         if (value == null || value.trim().isEmpty()) {
             return null;
         }
         try {
             long longValue = Long.parseLong(value.trim());
             if (longValue > ImportConstants.Validations.MAX_QUANTITY) {
-                return null; // Valor demasiado grande
+                errors.add(createValidationError(rowNumber, "INVALID_NUMBER",
+                    "La cantidad excede el valor máximo permitido", ImportConstants.QUANTITY_COLUMN, columnIndex));
+                return null;
+            }
+            if (longValue < 0) {
+                errors.add(createValidationError(rowNumber, "INVALID_NUMBER",
+                    "La cantidad debe ser un valor positivo", ImportConstants.QUANTITY_COLUMN, columnIndex));
+                return null;
             }
             return (int) longValue;
         } catch (NumberFormatException e) {
+            errors.add(createValidationError(rowNumber, "INVALID_FORMAT",
+                "La cantidad debe contener solo números", ImportConstants.QUANTITY_COLUMN, columnIndex));
             return null;
         }
     }
 
     /**
-     * Parsea un campo double desde String.
+     * Parsea un campo double desde String con validación de errores.
      */
-    private Double parseDoubleField(String value) {
+    private Double parseDoubleField(String value, int rowNumber, Integer columnIndex, List<ImportErrorDetail> errors) {
         if (value == null || value.trim().isEmpty()) {
             return null;
         }
         try {
             double doubleValue = Double.parseDouble(value.trim());
             if (doubleValue > ImportConstants.Validations.MAX_COST) {
-                return null; // Valor demasiado grande
+                errors.add(createValidationError(rowNumber, "INVALID_NUMBER",
+                    "El costo excede el valor máximo permitido", ImportConstants.COST_COLUMN, columnIndex));
+                return null;
+            }
+            if (doubleValue < 0) {
+                errors.add(createValidationError(rowNumber, "INVALID_NUMBER",
+                    "El costo debe ser un valor positivo", ImportConstants.COST_COLUMN, columnIndex));
+                return null;
             }
             return doubleValue;
         } catch (NumberFormatException e) {
+            errors.add(createValidationError(rowNumber, "INVALID_FORMAT",
+                "El costo debe contener solo números", ImportConstants.COST_COLUMN, columnIndex));
             return null;
         }
     }
@@ -234,6 +261,21 @@ public class ProductExcelParsingService {
             }
         }
         return true;
+    }
+
+    /**
+     * Crea un error de validación.
+     */
+    private ImportErrorDetail createValidationError(int rowNumber, String errorCode, String message,
+                                                   String columnName, Integer columnNumber) {
+        return ImportErrorDetail.builder()
+                .rowNumber(rowNumber)
+                .columnNumber(columnNumber != null ? columnNumber + 1 : null)
+                .columnName(columnName)
+                .errorCode(errorCode)
+                .errorMessage(message)
+                .errorType(ImportErrorType.FORMAT_ERROR)
+                .build();
     }
 
     /**

@@ -26,6 +26,11 @@ public class ProductExcelParsingService {
 
     private static final int HEADER_ROW_INDEX = 0;
     private static final int DATA_START_ROW_INDEX = 1;
+    private static final String INVALID_NUMBER = "INVALID_NUMBER";
+    private static final String INVALID_FORMAT = "INVALID_FORMAT";
+    private static final String MISSING_HEADERS = "MISSING_HEADERS";
+    private static final String MISSING_REQUIRED_HEADER = "MISSING_REQUIRED_HEADER";
+    private static final String ROW_PARSING_ERROR = "ROW_PARSING_ERROR";
 
     /**
      * Parsea el archivo Excel y extrae los datos de productos.
@@ -85,7 +90,7 @@ public class ProductExcelParsingService {
         if (headerRow == null) {
             errors.add(ImportErrorDetail.builder()
                     .rowNumber(1)
-                    .errorCode("MISSING_HEADERS")
+                    .errorCode(MISSING_HEADERS)
                     .errorMessage("El archivo no contiene encabezados")
                     .errorType(ImportErrorType.FORMAT_ERROR)
                     .build());
@@ -117,7 +122,7 @@ public class ProductExcelParsingService {
                 errors.add(ImportErrorDetail.builder()
                         .rowNumber(1)
                         .columnName(requiredHeader)
-                        .errorCode("MISSING_REQUIRED_HEADER")
+                        .errorCode(MISSING_REQUIRED_HEADER)
                         .errorMessage("Falta el encabezado requerido: " + requiredHeader)
                         .errorType(ImportErrorType.FORMAT_ERROR)
                         .build());
@@ -165,7 +170,7 @@ public class ProductExcelParsingService {
         } catch (Exception e) {
             errors.add(ImportErrorDetail.builder()
                     .rowNumber(rowNumber)
-                    .errorCode("ROW_PARSING_ERROR")
+                    .errorCode(ROW_PARSING_ERROR)
                     .errorMessage("Error parseando fila: " + e.getMessage())
                     .errorType(ImportErrorType.FORMAT_ERROR)
                     .build());
@@ -183,19 +188,19 @@ public class ProductExcelParsingService {
         try {
             long longValue = Long.parseLong(value.trim());
             if (longValue > ImportConstants.Validations.MAX_QUANTITY) {
-                errors.add(createValidationError(rowNumber, "INVALID_NUMBER",
-                    "La cantidad excede el valor máximo permitido", ImportConstants.QUANTITY_COLUMN, columnIndex));
+                errors.add(createValidationError(rowNumber, INVALID_NUMBER,
+                    "La cantidad excede el valor máximo permitido", ImportConstants.QUANTITY_COLUMN, columnIndex, value.trim()));
                 return null;
             }
             if (longValue < 0) {
-                errors.add(createValidationError(rowNumber, "INVALID_NUMBER",
-                    "La cantidad debe ser un valor positivo", ImportConstants.QUANTITY_COLUMN, columnIndex));
+                errors.add(createValidationError(rowNumber, INVALID_NUMBER,
+                    "La cantidad debe ser un valor positivo", ImportConstants.QUANTITY_COLUMN, columnIndex, value.trim()));
                 return null;
             }
             return (int) longValue;
         } catch (NumberFormatException e) {
-            errors.add(createValidationError(rowNumber, "INVALID_FORMAT",
-                "La cantidad debe contener solo números", ImportConstants.QUANTITY_COLUMN, columnIndex));
+            errors.add(createValidationError(rowNumber, INVALID_FORMAT,
+                "La cantidad debe contener solo números", ImportConstants.QUANTITY_COLUMN, columnIndex, value.trim()));
             return null;
         }
     }
@@ -210,19 +215,19 @@ public class ProductExcelParsingService {
         try {
             double doubleValue = Double.parseDouble(value.trim());
             if (doubleValue > ImportConstants.Validations.MAX_COST) {
-                errors.add(createValidationError(rowNumber, "INVALID_NUMBER",
-                    "El costo excede el valor máximo permitido", ImportConstants.COST_COLUMN, columnIndex));
+                errors.add(createValidationError(rowNumber, INVALID_NUMBER,
+                    "El costo excede el valor máximo permitido", ImportConstants.COST_COLUMN, columnIndex, value.trim()));
                 return null;
             }
             if (doubleValue < 0) {
-                errors.add(createValidationError(rowNumber, "INVALID_NUMBER",
-                    "El costo debe ser un valor positivo", ImportConstants.COST_COLUMN, columnIndex));
+                errors.add(createValidationError(rowNumber, INVALID_NUMBER,
+                    "El costo debe ser un valor positivo", ImportConstants.COST_COLUMN, columnIndex, value.trim()));
                 return null;
             }
             return doubleValue;
         } catch (NumberFormatException e) {
-            errors.add(createValidationError(rowNumber, "INVALID_FORMAT",
-                "El costo debe contener solo números", ImportConstants.COST_COLUMN, columnIndex));
+            errors.add(createValidationError(rowNumber, INVALID_FORMAT,
+                "El costo debe contener solo números", ImportConstants.COST_COLUMN, columnIndex, value.trim()));
             return null;
         }
     }
@@ -267,7 +272,7 @@ public class ProductExcelParsingService {
      * Crea un error de validación.
      */
     private ImportErrorDetail createValidationError(int rowNumber, String errorCode, String message,
-                                                   String columnName, Integer columnNumber) {
+                                                   String columnName, Integer columnNumber, String fieldValue) {
         return ImportErrorDetail.builder()
                 .rowNumber(rowNumber)
                 .columnNumber(columnNumber != null ? columnNumber + 1 : null)
@@ -275,6 +280,7 @@ public class ProductExcelParsingService {
                 .errorCode(errorCode)
                 .errorMessage(message)
                 .errorType(ImportErrorType.FORMAT_ERROR)
+                .fieldValue(fieldValue)
                 .build();
     }
 

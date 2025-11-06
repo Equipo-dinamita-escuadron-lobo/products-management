@@ -9,30 +9,33 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
 /**
- * Interfaz para mapear entre entidades de persistencia (CategoryEntity) y objetos del dominio (Category).
+ * @brief Mapper para transformación entre dominio y persistencia de categorías
+ *
+ * Define contratos de mapeo bidireccional entre entidades JPA CategoryEntity
+ * y objetos de dominio Category para operaciones de persistencia.
  */
 @Mapper(componentModel = "spring")
 public interface ICategoryPersistenceMapper {
 
     /**
-     * Convierte un objeto Category del dominio en una CategoryEntity de persistencia.
-     * @param category Objeto Category del dominio.
-     * @return CategoryEntity correspondiente.
+     * @brief Convierte objeto de dominio a entidad JPA
+     * @param category objeto Category del dominio
+     * @return CategoryEntity correspondiente para persistencia
      */
     @Mapping(target = "tenantId", ignore = true)
     CategoryEntity toCategoryEntity(Category category);
 
     /**
-     * Convierte una CategoryEntity de persistencia en un objeto Category del dominio.
-     * @param categoryEntity CategoryEntity de persistencia.
-     * @return Objeto Category correspondiente.
+     * @brief Convierte entidad JPA a objeto de dominio
+     * @param categoryEntity CategoryEntity de persistencia
+     * @return objeto Category del dominio
      */
     Category toCategory(CategoryEntity categoryEntity);
 
     /**
-     * Convierte una lista de CategoryEntity de persistencia en una lista de objetos Category del dominio.
-     * @param categoryEntityList Lista de CategoryEntity de persistencia.
-     * @return Lista de objetos Category correspondiente.
+     * @brief Convierte lista de entidades JPA a lista de objetos de dominio
+     * @param categoryEntityList lista de CategoryEntity de persistencia
+     * @return lista de objetos Category del dominio
      */
     List<Category> toCategoryList(List<CategoryEntity> categoryEntityList);
 }

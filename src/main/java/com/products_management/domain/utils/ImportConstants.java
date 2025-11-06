@@ -1,9 +1,11 @@
 package com.products_management.domain.utils;
 
 /**
- * Constantes centralizadas para funcionalidades de importación de productos.
- * Centraliza todos los valores constantes utilizados en el proceso de importación
- * para facilitar mantenimiento y reutilización.
+ * @brief Constantes centralizadas para importación de productos
+ *
+ * Define todas las constantes utilizadas en el proceso de importación desde Excel:
+ * nombres de columnas, validaciones, códigos de error y valores por defecto.
+ * Centraliza configuración para facilitar mantenimiento.
  */
 public final class ImportConstants {
 
@@ -11,19 +13,9 @@ public final class ImportConstants {
         throw new UnsupportedOperationException("ImportConstants es una clase de utilidad y no debe ser instanciada");
     }
 
-    // ===== CONFIGURACIÓN DE ARCHIVOS =====
-
-    /**
-     * Extensiones de archivo soportadas para importación.
-     */
     public static final String[] SUPPORTED_EXTENSIONS = {".xlsx", ".xls"};
-
-    /**
-     * Tamaño máximo de archivo en bytes (5 MB).
-     */
     public static final long MAX_FILE_SIZE = 5242880L; // 5 * 1024 * 1024
 
-    // ===== NOMBRES DE COLUMNAS =====
 
     public static final String NAME_COLUMN = "Nombre";
     public static final String DESCRIPTION_COLUMN = "Descripción";
@@ -37,10 +29,6 @@ public final class ImportConstants {
 
     // ===== ENCABEZADOS DE EXCEL =====
 
-    /**
-     * Encabezados requeridos para importación de productos.
-     * Todos son obligatorios excepto costo y cantidad.
-     */
     public static final String[] REQUIRED_HEADERS = {
         NAME_COLUMN,
         DESCRIPTION_COLUMN,
@@ -50,26 +38,18 @@ public final class ImportConstants {
         REFERENCE_COLUMN,
         PRESENTATION_COLUMN
     };
-
-    /**
-     * Encabezados opcionales para importación de productos.
-     * Estos campos pueden estar presentes o ausentes, y pueden estar vacíos.
-     */
+   
     public static final String[] OPTIONAL_HEADERS = {
         QUANTITY_COLUMN,
         COST_COLUMN
     };
 
-    // ===== VALORES BOOLEANOS ACEPTADOS =====
 
     /**
-     * No aplicable para productos (no hay campos booleanos en la importación).
-     */
-
-    // ===== CÓDIGOS DE ERROR =====
-
-    /**
-     * Códigos de error estandarizados para importación.
+     * @brief Códigos de error estandarizados para importación
+     *
+     * Define códigos únicos para diferentes tipos de errores que pueden ocurrir
+     * durante el proceso de importación, facilitando el manejo y logging de errores.
      */
     public static final class ErrorCodes {
         public static final String REQUIRED_FIELD_MISSING = "REQUIRED_FIELD_MISSING";
@@ -83,10 +63,12 @@ public final class ImportConstants {
         private ErrorCodes() {}
     }
 
-    // ===== MENSAJES DE ERROR COMUNES =====
 
     /**
-     * Mensajes de error estándar para importación.
+     * @brief Mensajes de error estándar para importación
+     *
+     * Define mensajes de error reutilizables que proporcionan información clara
+     * al usuario sobre problemas comunes durante la importación de archivos.
      */
     public static final class ErrorMessages {
         public static final String SYSTEM_ERROR = "Error del sistema durante la importación";
@@ -96,10 +78,12 @@ public final class ImportConstants {
         private ErrorMessages() {}
     }
 
-    // ===== VALORES POR DEFECTO =====
 
     /**
-     * Valores por defecto para configuraciones.
+     * @brief Valores por defecto para configuraciones de importación
+     *
+     * Define valores predeterminados para parámetros de configuración que pueden
+     * ser ajustados según necesidades específicas del proceso de importación.
      */
     public static final class Defaults {
         public static final int COLUMN_START_INDEX = 1;
@@ -110,10 +94,12 @@ public final class ImportConstants {
         private Defaults() {}
     }
 
-    // ===== VALIDACIONES DE DATOS =====
 
     /**
-     * Validaciones específicas para campos numéricos.
+     * @brief Validaciones específicas para campos de importación
+     *
+     * Define límites y restricciones para campos numéricos y de texto
+     * durante el proceso de importación, asegurando integridad de datos.
      */
     public static final class Validations {
         public static final long MAX_QUANTITY = Long.MAX_VALUE;

@@ -3,8 +3,10 @@ package com.products_management.infraestructure.output.multitenancy.utils;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * Clase utilitaria para manejar el contexto del inquilino (tenant) en un hilo de ejecución.
- * Utiliza un InheritableThreadLocal para almacenar el ID del inquilino.
+ * @brief Utilidad para gestión de contexto de tenant por hilo
+ *
+ * Maneja el contexto del tenant usando InheritableThreadLocal,
+ * permitiendo aislamiento de datos por empresa en operaciones multihilo.
  */
 @Slf4j
 public class TenantContext {
@@ -13,8 +15,8 @@ public class TenantContext {
     private static final InheritableThreadLocal<String> currentTenant = new InheritableThreadLocal<>();
 
     /**
-     * Establece el ID del inquilino en el contexto actual.
-     * @param tenantId ID del inquilino que se va a establecer.
+     * @brief Establece ID del tenant en contexto actual del hilo
+     * @param tenantId ID del tenant que se va a establecer
      */
     public static void setTenantId(String tenantId) {
         log.debug("Setting tenantId to " + tenantId);
@@ -22,15 +24,15 @@ public class TenantContext {
     }
 
     /**
-     * Obtiene el ID del inquilino del contexto actual.
-     * @return ID del inquilino actualmente establecido.
+     * @brief Obtiene ID del tenant del contexto actual del hilo
+     * @return ID del tenant actualmente establecido
      */
     public static String getTenantId() {
         return currentTenant.get();
     }
 
     /**
-     * Limpia el contexto del inquilino actual, removiendo el ID del inquilino.
+     * @brief Limpia contexto del tenant actual, removiendo el ID del tenant
      */
     public static void clear(){
         currentTenant.remove();

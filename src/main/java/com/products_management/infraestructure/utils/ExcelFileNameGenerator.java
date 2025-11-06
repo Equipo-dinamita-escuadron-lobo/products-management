@@ -6,15 +6,17 @@ import java.time.format.DateTimeFormatter;
 import org.springframework.stereotype.Component;
 
 /**
- * Utilidad para generar nombres de archivos Excel de productos.
+ * @brief Generador de nombres de archivos Excel para productos
+ *
+ * Crea nombres de archivos descriptivos para plantillas y exportaciones
+ * de productos con timestamps, nombres de empresa y estados.
  */
 @Component
 public class ExcelFileNameGenerator {
     
     /**
-     * Genera nombre de archivo para plantilla de terceros.
-     * 
-     * @return nombre del archivo con timestamp
+     * @brief Genera nombre de archivo para plantilla de productos
+     * @return nombre del archivo con formato Plantilla_Productos_timestamp.xlsx
      */
     public String generateTemplateFileName() {
         String timestamp = generateTimestamp();
@@ -22,12 +24,11 @@ public class ExcelFileNameGenerator {
     }
     
     /**
-     * Genera nombre de archivo para exportación de productos.
-     * 
+     * @brief Genera nombre de archivo para exportación de productos
      * @param entId ID de la empresa
-     * @param companyName Nombre de la empresa (opcional)
-     * @param status Estado de los terceros exportados (true=activos, false=inactivos, null=todos)
-     * @return nombre del archivo con timestamp, empresa y estado si aplica
+     * @param companyName nombre de la empresa (opcional)
+     * @param status estado de productos (true=activos, false=inactivos, null=todos)
+     * @return nombre descriptivo con empresa, estado y timestamp
      */
     public String generateExportFileName(String entId, String companyName, Boolean status) {
         String timestamp = generateTimestamp();
@@ -50,20 +51,17 @@ public class ExcelFileNameGenerator {
     }
     
     /**
-     * Normaliza el nombre para uso en archivos.
-     * Reemplaza espacios por guiones bajos.
-     * 
+     * @brief Normaliza nombre para uso en nombres de archivo
      * @param name nombre a normalizar
-     * @return nombre normalizado para archivo
+     * @return nombre con espacios reemplazados por guiones bajos
      */
     private String normalizeForFileName(String name) {
         return name.replace(" ", "_");
     }
-    
+
     /**
-     * Genera timestamp en formato yyyyMMdd_HHmmss.
-     * 
-     * @return timestamp formateado
+     * @brief Genera timestamp en formato yyyyMMdd_HHmmss
+     * @return timestamp formateado para nombres de archivo
      */
     private String generateTimestamp() {
         return LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss"));

@@ -6,31 +6,23 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
 /**
- * Clase de utilidad para manejar la lógica de paginación flexible.
+ * @brief Utilidad para gestión flexible de paginación Spring Data
+ *
  * Proporciona métodos estáticos para crear objetos Pageable basados en parámetros opcionales
- * y maneja de forma segura la conversión de long a int.
- * 
- * <p>Esta es una clase de utilidad y no debe ser instanciada.</p>
+ * y maneja conversiones seguras de long a int para evitar overflow.
  */
 public class PaginationHelper {
 
-    /**
-     * Constructor privado para prevenir la instanciación de esta clase de utilidad.
-     * 
-     * @throws UnsupportedOperationException si se intenta instanciar
-     */
     private PaginationHelper() {
         throw new UnsupportedOperationException("PaginationHelper es una clase de utilidad y no debe ser instanciada");
     }
 
     /**
-     * Crea un objeto Pageable flexible basado en parámetros opcionales.
-     * Si no se especifican parámetros de paginación, crea una página que contiene todos los registros.
-     * 
-     * @param numPage Número de página opcional
-     * @param size Tamaño de página opcional
-     * @param totalRecords Total de registros disponibles
-     * @return Objeto Pageable configurado
+     * @brief Crea Pageable flexible con parámetros opcionales
+     * @param numPage número de página opcional
+     * @param size tamaño de página opcional
+     * @param totalRecords total de registros para cálculo de página completa
+     * @return Pageable configurado o página completa si no hay parámetros
      */
     public static Pageable createFlexiblePageable(Optional<Integer> numPage, 
                                                    Optional<Integer> size, 
@@ -46,11 +38,9 @@ public class PaginationHelper {
     }
 
     /**
-     * Convierte de forma segura un long a int, evitando overflow.
-     * Si el valor excede el rango de int, retorna Integer.MAX_VALUE.
-     * 
-     * @param value Valor long a convertir
-     * @return Valor int seguro
+     * @brief Convierte long a int de forma segura evitando overflow
+     * @param value valor long a convertir
+     * @return valor int seguro o Integer.MAX_VALUE si excede rango
      */
     private static int safeIntCast(long value) {
         if (value > Integer.MAX_VALUE) {

@@ -4,7 +4,10 @@ package com.products_management.domain.model;
 import lombok.*;
 
 /**
- * Clase que representa un tipo de producto en el sistema.
+ * @brief Entidad que representa un tipo de producto
+ *
+ * Clasifica productos según su naturaleza o características específicas,
+ * permitiendo agrupaciones lógicas para gestión y reporting.
  */
 @Builder
 @Getter
@@ -13,29 +16,11 @@ import lombok.*;
 @NoArgsConstructor
 public class ProductType {
 
-    /**
-     * Identificador único del tipo de producto.
-     */
     private Long id;
-
-    /**
-     * Nombre del tipo de producto.
-     */
     private String name;
-
-    /**
-     * Descripción del tipo de producto.
-     */
     private String description;
-
-    /**
-     * Identificador de la empresa a la que pertenece el tipo de producto.
-     */
     private String enterpriseId;
 
-    /**
-     * Estado del tipo de producto (true si está activo, false si está inactivo).
-     */
     @Builder.Default
     private boolean state = true;
 

@@ -3,7 +3,10 @@ package com.products_management.domain.model;
 import lombok.*;
 
 /**
- * Clase que representa una unidad de medida utilizada en el sistema.
+ * @brief Entidad que representa una unidad de medida
+ *
+ * Define las unidades estándar para medir cantidades de productos,
+ * incluyendo nombre completo, abreviatura y descripción para uso en la interfaz.
  */
 @Builder
 @Getter
@@ -12,34 +15,12 @@ import lombok.*;
 @NoArgsConstructor
 public class UnitOfMeasure {
 
-    /**
-     * Identificador único de la unidad de medida.
-     */
     private Long id;
-
-    /**
-     * Nombre de la unidad de medida.
-     */
     private String name;
-
-    /**
-     * Descripción de la unidad de medida.
-     */
     private String description;
-
-    /**
-     * Abreviatura de la unidad de medida.
-     */
     private String abbreviation;
-
-    /**
-     * Identificador de la empresa a la que pertenece la unidad de medida.
-     */
     private String enterpriseId;
 
-    /**
-     * Estado de la unidad de medida (true si está activa, false si está inactiva).
-     */
     @Builder.Default
     private boolean state = true;
 }

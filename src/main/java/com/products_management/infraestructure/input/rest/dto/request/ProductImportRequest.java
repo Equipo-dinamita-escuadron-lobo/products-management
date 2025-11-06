@@ -9,8 +9,10 @@ import lombok.NoArgsConstructor;
 import org.springframework.web.multipart.MultipartFile;
 
 /**
- * DTO para solicitud de importación de productos.
- * Contiene el archivo Excel y metadatos necesarios para la importación.
+ * @brief DTO de solicitud para importación masiva de productos
+ *
+ * Encapsula archivo Excel y metadatos requeridos para procesar
+ * importación masiva de productos desde archivos estructurados.
  */
 @Data
 @Builder
@@ -18,25 +20,23 @@ import org.springframework.web.multipart.MultipartFile;
 @AllArgsConstructor
 public class ProductImportRequest {
 
-    /**
-     * Identificador de la empresa a la que pertenecen los productos.
-     */
     @NotBlank(message = "El ID de empresa es requerido")
     private String entId;
 
-    /**
-     * Archivo Excel con los datos de los productos.
-     */
     @NotNull(message = "El archivo Excel es requerido")
     private MultipartFile excelFile;
 
-    /**
-     * Nombre original del archivo (generalmente tomado del MultipartFile).
-     */
     private String fileName;
 
     /**
-     * Constructor de conveniencia para crear request desde parámetros del controlador.
+     * @brief Crea instancia desde parámetros del controlador
+     *
+     * Método factory para construir request de importación desde
+     * parámetros HTTP comunes en controladores REST.
+     *
+     * @param entId ID de la empresa
+     * @param excelFile Archivo Excel subido
+     * @return Instancia configurada del request
      */
     public static ProductImportRequest from(String entId, MultipartFile excelFile) {
         return ProductImportRequest.builder()

@@ -11,7 +11,10 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
- * Clase de solicitud utilizada para crear un producto en el sistema.
+ * @brief DTO de solicitud para creación de productos
+ *
+ * Define estructura de datos para crear nuevos productos en el sistema,
+ * incluyendo validaciones y referencias a entidades relacionadas.
  */
 @Builder
 @Getter

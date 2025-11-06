@@ -4,7 +4,10 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * Clase que representa la respuesta para un tipo de producto.
+ * @brief DTO de respuesta para datos de tipos de producto
+ *
+ * Representa información básica de tipos de producto para respuestas de la API REST,
+ * incluyendo estado de activación y pertenencia a empresa.
  */
 @Getter
 @Setter

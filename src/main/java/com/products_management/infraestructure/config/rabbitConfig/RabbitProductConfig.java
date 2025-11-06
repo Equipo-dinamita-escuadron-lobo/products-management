@@ -12,6 +12,12 @@ import org.springframework.amqp.core.QueueBuilder;
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
 
+/**
+ * @brief Configuración RabbitMQ específica para productos
+ *
+ * Define infraestructura de mensajería para productos: colas para kardex y stock,
+ * exchange de fanout y bindings correspondientes para comunicación asíncrona.
+ */
 @Configuration
 @Slf4j
 @Profile("!test")
@@ -21,26 +27,46 @@ public class RabbitProductConfig {
     public static final String PRODUCT_STOCK_QUEUE = "product.stock.queue";
 
 
+    /**
+     * @brief Crea cola durable para mensajes de kardex de productos
+     * @return Cola configurada para mensajes de kardex
+     */
     @Bean
     Queue productKardexQueue() {
         return QueueBuilder.durable(PRODUCT_KARDEX_QUEUE).build();
     }
 
+    /**
+     * @brief Crea cola durable para mensajes de stock de productos     *
+     * @return Cola configurada para mensajes de stock
+     */
     @Bean
     Queue productStockQueue() {
         return QueueBuilder.durable(PRODUCT_STOCK_QUEUE).build();
     }
 
+    /**
+     * @brief Crea exchange de fanout para broadcast de productos
+     * @return Exchange de fanout durable configurado
+     */
     @Bean
     FanoutExchange productExchange() {
         return new FanoutExchange(PRODUCT_EXCHANGE, true, false);
     }
 
+    /**
+     * @brief Vincula cola de kardex al exchange de productos
+     * @return Binding configurado entre cola y exchange
+     */
     @Bean
     Binding productKardexQueueBinding() {
         return BindingBuilder.bind(productKardexQueue()).to(productExchange());
     }
 
+    /**
+     * @brief Vincula cola de stock al exchange de productos
+     * @return Binding configurado entre cola y exchange
+     */
     @Bean
     Binding productStockQueueBinding() {
         return BindingBuilder.bind(productStockQueue()).to(productExchange());

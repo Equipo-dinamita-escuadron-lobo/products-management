@@ -13,6 +13,12 @@ import com.products_management.infraestructure.security.IJwtUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * @brief Publicador de eventos de productos via message broker
+ *
+ * Publica eventos de productos a través de RabbitMQ para sincronización
+ * entre sistemas, incluyendo autenticación JWT en headers.
+ */
 @Component
 @RequiredArgsConstructor
 @Slf4j

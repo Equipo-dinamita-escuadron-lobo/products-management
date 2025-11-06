@@ -10,8 +10,10 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 /**
- * Validador específico para archivos Excel (.xlsx, .xls).
- * Implementa validaciones de tamaño, extensión y tipo MIME para Excel.
+ * @brief Validador especializado para archivos Excel
+ *
+ * Implementa validaciones específicas de archivos Excel incluyendo
+ * tamaño máximo, extensiones permitidas y tipos MIME válidos.
  */
 @Component
 @RequiredArgsConstructor
@@ -27,24 +29,40 @@ public class ExcelFileValidator implements FileValidator {
         validateExtension(file);
     }
 
+    /**
+     * @brief Valida que el archivo no sea nulo
+     * @param file archivo a validar
+     */
     private void validateNotNull(MultipartFile file) {
         if (file == null) {
             throw ProductFileValidationException.forNullFile();
         }
     }
 
+    /**
+     * @brief Valida que el archivo no esté vacío
+     * @param file archivo a validar
+     */
     private void validateNotEmpty(MultipartFile file) {
         if (file.isEmpty() || file.getSize() == 0) {
             throw ProductFileValidationException.forEmptyFile(file.getOriginalFilename());
         }
     }
 
+    /**
+     * @brief Valida tamaño máximo del archivo Excel
+     * @param file archivo a validar
+     */
     private void validateSize(MultipartFile file) {
         if (file.getSize() > fileProperties.getMaxSize()) {
             throw new ProductFileSizeExceededException(fileProperties.getMaxSize());
         }
     }
 
+    /**
+     * @brief Valida extensión del archivo Excel
+     * @param file archivo a validar
+     */
     private void validateExtension(MultipartFile file) {
         String filename = file.getOriginalFilename();
         if (filename == null) {

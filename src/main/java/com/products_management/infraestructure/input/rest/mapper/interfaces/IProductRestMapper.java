@@ -9,32 +9,32 @@ import java.util.List;
 import org.mapstruct.Mapper;
 
 /**
- * Interfaz que define métodos para mapear entre entidades de producto y sus representaciones REST.
+ * @brief Mapper para transformación de entidades de producto
+ *
+ * Define contratos de mapeo entre entidades de dominio Product
+ * y DTOs de request/response para operaciones REST.
  */
 @Mapper(componentModel = "spring")
 public interface IProductRestMapper {
 
     /**
-     * Convierte una solicitud de creación de producto ({@link ProductCreateRequest}) en una entidad de producto ({@link Product}).
-     *
-     * @param productCreateRequest la solicitud de creación de producto.
-     * @return la entidad de producto convertida.
+     * @brief Convierte DTO de creación a entidad de producto
+     * @param productCreateRequest solicitud de creación de producto
+     * @return entidad de producto convertida
      */
     Product toProduct(ProductCreateRequest productCreateRequest);
 
     /**
-     * Convierte una entidad de producto ({@link Product}) en una respuesta de producto ({@link ProductResponse}).
-     *
-     * @param product la entidad de producto.
-     * @return la respuesta de producto convertida.
+     * @brief Convierte entidad de producto a DTO de respuesta
+     * @param product entidad de producto
+     * @return respuesta de producto convertida
      */
     ProductResponse toProductResponse(Product product);
 
     /**
-     * Convierte una lista de entidades de producto ({@link Product}) en una lista de respuestas de producto ({@link ProductResponse}).
-     *
-     * @param productList la lista de entidades de producto.
-     * @return la lista de respuestas de producto convertida.
+     * @brief Convierte lista de entidades a lista de DTOs de respuesta
+     * @param productList lista de entidades de producto
+     * @return lista de respuestas de producto convertidas
      */
     List<ProductResponse> toProductResponseList(List<Product> productList);
 }

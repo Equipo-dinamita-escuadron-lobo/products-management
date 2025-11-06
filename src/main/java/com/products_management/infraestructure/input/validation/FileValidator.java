@@ -3,29 +3,27 @@ package com.products_management.infraestructure.input.validation;
 import org.springframework.web.multipart.MultipartFile;
 
 /**
- * Interfaz para validadores de archivos.
- * Define el contrato para validar diferentes tipos de archivos.
+ * @brief Interfaz contrato para validadores de archivos
+ *
+ * Define el contrato estándar para validadores de archivos específicos,
+ * permitiendo validaciones de tamaño, extensión y tipo MIME.
  */
 public interface FileValidator {
 
     /**
-     * Valida un archivo según las reglas específicas del tipo.
-     *
+     * @brief Valida archivo según reglas específicas del tipo
      * @param file archivo a validar
-     * @throws Exception si la validación falla
      */
     void validate(MultipartFile file);
 
     /**
-     * Obtiene los tipos MIME soportados por este validador.
-     *
+     * @brief Obtiene tipos MIME soportados por este validador
      * @return array de tipos MIME soportados
      */
     String[] getSupportedMimeTypes();
 
     /**
-     * Obtiene las extensiones de archivo soportadas por este validador.
-     *
+     * @brief Obtiene extensiones de archivo soportadas
      * @return array de extensiones soportadas
      */
     String[] getSupportedExtensions();

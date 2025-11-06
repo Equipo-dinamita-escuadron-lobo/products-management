@@ -4,15 +4,14 @@ import com.products_management.domain.exception.BaseBusinessException;
 import com.products_management.domain.exception.ErrorCode;
 
 /**
- * Excepción lanzada cuando un archivo excede el tamaño máximo permitido.
+ * @brief Excepción para archivo que excede tamaño máximo
+ *
+ * Se lanza cuando se intenta subir un archivo que supera el límite
+ * de tamaño configurado para operaciones de importación.
  */
 public class ProductFileSizeExceededException extends BaseBusinessException {
 
-    /**
-     * Crea una excepción indicando el tamaño máximo permitido.
-     *
-     * @param maxSize Tamaño máximo permitido en bytes
-     */
+    
     public ProductFileSizeExceededException(long maxSize) {
         super(
             ErrorCode.FILE_VALIDATION_ERROR,
@@ -21,9 +20,14 @@ public class ProductFileSizeExceededException extends BaseBusinessException {
         );
     }
 
-    /**
-     * Formatea el tamaño del archivo en unidades legibles (KB, MB).
-     */
+   /**
+    * @brief Formatea el tamaño del archivo en unidades legibles (KB, MB)
+    *
+    * Convierte un tamaño en bytes a una representación más legible para usuarios,
+    * mostrando KB para archivos pequeños y MB para archivos más grandes.
+    * @param sizeInBytes
+    * @return cadena formateada con el tamaño y unidad apropiada
+    */
     private static String formatFileSize(long sizeInBytes) {
         if (sizeInBytes < 1024) {
             return sizeInBytes + " bytes";

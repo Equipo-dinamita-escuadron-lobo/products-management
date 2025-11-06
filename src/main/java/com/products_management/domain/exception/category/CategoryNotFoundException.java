@@ -4,7 +4,10 @@ import com.products_management.domain.exception.BaseBusinessException;
 import com.products_management.domain.exception.ErrorCode;
 
 /**
- * Excepción lanzada cuando no se encuentra una categoría.
+ * @brief Excepción para categoría no encontrada
+ *
+ * Se lanza cuando se intenta acceder a una categoría que no existe
+ * o no está activa en el sistema.
  */
 public class CategoryNotFoundException extends BaseBusinessException {
     

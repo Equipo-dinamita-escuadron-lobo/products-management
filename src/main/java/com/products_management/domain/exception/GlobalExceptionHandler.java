@@ -21,14 +21,23 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
- * Manejador global de excepciones para toda la aplicación.
- * Proporciona respuestas consistentes y descriptivas para diferentes tipos de errores.
+ * @brief Manejador global de excepciones para controladores REST
+ *
+ * Centraliza el manejo de excepciones en toda la aplicación, proporcionando
+ * respuestas HTTP consistentes y mapeo automático de códigos de error a estados HTTP.
  */
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
     /**
-     * Maneja excepciones de negocio y resuelve el estado HTTP según el código de error.
+     * @brief Maneja excepciones de negocio del dominio
+     *
+     * Procesa excepciones BaseBusinessException, mapea códigos de error a estados HTTP
+     * y construye respuestas de error estructuradas con información completa.
+     *
+     * @param ex Excepción de negocio lanzada
+     * @param request Información de la solicitud HTTP
+     * @return Respuesta HTTP con error formateado
      */
     @ExceptionHandler(BaseBusinessException.class)
     public ResponseEntity<ErrorResponse> handleBusinessExceptions(
@@ -50,7 +59,14 @@ public class GlobalExceptionHandler {
     }
 
     /**
-     * Maneja errores de validación de payload (Bean Validation en @RequestBody con @Valid).
+     * @brief Maneja errores de validación Bean Validation
+     *
+     * Procesa errores de validación en objetos @RequestBody marcados con @Valid,
+     * recopilando errores de campo individuales y retornando respuesta estructurada.
+     *
+     * @param ex Excepción de validación de argumentos de método
+     * @param request Información de la solicitud HTTP
+     * @return Respuesta HTTP con errores de campo detallados
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Object> handleMethodArgumentNotValid(
@@ -80,7 +96,14 @@ public class GlobalExceptionHandler {
     }
 
     /**
-     * Maneja errores de validación a nivel de parámetros (e.g., @RequestParam, @PathVariable).
+     * @brief Maneja errores de validación de parámetros
+     *
+     * Procesa violaciones de restricciones en parámetros de método como @RequestParam
+     * y @PathVariable, recopilando todas las violaciones encontradas.
+     *
+     * @param ex Excepción de violación de restricciones
+     * @param request Información de la solicitud HTTP
+     * @return Respuesta HTTP con violaciones de validación detalladas
      */
     @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity<Object> handleConstraintViolation(
@@ -110,7 +133,14 @@ public class GlobalExceptionHandler {
     }
 
     /**
-     * Maneja excepciones de integridad de datos.
+     * @brief Maneja errores de integridad de datos
+     *
+     * Procesa excepciones de violación de integridad de datos de la base de datos,
+     * generalmente causadas por restricciones de unicidad o claves foráneas.
+     *
+     * @param ex Excepción de violación de integridad de datos
+     * @param request Información de la solicitud HTTP
+     * @return Respuesta HTTP con error de integridad de datos
      */
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<ErrorResponse> handleDataIntegrityViolation(
@@ -129,7 +159,14 @@ public class GlobalExceptionHandler {
     }
 
     /**
-     * Maneja excepciones cuando un archivo excede el tamaño máximo permitido.
+     * @brief Maneja archivos que exceden tamaño máximo de subida
+     *
+     * Convierte la excepción de Spring en una excepción personalizada de negocio
+     * y delega el manejo al método de excepciones de negocio estándar.
+     *
+     * @param ex Excepción de tamaño de archivo excedido
+     * @param request Información de la solicitud HTTP
+     * @return Respuesta HTTP delegada al manejo de excepciones de negocio
      */
     @ExceptionHandler(MaxUploadSizeExceededException.class)
     public ResponseEntity<ErrorResponse> handleMaxUploadSizeExceeded(
@@ -147,7 +184,14 @@ public class GlobalExceptionHandler {
     }
 
     /**
-     * Maneja errores de deserialización JSON.
+     * @brief Maneja errores de deserialización JSON
+     *
+     * Procesa errores cuando el cuerpo de la solicitud HTTP no puede ser
+     * deserializado correctamente (JSON malformado, tipos incorrectos, etc.).
+     *
+     * @param ex Excepción de mensaje HTTP no legible
+     * @param request Información de la solicitud HTTP
+     * @return Respuesta HTTP con error de formato de datos
      */
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<ErrorResponse> handleHttpMessageNotReadable(
@@ -165,6 +209,15 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 
+    /**
+     * @brief Mapea códigos de error a estados HTTP apropiados
+     *
+     * Convierte códigos de error de negocio en códigos de estado HTTP
+     * semánticamente correctos para respuestas REST.
+     *
+     * @param code Código de error a mapear
+     * @return Estado HTTP correspondiente al tipo de error
+     */
     private HttpStatus mapStatusFromErrorCode(String code) {
         if (code == null) {
             return HttpStatus.BAD_REQUEST;
@@ -186,7 +239,14 @@ public class GlobalExceptionHandler {
     }
 
     /**
-     * Maneja excepciones generales no específicas.
+     * @brief Maneja excepciones genéricas no manejadas específicamente
+     *
+     * Captura cualquier excepción no manejada por los otros métodos,
+     * retornando un error interno del servidor genérico por seguridad.
+     *
+     * @param ex Excepción genérica no manejada específicamente
+     * @param request Información de la solicitud HTTP
+     * @return Respuesta HTTP con error interno del servidor
      */
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleGenericException(

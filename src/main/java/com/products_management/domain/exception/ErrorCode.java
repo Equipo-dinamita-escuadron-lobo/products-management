@@ -3,7 +3,10 @@ package com.products_management.domain.exception;
 import lombok.Getter;
 
 /**
- * Catálogo de errores utilizado para identificar y describir errores comunes.
+ * @brief Catálogo estandarizado de códigos de error
+ *
+ * Define códigos de error reutilizables para toda la aplicación,
+ * organizados por dominio (productos, categorías, unidades de medida, etc.).
  */
 @Getter
 public enum ErrorCode implements ErrorCodeDefinition {

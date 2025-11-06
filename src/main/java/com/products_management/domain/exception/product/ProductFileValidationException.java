@@ -4,7 +4,10 @@ import com.products_management.domain.exception.BaseBusinessException;
 import com.products_management.domain.exception.ErrorCode;
 
 /**
- * Excepción específica para errores de validación de archivos en importación de productos.
+ * @brief Excepción para errores de validación de archivos
+ *
+ * Se lanza cuando se detectan problemas en archivos durante operaciones
+ * de importación, incluyendo validaciones de formato, extensión y contenido.
  */
 public class ProductFileValidationException extends BaseBusinessException {
 

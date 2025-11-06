@@ -12,6 +12,12 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/**
+ * @brief Entidad JPA para persistencia de tipos de producto
+ *
+ * Representa la tabla de tipos de producto en base de datos,
+ * permitiendo clasificación lógica de productos por empresa.
+ */
 @Entity
 @Table(name = "product_type")
 @Builder

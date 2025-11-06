@@ -11,7 +11,10 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
- * Entidad que representa una categoría en la base de datos.
+ * @brief Entidad JPA para persistencia de categorías
+ *
+ * Representa la tabla de categorías en base de datos con soporte para multitenancy,
+ * incluyendo configuración contable y asociaciones con productos.
  */
 @Getter
 @Setter

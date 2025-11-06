@@ -45,33 +45,12 @@ public class ProductService implements IProductServicePort {
     private final ICategoryPersistencePort categoryPersistencePort;
     private final IProductTypePersistencePort productTypePersistencePort;
 
-    /**
-     * Busca un producto por su ID y empresa.
-     *
-     * @param id           el ID del producto a buscar.
-     * @param enterpriseId el ID de la empresa.
-     * @return el producto encontrado.
-     * @throws ProductNotFoundException si el producto no se encuentra.
-     */
-
     @Override
     public Product findById(Long id, String enterpriseId) {
         return productPersistencePort.findByIdAndEnterpriseId(id, enterpriseId)
                 .orElseThrow(ProductNotFoundException::new);
     }
 
-    /**
-     * Obtiene una página de productos asociados a una empresa con filtros de
-     * búsqueda y paginación.
-     *
-     * @param enterpriseId el ID de la empresa.
-     * @param search       el término de búsqueda (opcional).
-     * @param pageNumber   el número de página.
-     * @param pageSize     el tamaño de página.
-     * @param sortField    el campo de ordenamiento.
-     * @param sortOrder    el orden (asc/desc).
-     * @return una página de productos.
-     */
     @Override
     public Page<Product> findAllWithFilters(String enterpriseId, String search, int pageNumber, int pageSize,
             String sortField, String sortOrder) {
@@ -79,18 +58,6 @@ public class ProductService implements IProductServicePort {
                 sortField, sortOrder);
     }
 
-    /**
-     * Obtiene una página paginada de productos asociados a una empresa con filtros
-     * opcionales.
-     *
-     * @param enterpriseId el ID de la empresa.
-     * @param numPage      el número de página (opcional).
-     * @param size         el tamaño de página (opcional).
-     * @param sortField    el campo de ordenamiento.
-     * @param sortOrder    el orden (asc/desc).
-     * @param search       el término de búsqueda (opcional).
-     * @return una página de productos.
-     */
     @Override
     public Page<Product> findAllPaginated(String enterpriseId, Optional<Integer> numPage, Optional<Integer> size,
             String sortField, String sortOrder, Optional<String> search) {
@@ -110,62 +77,26 @@ public class ProductService implements IProductServicePort {
                         sortOrder);
     }
 
-    /**
-     * Cuenta productos por ID de empresa con filtros de búsqueda.
-     *
-     * @param enterpriseId el ID de la empresa.
-     * @param search       el término de búsqueda (opcional).
-     * @return el número de productos que coinciden.
-     */
     @Override
     public long countByEnterpriseIdWithFilters(String enterpriseId, String search) {
         return productPersistencePort.countByEnterpriseIdWithFilters(enterpriseId, search);
     }
 
-    /**
-     * Cuenta todos los productos por ID de empresa.
-     *
-     * @param enterpriseId el ID de la empresa.
-     * @return el número total de productos.
-     */
     @Override
     public long countByEnterpriseId(String enterpriseId) {
         return productPersistencePort.countByEnterpriseId(enterpriseId);
     }
 
-    /**
-     * Cuenta productos activos por ID de empresa.
-     *
-     * @param enterpriseId el ID de la empresa.
-     * @return el número de productos activos.
-     */
     @Override
     public long countActivatedByEnterpriseId(String enterpriseId) {
         return productPersistencePort.countActivatedByEnterpriseId(enterpriseId);
     }
 
-    /**
-     * Obtiene una página de productos activados asociados a una empresa con
-     * paginación.
-     *
-     * @param enterpriseId el ID de la empresa.
-     * @param pageNumber   el número de página.
-     * @param pageSize     el tamaño de página.
-     * @return una página de productos activados.
-     */
     @Override
     public Page<Product> findActivatedWithPagination(String enterpriseId, int pageNumber, int pageSize) {
         return productPersistencePort.findActivatedWithPagination(enterpriseId, pageNumber, pageSize);
     }
 
-    /**
-     * Obtiene una página paginada de productos activados asociados a una empresa.
-     *
-     * @param enterpriseId el ID de la empresa.
-     * @param numPage      el número de página (opcional).
-     * @param size         el tamaño de página (opcional).
-     * @return una página de productos activados.
-     */
     @Override
     public Page<Product> findActivatedPaginated(String enterpriseId, Optional<Integer> numPage,
             Optional<Integer> size) {
@@ -173,13 +104,6 @@ public class ProductService implements IProductServicePort {
         Pageable pageable = PaginationHelper.createFlexiblePageable(numPage, size, totalRecords);
         return findActivatedWithPagination(enterpriseId, pageable.getPageNumber(), pageable.getPageSize());
     }
-
-    /**
-     * Crea un nuevo producto.
-     *
-     * @param product el producto a crear.
-     * @return el producto creado.
-     */
 
     @Override
     public Product create(Product product) {
@@ -212,16 +136,6 @@ public class ProductService implements IProductServicePort {
         productEventPort.publishCreatedStockEvent(productSyncDto);
         return createdProduct;
     }
-
-    /**
-     * Actualiza un producto existente.
-     *
-     * @param id           el ID del producto a actualizar.
-     * @param product      los datos del producto actualizado.
-     * @param enterpriseId el ID de la empresa.
-     * @return el producto actualizado.
-     * @throws ProductNotFoundException si el producto no se encuentra.
-     */
 
     @Override
     public Product update(Long id, Product product, String enterpriseId) {
@@ -257,13 +171,7 @@ public class ProductService implements IProductServicePort {
                 .orElseThrow(ProductNotFoundException::new);
     }
 
-    /**
-     * Cambia el estado de un producto (activado/desactivado).
-     *
-     * @param id           el ID del producto cuyo estado se va a cambiar.
-     * @param enterpriseId el ID de la empresa.
-     * @throws ProductNotFoundException si el producto no se encuentra.
-     */
+   
 
     @Override
     public void changeState(Long id, String enterpriseId) {
@@ -273,14 +181,6 @@ public class ProductService implements IProductServicePort {
         productPersistencePort.create(product);
     }
 
-    /**
-     * Elimina un producto por su ID.
-     *
-     * @param id           el ID del producto a eliminar.
-     * @param enterpriseId el ID de la empresa.
-     * @throws ProductNotFoundException si el producto no se encuentra.
-     */
-
     @Override
     public void deleteById(Long id, String enterpriseId) {
         if (productPersistencePort.findByIdAndEnterpriseId(id, enterpriseId).isEmpty()) {
@@ -289,36 +189,20 @@ public class ProductService implements IProductServicePort {
         productPersistencePort.deleteById(id);
     }
 
-    /**
-     * Obtiene una lista de todos los productos asociados a una categoría.
-     *
-     * @param categoryId el ID de la categoría.
-     * @return una lista de todos los productos de la categoría.
-     */
 
     @Override
     public List<Product> findAllByCategory(Long categoryId) {
         return productPersistencePort.findByCategoryId(categoryId);
     }
 
-    /**
-     * Obtiene una lista de todos los productos asociados a una unidad de medida.
-     *
-     * @param unitOfMeasureId el ID de la unidad de medida.
-     * @return una lista de todos los productos de la unidad de medida.
-     */
+  
 
     @Override
     public List<Product> findAllByUnitOfMeasure(Long unitOfMeasureId) {
         return productPersistencePort.findByUnitOfMeasureId(unitOfMeasureId);
     }
 
-    /**
-     * Obtiene una lista de todos los productos asociados a un tipo de producto.
-     *
-     * @param productTypeId el ID del tipo de producto.
-     * @return una lista de todos los productos del tipo de producto.
-     */
+   
 
     @Override
     public List<Product> findAllByProductType(Long productTypeId) {
@@ -326,14 +210,10 @@ public class ProductService implements IProductServicePort {
     }
 
     /**
-     * Valida que el nombre y la referencia de un producto sean únicos dentro de la
-     * empresa.
-     *
-     * @param product el producto a validar.
-     * @throws ProductNameAlreadyExistsException      si ya existe un producto con
-     *                                                el mismo nombre.
-     * @throws ProductReferenceAlreadyExistsException si ya existe un producto con
-     *                                                la misma referencia.
+     * @brief Valida unicidad del nombre y referencia en la empresa
+     * @param product producto a validar
+     * @throws ProductNameAlreadyExistsException si nombre ya existe
+     * @throws ProductReferenceAlreadyExistsException si referencia ya existe
      */
     private void validateProductUniqueness(Product product) {
         if (productPersistencePort.existsByNameAndEnterpriseId(
@@ -350,16 +230,11 @@ public class ProductService implements IProductServicePort {
     }
 
     /**
-     * Valida que el nombre y la referencia de un producto sean únicos dentro de la
-     * empresa
-     * durante una actualización, excluyendo el producto que se está actualizando.
-     *
-     * @param id      el ID del producto que se está actualizando.
-     * @param product el producto a validar.
-     * @throws ProductNameAlreadyExistsException      si ya existe otro producto con
-     *                                                el mismo nombre.
-     * @throws ProductReferenceAlreadyExistsException si ya existe otro producto con
-     *                                                la misma referencia.
+     * @brief Valida unicidad durante actualización excluyendo registro actual
+     * @param id ID del producto que se está actualizando
+     * @param product producto a validar
+     * @throws ProductNameAlreadyExistsException si nombre ya existe en otro registro
+     * @throws ProductReferenceAlreadyExistsException si referencia ya existe en otro registro
      */
     private void validateProductUniquenessForUpdate(Long id, Product product) {
         if (productPersistencePort.existsByNameAndEnterpriseIdAndIdNot(
@@ -376,13 +251,11 @@ public class ProductService implements IProductServicePort {
     }
 
     /**
-     * Valida que las entidades relacionadas (unidad de medida, categoría, tipo de
-     * producto) existan y estén activas.
-     *
-     * @param product el producto cuyas entidades relacionadas se van a validar.
-     * @throws UnitOfMeasureNotFoundException si la unidad de medida no existe o no está activa.
-     * @throws CategoryNotFoundException      si la categoría no existe o no está activa.
-     * @throws ProductTypeNotFoundException   si el tipo de producto no existe o no está activo.
+     * @brief Valida existencia y estado activo de entidades relacionadas
+     * @param product producto cuyas entidades relacionadas se van a validar
+     * @throws UnitOfMeasureNotFoundException si unidad de medida no existe o no está activa
+     * @throws CategoryNotFoundException si categoría no existe o no está activa
+     * @throws ProductTypeNotFoundException si tipo de producto no existe o no está activo
      */
     private void validateRelatedEntitiesExistence(Product product) {
         if (product.getUnitOfMeasureId() != null) {

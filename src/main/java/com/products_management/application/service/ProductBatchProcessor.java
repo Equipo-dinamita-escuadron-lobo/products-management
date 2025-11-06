@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Servicio para procesamiento por lotes de productos importados.
+ * @brief Servicio para procesamiento por lotes de productos importados.
  * Maneja la inserción en BD en lotes transaccionales.
  */
 @Service
@@ -28,10 +28,9 @@ public class ProductBatchProcessor {
     private final IProductPersistencePort productPersistencePort;
 
     /**
-     * Procesa un lote de productos válidos.
-     *
+     * @brief Procesa lote de productos Excel dividiendo en sub-lotes para optimización
      * @param productsData lista de datos de productos a procesar
-     * @param entId        ID de la empresa
+     * @param entId ID de la empresa
      * @return resultado del procesamiento por lotes
      */
     @Transactional
@@ -58,7 +57,9 @@ public class ProductBatchProcessor {
     }
 
     /**
-     * Procesa un lote individual de productos.
+     * @brief Procesa un sub-lote individual de productos convirtiéndolos y guardándolos
+     * @param batch sub-lote de datos Excel a procesar
+     * @return resultado del procesamiento del sub-lote
      */
     private BatchProcessingResult processSingleBatch(List<ProductExcelData> batch) {
         List<ImportErrorDetail> errors = new ArrayList<>();
@@ -98,7 +99,9 @@ public class ProductBatchProcessor {
     }
 
     /**
-     * Convierte ProductExcelData a Product.
+     * @brief Convierte datos Excel a entidad Product con validaciones y normalización
+     * @param excelData datos del producto desde Excel
+     * @return entidad Product lista para persistir
      */
     private Product convertToProduct(ProductExcelData excelData) {
         return Product.builder()
@@ -117,7 +120,11 @@ public class ProductBatchProcessor {
     }
 
     /**
-     * Divide una lista en sublistas de tamaño especificado.
+     * @brief Divide una lista grande en sub-listas más pequeñas de tamaño fijo
+     * @param <T> tipo de elementos en la lista
+     * @param list lista original a dividir
+     * @param batchSize tamaño máximo de cada sub-lista
+     * @return lista de sub-listas particionadas
      */
     private <T> List<List<T>> partitionList(List<T> list, int batchSize) {
         List<List<T>> batches = new ArrayList<>();
@@ -128,7 +135,7 @@ public class ProductBatchProcessor {
     }
 
     /**
-     * Resultado del procesamiento por lotes.
+     * @brief Resultado del procesamiento por lotes.     * 
      */
     @Data
     @Builder

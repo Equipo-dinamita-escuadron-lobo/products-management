@@ -30,7 +30,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Servicio para exportar productos en formato Excel.
+ * @brief Servicio para exportar productos en formato Excel
+ *
+ * Maneja la exportación de productos existentes y generación de plantillas Excel
+ * con validaciones de datos integradas. Implementa paginación automática para
+ * grandes volúmenes de datos y resolución de entidades relacionadas.
  */
 @Slf4j
 @Service
@@ -48,13 +52,15 @@ public class ProductExportService implements IProductExportUseCase {
     private static final String SELECT_PLACEHOLDER = "Seleccionar...";
 
     /**
-     * Obtiene productos filtrados aplicando el filtro en la base de datos.
-     * Utiliza paginación automática para exportar TODOS los registros sin límite,
-     * optimizando el uso de memoria mediante procesamiento por lotes.
+     * @brief Obtiene productos filtrados con paginación automática por lotes
      *
-     * @param entId ID de la empresa
+     * Realiza la obtención completa de productos aplicando filtros de estado y
+     * utilizando paginación automática para manejar grandes volúmenes de datos
+     * de manera eficiente sin sobrecargar la memoria.
+     *
+     * @param entId ID de la empresa para filtrar productos
      * @param status Estado de los productos (true=activos, false=inactivos, null=todos)
-     * @return lista completa de productos filtrados
+     * @return Lista completa de productos filtrados de todos los lotes
      */
     private List<Product> getFilteredProducts(String entId, Boolean status) {
         List<Product> allProducts = new ArrayList<>();
@@ -93,7 +99,17 @@ public class ProductExportService implements IProductExportUseCase {
         } while (page != null && page.hasNext());
 
         return allProducts;
-    }    private CellStyle createHeaderStyle(Workbook workbook) {
+    }    /**
+     * @brief Crea estilo para encabezados con fondo azul oscuro y texto blanco
+     *
+     * Configura un estilo visual profesional para encabezados de columnas con
+     * fondo azul oscuro, texto blanco en negrita, bordes delgados y alineación centrada
+     * para mejorar la legibilidad y apariencia profesional del documento Excel.
+     *
+     * @param workbook Libro de trabajo Excel donde crear el estilo
+     * @return Estilo configurado para encabezados de columnas
+     */
+    private CellStyle createHeaderStyle(Workbook workbook) {
         CellStyle style = workbook.createCellStyle();
         Font font = workbook.createFont();
         font.setBold(true);
@@ -112,7 +128,14 @@ public class ProductExportService implements IProductExportUseCase {
     }
 
     /**
-     * Crea estilo para encabezados de columnas opcionales (fondo gris claro).
+     * @brief Crea estilo para encabezados opcionales con fondo gris claro
+     *
+     * Configura un estilo visual distintivo para encabezados de campos opcionales
+     * con fondo gris claro, texto negro en negrita y bordes delgados. Este estilo
+     * ayuda a diferenciar visualmente los campos obligatorios de los opcionales.
+     *
+     * @param workbook Libro de trabajo Excel donde crear el estilo
+     * @return Estilo configurado para encabezados de campos opcionales
      */
     private CellStyle createOptionalHeaderStyle(Workbook workbook) {
         CellStyle style = workbook.createCellStyle();
@@ -132,6 +155,16 @@ public class ProductExportService implements IProductExportUseCase {
         return style;
     }
 
+    /**
+     * @brief Crea estilo para celdas de datos con bordes delgados
+     *
+     * Configura un estilo básico para celdas de datos con bordes delgados
+     * y alineación vertical centrada para mantener consistencia visual
+     * en todas las celdas de contenido del documento Excel.
+     *
+     * @param workbook Libro de trabajo Excel donde crear el estilo
+     * @return Estilo configurado para celdas de datos
+     */
     private CellStyle createDataStyle(Workbook workbook) {
         CellStyle style = workbook.createCellStyle();
         style.setBorderBottom(BorderStyle.THIN);
@@ -142,6 +175,18 @@ public class ProductExportService implements IProductExportUseCase {
         return style;
     }
 
+    /**
+     * @brief Crea fila de encabezados con estilos diferenciados para campos requeridos/opcionales
+     *
+     * Genera la fila de encabezados completa del Excel con 11 columnas específicas
+     * para productos, aplicando estilos visuales diferenciados para distinguir
+     * campos obligatorios (azul oscuro) de opcionales (gris claro). Incluye
+     * indicadores textuales de requerimiento en cada encabezado.
+     *
+     * @param sheet Hoja de trabajo Excel donde crear los encabezados
+     * @param requiredHeaderStyle Estilo para encabezados de campos requeridos
+     * @param optionalHeaderStyle Estilo para encabezados de campos opcionales
+     */
     private void createHeaders(Sheet sheet, CellStyle requiredHeaderStyle, CellStyle optionalHeaderStyle) {
         Row headerRow = sheet.createRow(0);
         int colIndex = 0;
@@ -162,12 +207,36 @@ public class ProductExportService implements IProductExportUseCase {
         headerRow.setHeightInPoints(35);
     }
 
+    /**
+     * @brief Crea celda de encabezado con valor y estilo especificados
+     *
+     * Método auxiliar para crear celdas de encabezado de manera consistente,
+     * aplicando el valor de texto y el estilo visual correspondiente a cada
+     * celda de encabezado en la fila de títulos.
+     *
+     * @param row Fila donde crear la celda de encabezado
+     * @param colIndex Índice de columna donde ubicar la celda
+     * @param value Valor de texto para el encabezado
+     * @param style Estilo visual a aplicar a la celda
+     */
     private void createHeaderCell(Row row, int colIndex, String value, CellStyle style) {
         Cell cell = row.createCell(colIndex);
         cell.setCellValue(value);
         cell.setCellStyle(style);
     }
 
+    /**
+     * @brief Llena hoja Excel con datos de productos y nombres de entidades relacionadas
+     *
+     * Pobla la hoja Excel con todos los datos de productos, convirtiendo IDs de entidades
+     * relacionadas (categorías, tipos de producto, unidades de medida) a sus nombres
+     * legibles. Maneja valores nulos y formatos de estado para presentación amigable.
+     *
+     * @param sheet Hoja de trabajo Excel donde insertar los datos
+     * @param products Lista de productos a exportar
+     * @param dataStyle Estilo visual para las celdas de datos
+     * @param entId ID de la empresa para resolver nombres de entidades relacionadas
+     */
     private void fillData(Sheet sheet, List<Product> products, CellStyle dataStyle, String entId) {
         int rowIndex = 1;
 
@@ -191,6 +260,18 @@ public class ProductExportService implements IProductExportUseCase {
         }
     }
 
+    /**
+     * @brief Crea celda de datos manejando diferentes tipos de valores (String, Number, etc.)
+     *
+     * Método auxiliar que crea celdas de datos con manejo inteligente de tipos:
+     * convierte números a formato numérico Excel, strings a texto y maneja valores
+     * null convirtiéndolos a strings vacías. Aplica el estilo visual especificado.
+     *
+     * @param row Fila donde crear la celda de datos
+     * @param colIndex Índice de columna donde ubicar la celda
+     * @param value Valor a insertar (maneja null, números y strings automáticamente)
+     * @param style Estilo visual a aplicar a la celda
+     */
     private void createDataCell(Row row, int colIndex, Object value, CellStyle style) {
         Cell cell = row.createCell(colIndex);
 
@@ -205,6 +286,17 @@ public class ProductExportService implements IProductExportUseCase {
         cell.setCellStyle(style);
     }
 
+    /**
+     * @brief Obtiene nombre de unidad de medida por ID
+     *
+     * Resuelve el nombre legible de una unidad de medida a partir de su ID,
+     * consultando el repositorio correspondiente. Retorna cadena vacía si
+     * el ID es null o no se encuentra la entidad.
+     *
+     * @param unitOfMeasureId ID de la unidad de medida a resolver
+     * @param entId ID de la empresa para filtrar unidades de medida
+     * @return Nombre de la unidad de medida o cadena vacía si no existe
+     */
     private String getUnitOfMeasureName(Long unitOfMeasureId, String entId) {
         if (unitOfMeasureId == null) return "";
         return unitOfMeasurePersistencePort.findByIdAndEnterpriseId(unitOfMeasureId, entId)
@@ -212,6 +304,17 @@ public class ProductExportService implements IProductExportUseCase {
                 .orElse("");
     }
 
+    /**
+     * @brief Obtiene nombre de categoría por ID
+     *
+     * Resuelve el nombre legible de una categoría a partir de su ID,
+     * consultando el repositorio correspondiente. Retorna cadena vacía si
+     * el ID es null o no se encuentra la entidad.
+     *
+     * @param categoryId ID de la categoría a resolver
+     * @param entId ID de la empresa para filtrar categorías
+     * @return Nombre de la categoría o cadena vacía si no existe
+     */
     private String getCategoryName(Long categoryId, String entId) {
         if (categoryId == null) return "";
         return categoryPersistencePort.findByIdAndEnterpriseId(categoryId, entId)
@@ -219,6 +322,17 @@ public class ProductExportService implements IProductExportUseCase {
                 .orElse("");
     }
 
+    /**
+     * @brief Obtiene nombre de tipo de producto por ID
+     *
+     * Resuelve el nombre legible de un tipo de producto a partir de su ID,
+     * consultando el repositorio correspondiente. Retorna cadena vacía si
+     * el ID es null o no se encuentra la entidad.
+     *
+     * @param productTypeId ID del tipo de producto a resolver
+     * @param entId ID de la empresa para filtrar tipos de producto
+     * @return Nombre del tipo de producto o cadena vacía si no existe
+     */
     private String getProductTypeName(Long productTypeId, String entId) {
         if (productTypeId == null) return "";
         return productTypePersistencePort.findByIdAndEnterpriseId(productTypeId, entId)
@@ -226,6 +340,15 @@ public class ProductExportService implements IProductExportUseCase {
                 .orElse("");
     }
 
+    /**
+     * @brief Ajusta automáticamente el ancho de columnas con límites razonables
+     *
+     * Aplica auto-sizing automático a las 11 columnas del Excel, luego establece
+     * límites mínimo (1500 unidades) y máximo (25000 unidades) para evitar
+     * anchos extremos. Agrega padding adicional para mejor legibilidad.
+     *
+     * @param sheet Hoja de trabajo Excel cuyas columnas ajustar
+     */
     private void autoSizeColumns(Sheet sheet) {
         for (int i = 0; i < 11; i++) {
             // Primero aplicar el auto-sizing basado en el contenido
@@ -253,9 +376,6 @@ public class ProductExportService implements IProductExportUseCase {
 
 
 
-    /**
-     * Exporta una plantilla de productos con validaciones de datos (listas desplegables).
-     */
     @Override
     public Resource exportProductTemplateWithValidations(String entId) {
         try {
@@ -267,9 +387,6 @@ public class ProductExportService implements IProductExportUseCase {
         }
     }
 
-    /**
-     * Exporta productos existentes con validaciones de datos (listas desplegables).
-     */
     @Override
     public Resource exportProductsWithValidations(String entId, Boolean status) {
         try {
@@ -294,6 +411,17 @@ public class ProductExportService implements IProductExportUseCase {
         }
     }
 
+    /**
+     * @brief Genera archivo Excel de plantilla con filas de ejemplo y validaciones aplicadas
+     *
+     * Crea un archivo Excel completo con estructura de plantilla: encabezados con estilos,
+     * 10 filas de ejemplo para guiar al usuario, validaciones de datos aplicadas
+     * y ajuste automático de columnas para una experiencia óptima de uso.
+     *
+     * @param entId ID de la empresa para obtener datos de validación de entidades relacionadas
+     * @return Arreglo de bytes con el archivo Excel de plantilla completo
+     * @throws IOException si ocurre error al escribir el archivo Excel
+     */
     private byte[] generateTemplateWithValidations(String entId) throws IOException {
         try (Workbook workbook = new XSSFWorkbook();
                 ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
@@ -320,6 +448,16 @@ public class ProductExportService implements IProductExportUseCase {
         }
     }
 
+    /**
+     * @brief Crea estilo para celdas de plantilla con bordes delgados
+     *
+     * Configura un estilo básico para celdas de plantilla con bordes delgados
+     * y alineación vertical centrada, adecuado para filas de ejemplo y celdas
+     * vacías que el usuario debe completar.
+     *
+     * @param workbook Libro de trabajo Excel donde crear el estilo
+     * @return Estilo configurado para celdas de plantilla
+     */
     private CellStyle createTemplateStyle(Workbook workbook) {
         CellStyle style = workbook.createCellStyle();
         Font font = workbook.createFont();
@@ -332,6 +470,17 @@ public class ProductExportService implements IProductExportUseCase {
         return style;
     }
 
+    /**
+     * @brief Crea filas de ejemplo en la plantilla con datos de muestra
+     *
+     * Genera filas de ejemplo en la plantilla Excel para guiar al usuario:
+     * la primera fila contiene datos de ejemplo completos, mientras que las
+     * filas adicionales se crean vacías para que el usuario las complete.
+     *
+     * @param sheet Hoja de trabajo Excel donde crear las filas de ejemplo
+     * @param templateStyle Estilo visual para las celdas de plantilla
+     * @param numberOfRows Número total de filas de ejemplo a crear
+     */
     private void createTemplateRows(Sheet sheet, CellStyle templateStyle, int numberOfRows) {
         for (int i = 1; i <= numberOfRows; i++) {
             Row row = sheet.createRow(i);
@@ -357,6 +506,16 @@ public class ProductExportService implements IProductExportUseCase {
         }
     }
 
+    /**
+     * @brief Crea fila vacía en plantilla con todas las columnas inicializadas
+     *
+     * Inicializa una fila completa de plantilla con 11 columnas vacías,
+     * aplicando el estilo de plantilla a cada celda para mantener consistencia
+     * visual en filas que el usuario debe completar.
+     *
+     * @param row Fila de Excel a inicializar con celdas vacías
+     * @param templateStyle Estilo visual a aplicar a todas las celdas de la fila
+     */
     private void createEmptyTemplateRow(Row row, CellStyle templateStyle) {
         for (int i = 0; i < 11; i++) {
             createHeaderCell(row, i, "", templateStyle);
@@ -365,6 +524,16 @@ public class ProductExportService implements IProductExportUseCase {
 
 
 
+    /**
+     * @brief Aplica validaciones de datos Excel a la plantilla usando servicio especializado
+     *
+     * Delega la aplicación de todas las validaciones de datos (listas desplegables,
+     * formatos numéricos, textos obligatorios) al servicio especializado de validaciones,
+     * configurando un amplio rango de filas para permitir extensas plantillas.
+     *
+     * @param sheet Hoja de trabajo Excel donde aplicar las validaciones
+     * @param entId ID de la empresa para obtener datos de entidades relacionadas
+     */
     private void applyValidationsToTemplate(Sheet sheet, String entId) {
         int startRow = 1; // Después del encabezado
         int endRow = 1000; // Permitir muchas filas para la plantilla
@@ -373,7 +542,16 @@ public class ProductExportService implements IProductExportUseCase {
     }
 
     /**
-     * Genera archivo Excel con datos reales y validaciones aplicadas.
+     * @brief Genera archivo Excel con datos reales de productos y validaciones aplicadas
+     *
+     * Crea un archivo Excel completo con productos existentes: encabezados con estilos,
+     * datos poblados con resolución de entidades relacionadas, validaciones aplicadas
+     * para edición directa, y ajuste automático de columnas.
+     *
+     * @param products Lista de productos existentes a incluir en el archivo
+     * @param entId ID de la empresa para resolver nombres de entidades relacionadas
+     * @return Arreglo de bytes con el archivo Excel generado
+     * @throws IOException si ocurre error al escribir el archivo Excel
      */
     private byte[] generateExcelFileWithValidations(List<Product> products, String entId) throws IOException {
         try (Workbook workbook = new XSSFWorkbook();
@@ -399,7 +577,15 @@ public class ProductExportService implements IProductExportUseCase {
     }
 
     /**
-     * Aplica validaciones de datos a una hoja con datos existentes.
+     * @brief Aplica validaciones de datos Excel a hoja con productos existentes
+     *
+     * Aplica validaciones de datos a una hoja que contiene productos existentes,
+     * extendiendo el rango de validación más allá de las filas con datos actuales
+     * para permitir agregar nuevos productos manteniendo la integridad.
+     *
+     * @param sheet Hoja de trabajo Excel con datos de productos existentes
+     * @param entId ID de la empresa para obtener datos de entidades relacionadas
+     * @param dataRowCount Número de filas que contienen datos actuales
      */
     private void applyValidationsToDataSheet(Sheet sheet, String entId, int dataRowCount) {
         int startRow = 1; // Después del encabezado

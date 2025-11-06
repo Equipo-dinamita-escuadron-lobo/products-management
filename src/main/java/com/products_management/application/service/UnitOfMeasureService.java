@@ -29,28 +29,10 @@ public class UnitOfMeasureService implements IUnitOfMeasureServicePort {
     private final IUnitOfMeasurePersistencePort unitMeasurePersistencePort;
     private final ProductService productServicePort;
 
-    /**
-     * Busca una unidad de medida por su ID y empresa.
-     *
-     * @param id el ID de la unidad de medida a buscar.
-     * @param enterpriseId el ID de la empresa.
-     * @return la unidad de medida encontrada.
-     * @throws UnitOfMeasureNotFoundException si la unidad de medida no se encuentra.
-     */
     @Override
     public UnitOfMeasure findByIdAndEnterpriseId(Long id, String enterpriseId) {
         return unitMeasurePersistencePort.findByIdAndEnterpriseId(id, enterpriseId).orElseThrow(UnitOfMeasureNotFoundException::new);
     }
-
-
-    /**
-     * Crea una nueva unidad de medida.
-     *
-     * @param unitOfMeasure la unidad de medida a crear.
-     * @return la unidad de medida creada.
-     * @throws UnitOfMeasureNameAlreadyExistsException si ya existe una unidad con el mismo nombre.
-     * @throws UnitOfMeasureAbbreviationAlreadyExistsException si ya existe una unidad con la misma abreviación.
-     */
 
     @Override
     public UnitOfMeasure create(UnitOfMeasure unitOfMeasure) {
@@ -60,18 +42,6 @@ public class UnitOfMeasureService implements IUnitOfMeasureServicePort {
         validateUnitOfMeasureUniqueness(unitOfMeasure);
         return unitMeasurePersistencePort.create(unitOfMeasure);
     }
-
-    /**
-     * Actualiza una unidad de medida existente.
-     *
-     * @param id el ID de la unidad de medida a actualizar.
-     * @param enterpriseId el ID de la empresa.
-     * @param unitOfMeasure los datos de la unidad de medida actualizada.
-     * @return la unidad de medida actualizada.
-     * @throws UnitOfMeasureNotFoundException si la unidad de medida no se encuentra.
-     * @throws UnitOfMeasureNameAlreadyExistsException si ya existe una unidad con el mismo nombre.
-     * @throws UnitOfMeasureAbbreviationAlreadyExistsException si ya existe una unidad con la misma abreviación.
-     */
 
     @Override
     public UnitOfMeasure update(Long id, String enterpriseId, UnitOfMeasure unitOfMeasure) {
@@ -89,14 +59,6 @@ public class UnitOfMeasureService implements IUnitOfMeasureServicePort {
                 .orElseThrow(UnitOfMeasureNotFoundException::new);
     }
 
-    /**
-     * Cambia el estado de una unidad de medida (activado/desactivado).
-     *
-     * @param id el ID de la unidad de medida cuyo estado se va a cambiar.
-     * @param enterpriseId el ID de la empresa.
-     * @throws UnitOfMeasureNotFoundException si la unidad de medida no se encuentra.
-     */
-
     @Override
     public void changeState(Long id, String enterpriseId) {
         UnitOfMeasure unitOfMeasure = unitMeasurePersistencePort.findByIdAndEnterpriseId(id, enterpriseId)
@@ -104,15 +66,6 @@ public class UnitOfMeasureService implements IUnitOfMeasureServicePort {
         unitOfMeasure.setState(!unitOfMeasure.isState());
         unitMeasurePersistencePort.create(unitOfMeasure);
     }
-
-    /**
-     * Elimina una unidad de medida por su ID.
-     *
-     * @param id el ID de la unidad de medida a eliminar.
-     * @param enterpriseId el ID de la empresa.
-     * @throws UnitOfMeasureNotFoundException si la unidad de medida no se encuentra.
-     * @throws UnitOfMeasureAssociatedException si la unidad de medida está asociada a productos.
-     */
 
     @Override
     public void deleteById(Long id, String enterpriseId) {
@@ -127,11 +80,10 @@ public class UnitOfMeasureService implements IUnitOfMeasureServicePort {
     }
 
     /**
-     * Valida que el nombre y la abreviación de una unidad de medida sean únicos dentro de la empresa.
-     *
-     * @param unitOfMeasure la unidad de medida a validar.
-     * @throws UnitOfMeasureNameAlreadyExistsException si ya existe una unidad con el mismo nombre.
-     * @throws UnitOfMeasureAbbreviationAlreadyExistsException si ya existe una unidad con la misma abreviación.
+     * @brief Valida unicidad del nombre y abreviación en la empresa
+     * @param unitOfMeasure unidad de medida a validar
+     * @throws UnitOfMeasureNameAlreadyExistsException si nombre ya existe
+     * @throws UnitOfMeasureAbbreviationAlreadyExistsException si abreviación ya existe
      */
     private void validateUnitOfMeasureUniqueness(UnitOfMeasure unitOfMeasure) {
         // El nombre y abreviación ya están normalizados, se usan directamente para validación
@@ -147,13 +99,11 @@ public class UnitOfMeasureService implements IUnitOfMeasureServicePort {
     }
 
     /**
-     * Valida que el nombre y la abreviación de una unidad de medida sean únicos dentro de la empresa
-     * durante una actualización, excluyendo la unidad que se está actualizando.
-     *
-     * @param id el ID de la unidad de medida que se está actualizando.
-     * @param unitOfMeasure la unidad de medida a validar.
-     * @throws UnitOfMeasureNameAlreadyExistsException si ya existe otra unidad con el mismo nombre.
-     * @throws UnitOfMeasureAbbreviationAlreadyExistsException si ya existe otra unidad con la misma abreviación.
+     * @brief Valida unicidad durante actualización excluyendo registro actual
+     * @param id ID de la unidad que se está actualizando
+     * @param unitOfMeasure unidad de medida a validar
+     * @throws UnitOfMeasureNameAlreadyExistsException si nombre ya existe en otro registro
+     * @throws UnitOfMeasureAbbreviationAlreadyExistsException si abreviación ya existe en otro registro
      */
     private void validateUnitOfMeasureUniquenessForUpdate(Long id, UnitOfMeasure unitOfMeasure) {
         // El nombre y abreviación ya están normalizados, se usan directamente para validación
@@ -168,78 +118,34 @@ public class UnitOfMeasureService implements IUnitOfMeasureServicePort {
         }
     }
 
-    /**
-     * Cuenta el total de unidades de medida por empresa.
-     *
-     * @param enterpriseId el ID de la empresa
-     * @return el número total de unidades de medida
-     */
+  
     @Override
     public long countAllUnitOfMeasuresByEntId(String enterpriseId) {
         return unitMeasurePersistencePort.countByEnterpriseId(enterpriseId);
     }
 
-    /**
-     * Busca unidades de medida por empresa y término de búsqueda con ordenamiento.
-     *
-     * @param enterpriseId El id de la empresa
-     * @param search Término de búsqueda
-     * @param page Número de página
-     * @param size Tamaño de página
-     * @param sortField Campo de ordenamiento
-     * @param sortOrder Orden (asc/desc)
-     * @return Página de unidades de medida que coinciden con la búsqueda
-     */
+ 
     @Override
     public Page<UnitOfMeasure> findByEntIdAndSearch(String enterpriseId, String search, int page, int size, String sortField, String sortOrder) {
         return unitMeasurePersistencePort.findByEnterpriseIdAndSearch(enterpriseId, search, page, size, sortField, sortOrder);
     }
 
-    /**
-     * Cuenta unidades de medida por empresa y término de búsqueda.
-     *
-     * @param enterpriseId El id de la empresa
-     * @param search Término de búsqueda
-     * @return Cantidad de unidades de medida que coinciden
-     */
+  
     @Override
     public long countByEntIdAndSearch(String enterpriseId, String search) {
         return unitMeasurePersistencePort.countByEnterpriseIdAndSearch(enterpriseId, search);
     }
 
-    /**
-     * Obtiene todas las unidades de medida con ordenamiento.
-     *
-     * @param enterpriseId El id de la empresa
-     * @param page Número de página
-     * @param size Tamaño de página
-     * @param sortField Campo de ordenamiento
-     * @param sortOrder Orden (asc/desc)
-     * @return Página de unidades de medida ordenadas
-     */
     @Override
     public Page<UnitOfMeasure> getAllUnitOfMeasuresByWithSort(String enterpriseId, int page, int size, String sortField, String sortOrder) {
         return unitMeasurePersistencePort.getAllUnitOfMeasuresByWithSort(enterpriseId, page, size, sortField, sortOrder);
     }
 
-    /**
-     * Obtiene todas las unidades de medida activas con ordenamiento ascendente por nombre.
-     * @param enterpriseId El id de la empresa
-     * @param page Número de página
-     * @param size Tamaño de página
-     * @return Página de unidades de medida activas ordenadas por nombre ascendente
-     */
     @Override
     public Page<UnitOfMeasure> getAllActiveUnitOfMeasuresBy(String enterpriseId, int page, int size) {
         return unitMeasurePersistencePort.getActiveUnitOfMeasuresBy(enterpriseId, page, size, "name", "asc");
     }
 
-    /**
-     * Cuenta el total de unidades de medida activas por empresa.
-     *
-     * @param enterpriseId el ID de la empresa
-     * @return el número total de unidades de medida activas
-     */
     @Override
     public long countActiveUnitOfMeasuresByEntId(String enterpriseId) {
         return unitMeasurePersistencePort.countActiveByEnterpriseId(enterpriseId);

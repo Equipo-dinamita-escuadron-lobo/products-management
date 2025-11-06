@@ -24,8 +24,10 @@ import java.util.Map;
 import java.util.function.LongConsumer;
 
 /**
- * Servicio para validación por lotes de datos de productos importados.
- * Valida reglas de negocio, referencias foráneas y formatos de datos.
+ * @brief Servicio que valida lotes de productos importados aplicando reglas de negocio y referencias
+ *
+ * Realiza validaciones masivas de datos Excel verificando campos requeridos,
+ * formatos, unicidad de referencias y existencia de entidades relacionadas.
  */
 @Slf4j
 @Service
@@ -52,8 +54,7 @@ public class ProductBatchValidationService {
     private static final String ENTITY_NOT_ACTIVE_SUFFIX_MASC = " no existe o está inactivo.";
 
     /**
-     * Valida un lote de datos de productos.
-     *
+     * @brief Valida lote de productos aplicando reglas de negocio y verificando entidades relacionadas
      * @param productsData lista de datos de productos a validar
      * @param entId ID de la empresa
      * @param columnMap mapa de columnas para información de errores
@@ -95,7 +96,10 @@ public class ProductBatchValidationService {
     }
 
     /**
-     * Valida un producto individual.
+     * @brief Valida producto individual aplicando todas las reglas de validación
+     * @param productData datos del producto a validar
+     * @param columnMap mapa de columnas para información de errores
+     * @return lista de errores encontrados en la validación
      */
     private List<ImportErrorDetail> validateProduct(ProductExcelData productData,
                                                     Map<String, Integer> columnMap) {
@@ -114,7 +118,10 @@ public class ProductBatchValidationService {
     }
 
     /**
-     * Valida campos requeridos.
+     * @brief Valida presencia de campos obligatorios en datos del producto
+     * @param productData datos del producto a validar
+     * @param errors lista donde agregar errores encontrados
+     * @param columnMap mapa de columnas para información de errores
      */
     private void validateRequiredFields(ProductExcelData productData, List<ImportErrorDetail> errors,
                                        Map<String, Integer> columnMap) {
@@ -162,7 +169,10 @@ public class ProductBatchValidationService {
     }
 
     /**
-     * Valida formatos y longitudes de campos.
+     * @brief Valida formatos y restricciones de longitud en campos de texto
+     * @param productData datos del producto a validar
+     * @param errors lista donde agregar errores encontrados
+     * @param columnMap mapa de columnas para información de errores
      */
     private void validateFieldFormats(ProductExcelData productData, List<ImportErrorDetail> errors,
                                      Map<String, Integer> columnMap) {
@@ -184,7 +194,10 @@ public class ProductBatchValidationService {
     }
 
     /**
-     * Valida campos numéricos.
+     * @brief Valida restricciones numéricas en campos de cantidad y costo
+     * @param productData datos del producto a validar
+     * @param errors lista donde agregar errores encontrados
+     * @param columnMap mapa de columnas para información de errores
      */
     private void validateNumericFields(ProductExcelData productData, List<ImportErrorDetail> errors,
                                       Map<String, Integer> columnMap) {
@@ -204,7 +217,12 @@ public class ProductBatchValidationService {
     }
 
     /**
-     * Resuelve los IDs de entidades relacionadas (categoría, unidad de medida, tipo de producto).
+     * @brief Resuelve IDs de entidades relacionadas convirtiendo nombres a identificadores
+     * @param productData datos del producto con nombres de entidades
+     * @param entId ID de la empresa
+     * @param errors lista donde agregar errores de resolución
+     * @param columnMap mapa de columnas para información de errores
+     * @return datos del producto con IDs resueltos o null si hay errores
      */
     private ProductExcelData resolveEntityIds(ProductExcelData productData, String entId,
                                              List<ImportErrorDetail> errors, Map<String, Integer> columnMap) {
@@ -244,7 +262,15 @@ public class ProductBatchValidationService {
     }
 
     /**
-     * Método genérico para resolver IDs de entidades.
+     * @brief Método genérico que resuelve ID de entidad aplicando validaciones y manejo de errores
+     * @param entityName nombre de la entidad a resolver
+     * @param entId ID de la empresa
+     * @param idSetter función consumer para establecer el ID resuelto
+     * @param columnConstant constante de columna para identificar el tipo
+     * @param columnMap mapa de columnas para información de errores
+     * @param errors lista donde agregar errores encontrados
+     * @param rowNumber número de fila para información de errores
+     * @return true si la resolución fue exitosa, false si hubo errores
      */
     private boolean resolveEntityId(String entityName, String entId,
                                    LongConsumer idSetter,
@@ -265,7 +291,11 @@ public class ProductBatchValidationService {
     }
 
     /**
-     * Resuelve una entidad por nombre usando el tipo apropiado.
+     * @brief Resuelve entidad por nombre usando switch para determinar tipo específico
+     * @param name nombre de la entidad a buscar
+     * @param entId ID de la empresa
+     * @param entityType tipo de entidad (unidad de medida, categoría, tipo de producto)
+     * @return ID de la entidad encontrada o null si no existe
      */
     private Long resolveEntityByName(String name, String entId, String entityType) {
         switch (entityType) {
@@ -281,7 +311,12 @@ public class ProductBatchValidationService {
     }
 
     /**
-     * Agrega un error cuando una entidad no se encuentra.
+     * @brief Agrega error específico cuando entidad relacionada no existe o está inactiva
+     * @param rowNumber número de fila donde ocurrió el error
+     * @param columnConstant constante que identifica el tipo de columna
+     * @param columnMap mapa de columnas para información de errores
+     * @param errors lista donde agregar el error encontrado
+     * @param entityName nombre de la entidad que no se pudo encontrar
      */
     private void addEntityNotFoundError(int rowNumber, String columnConstant,
                                        Map<String, Integer> columnMap, List<ImportErrorDetail> errors,
@@ -319,7 +354,14 @@ public class ProductBatchValidationService {
     }
 
     /**
-     * Crea un error de validación.
+     * @brief Crea objeto de error de validación con toda la información necesaria
+     * @param rowNumber número de fila donde ocurrió el error
+     * @param errorCode código identificador del tipo de error
+     * @param message mensaje descriptivo del error
+     * @param columnName nombre de la columna donde ocurrió el error
+     * @param columnNumber número de columna (índice basado en 0)
+     * @param fieldValue valor del campo que causó el error
+     * @return objeto ImportErrorDetail completamente configurado
      */
     private ImportErrorDetail createValidationError(int rowNumber, String errorCode, String message,
                                                    String columnName, Integer columnNumber, String fieldValue) {
@@ -334,15 +376,16 @@ public class ProductBatchValidationService {
                 .build();
     }
 
-    /**
-     * Verifica si un string es null o vacío.
-     */
+
     private boolean isNullOrEmpty(String value) {
         return value == null || value.trim().isEmpty();
     }
 
     /**
-     * Resuelve el ID de unidad de medida por nombre.
+     * @brief Resuelve ID de unidad de medida buscando coincidencia exacta case-insensitive
+     * @param name nombre de la unidad de medida a buscar
+     * @param entId ID de la empresa
+     * @return ID de la unidad de medida encontrada o null si no existe
      */
     private Long resolveUnitOfMeasureId(String name, String entId) {
         if (name == null || name.trim().isEmpty()) {
@@ -366,7 +409,10 @@ public class ProductBatchValidationService {
     }
 
     /**
-     * Resuelve el ID de categoría por nombre.
+     * @brief Resuelve ID de categoría buscando coincidencia exacta case-insensitive
+     * @param name nombre de la categoría a buscar
+     * @param entId ID de la empresa
+     * @return ID de la categoría encontrada o null si no existe
      */
     private Long resolveCategoryId(String name, String entId) {
         if (name == null || name.trim().isEmpty()) {
@@ -390,7 +436,10 @@ public class ProductBatchValidationService {
     }
 
     /**
-     * Resuelve el ID de tipo de producto por nombre.
+     * @brief Resuelve ID de tipo de producto buscando coincidencia exacta case-insensitive
+     * @param name nombre del tipo de producto a buscar
+     * @param entId ID de la empresa
+     * @return ID del tipo de producto encontrado o null si no existe
      */
     private Long resolveProductTypeId(String name, String entId) {
         if (name == null || name.trim().isEmpty()) {
@@ -414,7 +463,7 @@ public class ProductBatchValidationService {
     }
 
     /**
-     * Resultado de la validación por lotes.
+     * @brief Contenedor con resultados de validación por lotes incluyendo estadísticas y errores
      */
     @Data
     @Builder

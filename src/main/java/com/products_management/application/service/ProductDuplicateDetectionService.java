@@ -14,8 +14,10 @@ import org.springframework.stereotype.Service;
 import java.util.*;
 
 /**
- * Servicio para detección de duplicados en importación de productos.
+ * @brief Servicio para detección de duplicados en importación de productos
+ *
  * Detecta duplicados tanto en el archivo Excel como en el sistema existente.
+ * Los duplicados se cuentan pero NO generan errores, solo se omiten durante la importación.
  */
 @Service
 @RequiredArgsConstructor
@@ -24,12 +26,15 @@ public class ProductDuplicateDetectionService {
     private final IProductPersistencePort productPersistencePort;
 
     /**
-     * Detecta duplicados en una lista de productos.
-     * Los duplicados se cuentan pero NO generan errores, solo se omiten.
+     * @brief Detecta duplicados en una lista de productos
      *
-     * @param productsData lista de datos de productos a verificar
-     * @param entId ID de la empresa
-     * @return resultado de la detección de duplicados
+     * Realiza verificación de duplicados tanto dentro del archivo Excel como contra
+     * productos existentes en el sistema. Los duplicados se cuentan pero no generan
+     * errores, simplemente se omiten durante el proceso de importación.
+     *
+     * @param productsData Lista de datos de productos a verificar
+     * @param entId ID de la empresa para filtrar productos existentes
+     * @return Resultado de la detección de duplicados con registros únicos y estadísticas
      */
     public DuplicateDetectionResult detectDuplicates(List<ProductExcelData> productsData, String entId) {
         List<ProductExcelData> uniqueRecords = new ArrayList<>();
@@ -69,7 +74,10 @@ public class ProductDuplicateDetectionService {
     }
 
     /**
-     * Resultado de la detección de duplicados.
+     * @brief Resultado de la detección de duplicados
+     *
+     * Contiene los resultados del proceso de detección de duplicados, incluyendo
+     * los registros únicos válidos, errores encontrados y estadísticas de duplicados.
      */
     @Data
     @Builder

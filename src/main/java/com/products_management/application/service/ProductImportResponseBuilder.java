@@ -10,15 +10,27 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 /**
- * Servicio para construir respuestas de importación de productos.
- * Centraliza la lógica de construcción de respuestas con estadísticas.
+ * @brief Constructor de respuestas para importación de productos
+ *
+ * Construye respuestas estructuradas con estadísticas de importación y manejo de errores.
  */
 @Slf4j
 @Service
 public class ProductImportResponseBuilder {
 
     /**
-     * Construye respuesta de importación exitosa.
+     * @brief Construye respuesta de importación exitosa con estadísticas
+     *
+     * Crea respuesta completa con métricas de éxito, fallos y estadísticas consolidadas.
+     *
+     * @param entId ID de la empresa
+     * @param fileName Nombre del archivo procesado
+     * @param totalRecords Total de registros procesados
+     * @param successCount Registros importados exitosamente
+     * @param failureCount Registros con errores
+     * @param duplicatesSkipped Registros duplicados omitidos
+     * @param errors Lista de errores detallados
+     * @return Respuesta estructurada de importación
      */
     public ProductImportResponse buildSuccessResponse(String entId, String fileName, int totalRecords,
                                                      int successCount, int failureCount, int duplicatesSkipped,
@@ -38,7 +50,13 @@ public class ProductImportResponseBuilder {
     }
 
     /**
-     * Construye respuesta cuando el archivo está vacío.
+     * @brief Construye respuesta para archivo vacío
+     *
+     * Genera respuesta cuando no se encontraron registros válidos en el archivo.
+     *
+     * @param entId ID de la empresa
+     * @param fileName Nombre del archivo vacío
+     * @return Respuesta indicando archivo vacío
      */
     public ProductImportResponse buildEmptyFileResponse(String entId, String fileName) {
         return ProductImportResponse.builder()
@@ -53,7 +71,15 @@ public class ProductImportResponseBuilder {
     }
 
     /**
-     * Construye respuesta cuando falló la importación.
+     * @brief Construye respuesta de importación fallida
+     *
+     * Crea respuesta para casos donde la importación completa falló con errores.
+     *
+     * @param entId ID de la empresa
+     * @param fileName Nombre del archivo procesado
+     * @param totalRecords Total de registros que fallaron
+     * @param errors Lista de errores que causaron el fallo
+     * @return Respuesta indicando fallo completo
      */
     public ProductImportResponse buildFailedResponse(String entId, String fileName, int totalRecords,
                                                     List<ImportErrorDetail> errors) {
@@ -70,7 +96,14 @@ public class ProductImportResponseBuilder {
     }
 
     /**
-     * Determina el estado de la importación basado en los resultados.
+     * @brief Determina estado de importación basado en resultados
+     *
+     * Evalúa métricas de importación para clasificar como completada, con errores o fallida.
+     *
+     * @param successCount Registros exitosos
+     * @param failureCount Registros fallidos
+     * @param duplicatesSkipped Duplicados omitidos
+     * @return Estado correspondiente de la importación
      */
     private ImportStatus determineStatus(int successCount, int failureCount, int duplicatesSkipped) {
         if (successCount > 0) {

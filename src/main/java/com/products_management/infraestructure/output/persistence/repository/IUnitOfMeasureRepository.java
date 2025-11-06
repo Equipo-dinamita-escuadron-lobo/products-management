@@ -10,58 +10,42 @@ import org.springframework.data.repository.query.Param;
 import java.util.Optional;
 
 /**
- * Interfaz para el repositorio de unidades de medida que extiende JpaRepository.
- * Proporciona métodos para realizar operaciones CRUD en UnitOfMeasureEntity.
+ * @brief Repositorio JPA para operaciones de persistencia de unidades de medida
+ *
+ * Proporciona métodos de consulta con soporte para multitenancy por empresa,
+ * incluyendo búsquedas filtradas y paginadas.
  */
 public interface IUnitOfMeasureRepository extends JpaRepository<UnitOfMeasureEntity, Long> {
     
-    /**
-     * Busca una unidad de medida por ID e ID de empresa.
-     */
     Optional<UnitOfMeasureEntity> findByIdAndEnterpriseId(Long id, String enterpriseId);
-    
-    /**
-     * Verifica si existe una unidad de medida con el nombre especificado para una empresa.
-     */
+
     boolean existsByNameAndEnterpriseId(String name, String enterpriseId);
-    
-    /**
-     * Verifica si existe una unidad de medida con la abreviación especificada para una empresa.
-     */
+
     boolean existsByAbbreviationAndEnterpriseId(String abbreviation, String enterpriseId);
-    
-    /**
-     * Verifica si existe una unidad de medida con el nombre especificado para una empresa, excluyendo un ID específico.
-     */
+
     boolean existsByNameAndEnterpriseIdAndIdNot(String name, String enterpriseId, Long id);
     
-    /**
-     * Verifica si existe una unidad de medida con la abreviación especificada para una empresa, excluyendo un ID específico.
-     */
     boolean existsByAbbreviationAndEnterpriseIdAndIdNot(String abbreviation, String enterpriseId, Long id);
 
     @Query("SELECT u FROM UnitOfMeasureEntity u WHERE u.enterpriseId = :enterpriseId")
     Page<UnitOfMeasureEntity> getUnitOfMeasuresBy(String enterpriseId, Pageable page);
 
     /**
-     * Obtiene todas las unidades de medida de una empresa filtradas por estado.
-     *
+     * @brief Obtiene unidades de medida filtradas por estado
      * @param enterpriseId ID de la empresa
-     * @param state Estado de las unidades de medida (true=activas, false=inactivas)
-     * @param page Paginación
-     * @return Página de unidades de medida filtradas por estado
+     * @param state estado de filtrado (activo/inactivo)
+     * @param page configuración de paginación
+     * @return página de unidades de medida filtradas
      */
     @Query("SELECT u FROM UnitOfMeasureEntity u WHERE u.enterpriseId = :enterpriseId AND u.state = :state")
     Page<UnitOfMeasureEntity> getUnitOfMeasuresByEnterpriseIdAndState(@Param("enterpriseId") String enterpriseId, @Param("state") Boolean state, Pageable page);
 
     /**
-     * Busca unidades de medida por empresa y término de búsqueda.
-     * Busca en: nombres, abreviaturas.
-     *
+     * @brief Busca unidades de medida por término de búsqueda en nombres y abreviaturas
      * @param enterpriseId ID de la empresa
-     * @param search Término de búsqueda
-     * @param page Paginación con ordenamiento
-     * @return Página de unidades de medida que coinciden con la búsqueda
+     * @param search término de búsqueda
+     * @param page configuración de paginación
+     * @return página de unidades de medida que coinciden con la búsqueda
      */
     @Query("SELECT u FROM UnitOfMeasureEntity u WHERE u.enterpriseId = :enterpriseId AND " +
            "(LOWER(u.name) LIKE LOWER(CONCAT('%', :search, '%')) OR " +
@@ -69,11 +53,10 @@ public interface IUnitOfMeasureRepository extends JpaRepository<UnitOfMeasureEnt
     Page<UnitOfMeasureEntity> findByEnterpriseIdAndSearch(@Param("enterpriseId") String enterpriseId, @Param("search") String search, Pageable page);
 
     /**
-     * Cuenta unidades de medida por empresa y término de búsqueda.
-     *
+     * @brief Cuenta unidades de medida que coinciden con búsqueda
      * @param enterpriseId ID de la empresa
-     * @param search Término de búsqueda
-     * @return Cantidad de unidades de medida que coinciden
+     * @param search término de búsqueda
+     * @return cantidad de unidades que coinciden
      */
     @Query("SELECT COUNT(u) FROM UnitOfMeasureEntity u WHERE u.enterpriseId = :enterpriseId AND " +
            "(LOWER(u.name) LIKE LOWER(CONCAT('%', :search, '%')) OR " +
@@ -84,20 +67,18 @@ public interface IUnitOfMeasureRepository extends JpaRepository<UnitOfMeasureEnt
     long countByEnterpriseId(@Param("enterpriseId") String enterpriseId);
 
     /**
-     * Obtiene todas las unidades de medida activas de una empresa.
-     *
+     * @brief Obtiene unidades de medida activas de una empresa
      * @param enterpriseId ID de la empresa
-     * @param page Paginación con ordenamiento
-     * @return Página de unidades de medida activas
+     * @param page configuración de paginación
+     * @return página de unidades de medida activas
      */
     @Query("SELECT u FROM UnitOfMeasureEntity u WHERE u.enterpriseId = :enterpriseId AND u.state = true")
     Page<UnitOfMeasureEntity> getActiveUnitOfMeasuresBy(@Param("enterpriseId") String enterpriseId, Pageable page);
 
     /**
-     * Cuenta el total de unidades de medida activas por empresa.
-     *
+     * @brief Cuenta unidades de medida activas por empresa
      * @param enterpriseId ID de la empresa
-     * @return Cantidad total de unidades de medida activas
+     * @return cantidad total de unidades activas
      */
     @Query("SELECT COUNT(u) FROM UnitOfMeasureEntity u WHERE u.enterpriseId = :enterpriseId AND u.state = true")
     long countActiveByEnterpriseId(@Param("enterpriseId") String enterpriseId);

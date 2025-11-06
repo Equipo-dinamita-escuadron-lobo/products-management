@@ -5,6 +5,12 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/**
+ * @brief DTO para sincronización de productos entre sistemas
+ *
+ * Contiene los datos esenciales de un producto para operaciones
+ * de sincronización y replicación entre diferentes instancias del sistema.
+ */
 @Getter @Setter
 @AllArgsConstructor
 @NoArgsConstructor

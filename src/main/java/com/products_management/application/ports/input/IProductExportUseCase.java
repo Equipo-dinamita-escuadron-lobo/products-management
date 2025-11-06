@@ -3,24 +3,25 @@ package com.products_management.application.ports.input;
 import org.springframework.core.io.Resource;
 
 /**
- * Caso de uso para exportar productos en formato Excel.
+ * @brief Puerto de entrada para exportación de productos a Excel
+ *
+ * Define contrato para generación de archivos Excel con productos:
+ * - Plantillas con validaciones (listas desplegables)
+ * - Exportación de datos existentes con filtros por estado
  */
 public interface IProductExportUseCase {
 
     /**
-     * Exporta una plantilla de productos con validaciones de datos (listas desplegables).
-     *
+     * @brief Exporta plantilla de productos con validaciones Excel
      * @param entId ID de la entidad
      * @return Resource que contiene la plantilla Excel con validaciones
      */
     Resource exportProductTemplateWithValidations(String entId);
 
     /**
-     * Exporta productos existentes con validaciones de datos (listas desplegables).
-     * Combina los datos reales con las validaciones de la plantilla.
-     *
+     * @brief Exporta productos existentes con validaciones Excel
      * @param entId ID de la entidad
-     * @param status Estado de los productos (true=activos, false=inactivos, null=todos)
+     * @param status estado de los productos (true=activos, false=inactivos, null=todos)
      * @return Resource que contiene el archivo Excel con datos y validaciones
      */
     Resource exportProductsWithValidations(String entId, Boolean status);

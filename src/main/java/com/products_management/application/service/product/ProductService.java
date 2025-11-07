@@ -1,4 +1,4 @@
-package com.products_management.application.service;
+package com.products_management.application.service.product;
 
 import java.util.List;
 import java.util.Optional;

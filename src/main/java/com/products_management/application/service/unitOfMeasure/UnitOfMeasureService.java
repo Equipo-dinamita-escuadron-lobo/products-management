@@ -1,7 +1,8 @@
-package com.products_management.application.service;
+package com.products_management.application.service.unitOfMeasure;
 
 import com.products_management.application.ports.input.IUnitOfMeasureServicePort;
 import com.products_management.application.ports.output.IUnitOfMeasurePersistencePort;
+import com.products_management.application.service.product.ProductService;
 import com.products_management.domain.exception.unitOfMeasure.UnitOfMeasureAbbreviationAlreadyExistsException;
 import com.products_management.domain.exception.unitOfMeasure.UnitOfMeasureAssociatedException;
 import com.products_management.domain.exception.unitOfMeasure.UnitOfMeasureNameAlreadyExistsException;

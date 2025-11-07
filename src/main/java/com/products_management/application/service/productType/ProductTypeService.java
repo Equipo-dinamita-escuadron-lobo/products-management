@@ -1,4 +1,4 @@
-package com.products_management.application.service;
+package com.products_management.application.service.productType;
 
 import com.products_management.application.ports.input.IProductServicePort;
 import com.products_management.application.ports.input.IProductTypeServicePort;

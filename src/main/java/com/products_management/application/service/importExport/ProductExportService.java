@@ -1,4 +1,4 @@
-package com.products_management.application.service;
+package com.products_management.application.service.importExport;
 
 import com.products_management.application.ports.input.IProductExportUseCase;
 import com.products_management.application.ports.output.ICategoryPersistencePort;

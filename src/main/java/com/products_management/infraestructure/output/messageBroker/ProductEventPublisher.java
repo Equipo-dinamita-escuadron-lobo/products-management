@@ -37,5 +37,27 @@ public class ProductEventPublisher implements IProductEventPort{
             return message;
         });
     }
+
+    @Override
+    public void publishUpdatedStockEvent(ProductSyncDto productSyncDto) {
+        EventDto<ProductSyncDto, EventType> event = new EventDto<>(productSyncDto, EventType.UPDATED);
+        log.info("Publishing stock updated event for product: {}", productSyncDto.getName());
+
+        rabbitTemplate.convertAndSend(RabbitProductConfig.PRODUCT_EXCHANGE, "", event, message -> {
+            message.getMessageProperties().setHeader("x-jwt-token", jwtUtils.getToken());
+            return message;
+        });
+    }
+
+    @Override
+    public void publishDeletedStockEvent(ProductSyncDto productSyncDto) {
+        EventDto<ProductSyncDto, EventType> event = new EventDto<>(productSyncDto, EventType.DELETED);
+        log.info("Publishing stock deleted event for product ID: {}", productSyncDto.getName());
+
+        rabbitTemplate.convertAndSend(RabbitProductConfig.PRODUCT_EXCHANGE, "", event, message -> {
+            message.getMessageProperties().setHeader("x-jwt-token", jwtUtils.getToken());
+            return message;
+        });
+    }
     
 }

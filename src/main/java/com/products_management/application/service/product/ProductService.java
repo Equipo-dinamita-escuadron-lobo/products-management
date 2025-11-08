@@ -139,7 +139,8 @@ public class ProductService implements IProductServicePort {
 
     @Override
     public Product update(Long id, Product product, String enterpriseId) {
-        return productPersistencePort.findByIdAndEnterpriseId(id, enterpriseId)
+//productEventPort
+        Product objProduct = productPersistencePort.findByIdAndEnterpriseId(id, enterpriseId)
                 .map(existingProduct -> {
                     // Validar que el producto no esté en uso
                     if (existingProduct.isInUse()) {
@@ -176,6 +177,18 @@ public class ProductService implements IProductServicePort {
                     return productPersistencePort.create(existingProduct);
                 })
                 .orElseThrow(ProductNotFoundException::new);
+
+        ProductSyncDto productSyncDto = new ProductSyncDto(
+                objProduct.getId(),
+                objProduct.getName(),
+                objProduct.getReference(),
+                objProduct.getEnterpriseId(),
+                objProduct.getPresentation(),
+                objProduct.getQuantity(),
+                objProduct.getCost(),
+                objProduct.isState());
+        productEventPort.publishUpdatedStockEvent(productSyncDto);
+        return objProduct;
     }
 
    
@@ -201,6 +214,18 @@ public class ProductService implements IProductServicePort {
         }
         
         productPersistencePort.deleteById(id);
+
+        ProductSyncDto productSyncDto = new ProductSyncDto(
+            product.getId(),
+            product.getName(),
+            product.getReference(),
+            product.getEnterpriseId(),
+            product.getPresentation(),
+            product.getQuantity(),
+            product.getCost(),
+            product.isState());
+
+        productEventPort.publishDeletedStockEvent(productSyncDto);
     }
 
 

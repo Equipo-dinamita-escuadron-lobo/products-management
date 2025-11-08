@@ -15,4 +15,8 @@ public interface IProductEventPort {
      */
     void publishCreatedStockEvent(ProductSyncDto productSyncDto);
 
+    void publishUpdatedStockEvent(ProductSyncDto productSyncDto);
+
+    void publishDeletedStockEvent(ProductSyncDto productSyncDto);
+
 }

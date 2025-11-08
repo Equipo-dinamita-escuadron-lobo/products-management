@@ -12,66 +12,41 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 /**
- * Interfaz para el repositorio de productos que extiende JpaRepository.
- * Proporciona métodos para realizar operaciones CRUD en ProductEntity.
+ * @brief Repositorio JPA para operaciones de persistencia de productos
+ *
+ * Proporciona métodos de consulta con soporte para multitenancy por empresa,
+ * incluyendo búsquedas filtradas y paginadas en productos.
  */
 public interface IProductRepository extends JpaRepository<ProductEntity, Long> {
     
-    // Search for products from a company modified AFTER the date provided.
     List<ProductEntity> findByEnterpriseIdAndLastModifiedDateAfter(String enterpriseId, Instant lastSyncDate);
     
-    /**
-     * Busca un producto por ID y empresa.
-     */
     Optional<ProductEntity> findByIdAndEnterpriseId(Long id, String enterpriseId);
-    
-    /**
-     * Busca productos activos por ID de empresa con paginación.
-     */
+
     Page<ProductEntity> findByEnterpriseIdAndState(String enterpriseId, boolean state, Pageable pageable);
-    
-    /**
-     * Cuenta productos activos por ID de empresa.
-     */
+
     long countByEnterpriseIdAndState(String enterpriseId, boolean state);
-    
-    /**
-     * Busca productos por ID de categoría.
-     */
+
     List<ProductEntity> findByCategoryId(Long categoryId);
-    
-    /**
-     * Busca productos por ID de unidad de medida.
-     */
+
     List<ProductEntity> findByUnitOfMeasureId(Long unitOfMeasureId);
-    
-    /**
-     * Busca productos por ID de tipo de producto.
-     */
+
     List<ProductEntity> findByProductTypeId(Long productTypeId);
-    
-    /**
-     * Verifica si existe un producto con el nombre especificado para una empresa.
-     */
+
     boolean existsByNameAndEnterpriseId(String name, String enterpriseId);
-    
-    /**
-     * Verifica si existe un producto con la referencia especificada para una empresa.
-     */
+
     boolean existsByReferenceAndEnterpriseId(String reference, String enterpriseId);
-    
-    /**
-     * Verifica si existe un producto con el nombre especificado para una empresa, excluyendo un ID específico.
-     */
+
     boolean existsByNameAndEnterpriseIdAndIdNot(String name, String enterpriseId, Long id);
-    
-    /**
-     * Verifica si existe un producto con la referencia especificada para una empresa, excluyendo un ID específico.
-     */
+
     boolean existsByReferenceAndEnterpriseIdAndIdNot(String reference, String enterpriseId, Long id);
     
     /**
-     * Busca productos por ID de empresa con filtros de búsqueda y paginación.
+     * @brief Busca productos por filtros de búsqueda en código, nombre y referencia
+     * @param enterpriseId ID de la empresa
+     * @param search término de búsqueda (opcional)
+     * @param pageable configuración de paginación
+     * @return página de productos que coinciden con los filtros
      */
     @Query("SELECT p FROM ProductEntity p WHERE p.enterpriseId = :enterpriseId " +
            "AND (:search IS NULL OR :search = '' OR " +
@@ -81,7 +56,10 @@ public interface IProductRepository extends JpaRepository<ProductEntity, Long> {
     Page<ProductEntity> findByEnterpriseIdWithFilters(String enterpriseId, String search, Pageable pageable);
     
     /**
-     * Cuenta productos por ID de empresa con filtros de búsqueda.
+     * @brief Cuenta productos que coinciden con filtros de búsqueda
+     * @param enterpriseId ID de la empresa
+     * @param search término de búsqueda (opcional)
+     * @return cantidad de productos que coinciden con los filtros
      */
     @Query("SELECT COUNT(p) FROM ProductEntity p WHERE p.enterpriseId = :enterpriseId " +
            "AND (:search IS NULL OR :search = '' OR " +
@@ -90,9 +68,6 @@ public interface IProductRepository extends JpaRepository<ProductEntity, Long> {
            "LOWER(p.reference) LIKE LOWER(CONCAT('%', :search, '%')))")
     long countByEnterpriseIdWithFilters(String enterpriseId, String search);
     
-    /**
-     * Cuenta todos los productos por ID de empresa.
-     */
     long countByEnterpriseId(String enterpriseId);
     
 }

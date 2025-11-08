@@ -7,7 +7,10 @@ import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 /**
- * Clase que representa la solicitud para crear o actualizar un tipo de producto.
+ * @brief DTO de solicitud para operaciones con tipos de producto
+ *
+ * Define estructura de datos para crear o actualizar tipos de producto,
+ * con validaciones requeridas para integridad de datos.
  */
 @Builder
 @Getter

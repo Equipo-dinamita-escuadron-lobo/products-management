@@ -4,7 +4,10 @@ import com.products_management.domain.exception.BaseBusinessException;
 import com.products_management.domain.exception.ErrorCode;
 
 /**
- * Excepción lanzada cuando se intenta eliminar una unidad de medida que está asociada con productos u otros elementos.
+ * @brief Excepción para unidad de medida con asociaciones activas
+ *
+ * Se lanza cuando se intenta eliminar una unidad de medida que tiene productos
+ * asociados, impidiendo la eliminación por integridad de datos.
  */
 public class UnitOfMeasureAssociatedException extends BaseBusinessException {
     

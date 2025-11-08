@@ -9,32 +9,32 @@ import java.util.List;
 import org.mapstruct.Mapper;
 
 /**
- * Interfaz que define métodos para mapear entre entidades de categoría y sus representaciones REST.
+ * @brief Mapper para transformación de entidades de categoría
+ *
+ * Define contratos de mapeo entre entidades de dominio Category
+ * y DTOs de request/response para operaciones REST.
  */
 @Mapper(componentModel = "spring")
 public interface ICategoryRestMapper {
 
     /**
-     * Convierte una solicitud de creación de categoría ({@link CategoryCreateRequest}) en una entidad de categoría ({@link Category}).
-     *
-     * @param categoryCreateRequest la solicitud de creación de categoría.
-     * @return la entidad de categoría convertida.
+     * @brief Convierte DTO de creación a entidad de categoría
+     * @param categoryCreateRequest solicitud de creación de categoría
+     * @return entidad de categoría convertida
      */
     Category toCategory(CategoryCreateRequest categoryCreateRequest);
 
     /**
-     * Convierte una entidad de categoría ({@link Category}) en una respuesta de categoría ({@link CategoryResponse}).
-     *
-     * @param category la entidad de categoría.
-     * @return la respuesta de categoría convertida.
+     * @brief Convierte entidad de categoría a DTO de respuesta
+     * @param category entidad de categoría
+     * @return respuesta de categoría convertida
      */
     CategoryResponse toCategoryResponse(Category category);
 
     /**
-     * Convierte una lista de entidades de categoría ({@link Category}) en una lista de respuestas de categoría ({@link CategoryResponse}).
-     *
-     * @param categoryList la lista de entidades de categoría.
-     * @return la lista de respuestas de categoría convertida.
+     * @brief Convierte lista de entidades a lista de DTOs de respuesta
+     * @param categoryList lista de entidades de categoría
+     * @return lista de respuestas de categoría convertidas
      */
     List<CategoryResponse> toCategoryResponseList(List<Category> categoryList);
 }

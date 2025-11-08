@@ -1,4 +1,4 @@
-package com.products_management.application.service;
+package com.products_management.application.service.importExport;
 
 import com.products_management.domain.enums.ImportErrorType;
 import com.products_management.domain.model.ImportErrorDetail;
@@ -18,8 +18,11 @@ import java.io.IOException;
 import java.util.*;
 
 /**
- * Servicio especializado en el parseo de archivos Excel para importación de productos.
- * Maneja la lectura, validación de formato y conversión de datos desde Excel.
+ * @brief Servicio especializado en el parseo de archivos Excel para importación de productos
+ *
+ * Maneja la lectura, validación de formato y conversión de datos desde archivos Excel.
+ * Implementa detección dinámica de columnas, validación de encabezados requeridos y
+ * conversión robusta de tipos de datos con manejo detallado de errores.
  */
 @Service
 public class ProductExcelParsingService {
@@ -33,11 +36,15 @@ public class ProductExcelParsingService {
     private static final String ROW_PARSING_ERROR = "ROW_PARSING_ERROR";
 
     /**
-     * Parsea el archivo Excel y extrae los datos de productos.
+     * @brief Parsea el archivo Excel y extrae los datos de productos
      *
-     * @param file archivo Excel a procesar
-     * @param entId identificador de la empresa
-     * @return resultado del parseo con datos y errores
+     * Realiza el procesamiento completo del archivo Excel: detección de encabezados,
+     * mapeo dinámico de columnas, validación de formato y conversión de datos.
+     * Maneja errores de manera granular para proporcionar feedback detallado al usuario.
+     *
+     * @param file Archivo Excel (XLSX) a procesar
+     * @param entId Identificador de la empresa para asociar los productos
+     * @return Resultado del parseo con datos procesados, errores encontrados y metadatos
      */
     public ExcelParsingResult parseExcelFile(MultipartFile file, String entId) {
         List<ProductExcelData> productsData = new ArrayList<>();
@@ -83,7 +90,11 @@ public class ProductExcelParsingService {
     }
 
     /**
-     * Detecta el mapeo de columnas basado en los encabezados del archivo.
+     * @brief Detecta el mapeo de columnas basado en los encabezados del archivo
+     *
+     * Realiza mapeo dinámico de columnas identificando los encabezados del Excel
+     * y validando que existan todos los encabezados requeridos para la importación.
+     * Normaliza los nombres de encabezados para manejar variaciones de formato.
      */
     private Map<String, Integer> detectColumnMapping(Sheet sheet, List<ImportErrorDetail> errors) {
         Row headerRow = sheet.getRow(HEADER_ROW_INDEX);
@@ -133,7 +144,11 @@ public class ProductExcelParsingService {
     }
 
     /**
-     * Parsea una fila individual del Excel.
+     * @brief Parsea una fila individual del Excel
+     *
+     * Convierte los datos de una fila del Excel en un objeto ProductExcelData,
+     * manejando la conversión de tipos, validación de formatos y captura de errores
+     * específicos por campo para proporcionar feedback detallado.
      */
     private ProductExcelData parseRow(Row row, int rowNumber, String entId,
                                        Map<String, Integer> columnMap, List<ImportErrorDetail> errors) {
@@ -179,7 +194,11 @@ public class ProductExcelParsingService {
     }
 
     /**
-     * Parsea un campo entero desde String con validación de errores.
+     * @brief Parsea un campo entero desde String con validación de errores
+     *
+     * Convierte un valor string a entero aplicando validaciones de rango,
+     * formato numérico y restricciones de negocio. Registra errores específicos
+     * cuando el valor no cumple con los criterios requeridos.
      */
     private Integer parseIntegerField(String value, int rowNumber, Integer columnIndex, List<ImportErrorDetail> errors) {
         if (value == null || value.trim().isEmpty()) {
@@ -206,7 +225,11 @@ public class ProductExcelParsingService {
     }
 
     /**
-     * Parsea un campo double desde String con validación de errores.
+     * @brief Parsea un campo double desde String con validación de errores
+     *
+     * Convierte un valor string a double aplicando validaciones de rango,
+     * formato decimal y restricciones de negocio. Registra errores específicos
+     * cuando el valor no cumple con los criterios requeridos para costos.
      */
     private Double parseDoubleField(String value, int rowNumber, Integer columnIndex, List<ImportErrorDetail> errors) {
         if (value == null || value.trim().isEmpty()) {
@@ -232,6 +255,12 @@ public class ProductExcelParsingService {
         }
     }
 
+    /**
+     * @brief Obtiene el valor de una celda como String
+     * @param row fila de Excel
+     * @param columnIndex índice de la columna
+     * @return valor string de la celda o null si no existe
+     */
     private String getCellValueAsString(Row row, Integer columnIndex) {
         if (columnIndex == null) {
             return null;
@@ -255,6 +284,11 @@ public class ProductExcelParsingService {
         }
     }
 
+    /**
+     * @brief Verifica si una fila está vacía
+     * @param row fila de Excel a verificar
+     * @return true si la fila está vacía, false en caso contrario
+     */
     private boolean isEmptyRow(Row row) {
         for (int i = 0; i < row.getLastCellNum(); i++) {
             Cell cell = row.getCell(i);
@@ -269,7 +303,11 @@ public class ProductExcelParsingService {
     }
 
     /**
-     * Crea un error de validación.
+     * @brief Crea un error de validación detallado
+     *
+     * Construye un objeto ImportErrorDetail con toda la información necesaria
+     * para identificar y comunicar errores de validación durante el parseo,
+     * incluyendo número de fila, columna, código de error y mensaje descriptivo.
      */
     private ImportErrorDetail createValidationError(int rowNumber, String errorCode, String message,
                                                    String columnName, Integer columnNumber, String fieldValue) {
@@ -285,7 +323,11 @@ public class ProductExcelParsingService {
     }
 
     /**
-     * Clase que representa el resultado del parseo de Excel.
+     * @brief Resultado completo del proceso de parseo de Excel
+     *
+     * Contiene todos los resultados del procesamiento del archivo Excel: datos válidos,
+     * errores encontrados durante el proceso, estadísticas de procesamiento y
+     * metadatos del mapeo de columnas utilizado.
      */
     @Data
     @Builder

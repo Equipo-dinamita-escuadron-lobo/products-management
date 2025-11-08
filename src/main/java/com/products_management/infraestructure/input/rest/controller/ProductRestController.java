@@ -26,7 +26,10 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.Optional;
 
 /**
- * Controlador REST para la gestión de productos.
+ * @brief Controlador REST principal para gestión de productos
+ *
+ * Expone endpoints completos CRUD para productos, incluyendo operaciones
+ * de importación/exportación masiva y sincronización con sistemas externos.
  */
 @RestController
 @RequiredArgsConstructor

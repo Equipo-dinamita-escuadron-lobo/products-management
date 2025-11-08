@@ -4,7 +4,10 @@ import com.products_management.domain.exception.BaseBusinessException;
 import com.products_management.domain.exception.ErrorCode;
 
 /**
- * Excepción lanzada cuando se intenta crear o actualizar un producto con una referencia que ya existe.
+ * @brief Excepción para referencia de producto duplicada
+ *
+ * Se lanza cuando se intenta crear o actualizar un producto con una referencia/SKU
+ * que ya está siendo usado por otro producto en la misma empresa.
  */
 public class ProductReferenceAlreadyExistsException extends BaseBusinessException {
     

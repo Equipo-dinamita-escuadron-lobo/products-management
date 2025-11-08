@@ -7,7 +7,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 
 /**
- * Controlador de prueba para verificar el funcionamiento del servicio.
+ * @brief Controlador de pruebas para verificación de servicios
+ *
+ * Proporciona endpoints básicos de prueba para validar funcionamiento
+ * del sistema y conectividad de la API REST.
  */
 @RestController
 @RequestMapping("/api/categories/test")

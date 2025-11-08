@@ -5,7 +5,10 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
 /**
- * Clase de solicitud utilizada para crear una unidad de medida en el sistema.
+ * @brief DTO de solicitud para creación de unidades de medida
+ *
+ * Contiene datos requeridos para crear nuevas unidades de medida,
+ * incluyendo nombre completo, abreviatura y descripción.
  */
 @Builder
 @Getter

@@ -9,8 +9,10 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 import java.util.concurrent.Executor;
 /**
- * Configuración para habilitar la ejecución asíncrona en la aplicación.
- * Define un `ThreadPoolTaskExecutor` personalizado para manejar tareas asíncronas.
+ * @brief Configuración de ejecución asíncrona con soporte para multitenancy
+ *
+ * Habilita procesamiento asíncrono con ThreadPoolTaskExecutor personalizado
+ * que incluye decorador consciente de tenant para aislamiento de datos.
  */
 @Configuration
 @EnableAsync
@@ -18,9 +20,8 @@ import java.util.concurrent.Executor;
 public class AsyncConfig implements AsyncConfigurer {
 
     /**
-     * Configura y devuelve un `ThreadPoolTaskExecutor` para manejar tareas asíncronas.
-     *
-     * @return Executor configurado para manejar tareas asíncronas.
+     * @brief Configura ThreadPoolTaskExecutor para tareas asíncronas
+     * @return executor configurado con decorador consciente de tenant
      */
     @Override
     public Executor getAsyncExecutor() {

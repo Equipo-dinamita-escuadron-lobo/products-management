@@ -19,7 +19,10 @@ import com.products_management.infraestructure.utils.PaginationHelper;
 import java.util.Optional;
 
 /**
- * Controlador REST para la gestión de categorías de productos.
+ * @brief Controlador REST para gestión de categorías de productos
+ *
+ * Maneja operaciones CRUD de categorías con validaciones de integridad
+ * referencial y controles de eliminación segura.
  */
 @RestController
 @RequiredArgsConstructor

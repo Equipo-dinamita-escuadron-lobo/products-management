@@ -7,7 +7,10 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
- * Clase que representa un producto en el sistema.
+ * @brief Entidad que representa un producto en el sistema
+ *
+ * Contiene toda la información relacionada con un producto: datos básicos,
+ * relaciones con entidades relacionadas y estado de activación.
  */
 @Builder
 @Getter
@@ -16,71 +19,48 @@ import lombok.Setter;
 @NoArgsConstructor
 public class Product {
 
-    /**
-     * @brief Identificador único del producto.
-     */
     private Long id;
-
-    /**
-     * @brief Código del producto.
-     */
     private String code;
-
-    /**
-     * @brief Tipo de artículo del producto.
-     */
     private String name;
-
-    /**
-     * @brief Descripción del producto.
-     */
     private String description;
-
-    /**
-     * Cantidad permitida del producto.
-     */
     private Integer quantity;
-
-    /**
-     * @brief Identificador de la unidad de medida del producto.
-     */
     private Long unitOfMeasureId;
-
-    /**
-     * @brief Identificador de la categoría del producto.
-     */
     private Long categoryId;
-
-    /**
-     * @brief Identificador de la empresa a la que pertenece el producto.
-     */
     private String enterpriseId;
-
-    /**
-     * Costo del producto.
-     */
     private double cost;
 
-    /**
-     * @brief Estado del producto ("true" si está activo, "false" si está inactivo).
-     */
     @Builder.Default
     private boolean state = true;
-    /**
 
-     * Campo de referencia opcional
-     */
     private String reference;
 
     private Long productTypeId;
 
     private String presentation;
+
+    @Builder.Default
+    private Integer usageCount = 0;
  
     /**
-     * Genera un código único basado en el nombre del producto, ID de la categoría y ID del producto.
+     * @brief Genera un código único basado en el nombre del producto, ID de la categoría y ID del producto.
      */
     public void generateCode() {
         String namePrefix = name != null && name.length() >= 3 ? name.substring(0, 3).toUpperCase() : "UNK";
         this.code = String.format("%s-%d-%d", namePrefix, categoryId, id);
+    }
+
+    /**
+     * @brief Incrementa el contador de uso del producto
+     */
+    public void incrementUsageCount() {
+        this.usageCount = this.usageCount == null ? 1 : this.usageCount + 1;
+    }
+
+    /**
+     * @brief Verifica si el producto está siendo usado
+     * @return true si el producto tiene uso registrado
+     */
+    public boolean isInUse() {
+        return this.usageCount != null && this.usageCount > 0;
     }
 }

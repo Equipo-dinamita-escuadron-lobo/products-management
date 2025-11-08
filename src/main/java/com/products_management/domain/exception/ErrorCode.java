@@ -3,7 +3,10 @@ package com.products_management.domain.exception;
 import lombok.Getter;
 
 /**
- * Catálogo de errores utilizado para identificar y describir errores comunes.
+ * @brief Catálogo estandarizado de códigos de error
+ *
+ * Define códigos de error reutilizables para toda la aplicación,
+ * organizados por dominio (productos, categorías, unidades de medida, etc.).
  */
 @Getter
 public enum ErrorCode implements ErrorCodeDefinition {
@@ -15,6 +18,7 @@ public enum ErrorCode implements ErrorCodeDefinition {
     INVALID_PRODUCT("INVALID_PRODUCT", "Producto inválido"),
     PRODUCT_NAME_ALREADY_EXISTS("PRODUCT_NAME_ALREADY_EXISTS", "Ya existe un producto con este nombre"),
     PRODUCT_REFERENCE_ALREADY_EXISTS("PRODUCT_REFERENCE_ALREADY_EXISTS", "Ya existe un producto con esta referencia"),
+    PRODUCT_IN_USE("PRODUCT_IN_USE", "El producto está siendo usado y no puede ser modificado o eliminado"),
 
     //Codigos de unidad de medida
     UNITOFMEASURE_NOT_FOUND("UNITOFMEASURE_NOT_FOUND", "Unidad de medida no encontrada"),

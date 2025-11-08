@@ -16,6 +16,12 @@ import com.products_management.application.ports.input.IProductSyncServicePort;
 
 import lombok.RequiredArgsConstructor;
 
+/**
+ * @brief Controlador REST para sincronización de productos
+ *
+ * Expone endpoints para sincronización de datos de productos con sistemas
+ * externos, permitiendo consultas basadas en tiempo y empresa.
+ */
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/products/sync")

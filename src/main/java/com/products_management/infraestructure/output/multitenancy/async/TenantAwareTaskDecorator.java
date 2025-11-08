@@ -6,16 +6,17 @@ import org.springframework.lang.NonNull;
 import com.products_management.infraestructure.output.multitenancy.utils.TenantContext;
 
 /**
- * Decorador de tareas que asegura la sensibilidad al tenant durante la ejecución de tareas asíncronas.
- * Este decorador captura el ID del tenant actual y lo establece en el contexto de hilo antes de ejecutar la tarea.
+ * @brief Decorador de tareas consciente de tenant para operaciones asíncronas
+ *
+ * Captura el ID del tenant actual y lo establece en el contexto del hilo
+ * antes de ejecutar tareas asíncronas, garantizando aislamiento de datos.
  */
 public class TenantAwareTaskDecorator implements TaskDecorator {
 
     /**
-     * Método para decorar una tarea runnable con sensibilidad al tenant.
-     *
-     * @param runnable Tarea runnable a decorar.
-     * @return Tarea decorada con la sensibilidad al tenant.
+     * @brief Decora tarea runnable con sensibilidad al tenant
+     * @param runnable tarea runnable a decorar
+     * @return tarea decorada con contexto de tenant preservado
      */
     @Override
     @NonNull

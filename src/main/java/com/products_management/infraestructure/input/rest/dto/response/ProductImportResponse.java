@@ -11,8 +11,10 @@ import lombok.NoArgsConstructor;
 import java.util.List;
 
 /**
- * DTO para respuesta de importación de productos.
- * Contiene estadísticas, estado y errores de la importación.
+ * @brief DTO de respuesta para operaciones de importación de productos
+ *
+ * Proporciona estadísticas completas del proceso de importación masiva,
+ * incluyendo métricas de éxito, fallos y errores detallados cuando ocurren.
  */
 @Data
 @Builder
@@ -21,44 +23,12 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ProductImportResponse {
 
-    /**
-     * Identificador de la empresa.
-     */
     private String entId;
-
-    /**
-     * Nombre del archivo procesado.
-     */
     private String fileName;
-
-    /**
-     * Estado final de la importación.
-     */
     private ImportStatus status;
-
-    /**
-     * Total de registros encontrados en el archivo.
-     */
     private int totalRecords;
-
-    /**
-     * Número de productos importados exitosamente.
-     */
     private int successfulImports;
-
-    /**
-     * Número de productos que fallaron durante la importación.
-     */
     private int failedImports;
-
-    /**
-     * Número de productos duplicados que fueron omitidos.
-     */
     private int duplicatesSkipped;
-
-    /**
-     * Lista detallada de errores encontrados durante la importación.
-     * Solo se incluye si hay errores.
-     */
     private List<ImportErrorDetail> errors;
 }

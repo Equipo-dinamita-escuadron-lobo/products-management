@@ -1,0 +1,17 @@
+package com.products_management.application.ports.input;
+
+/**
+ * @brief Puerto de entrada para gestión de uso de productos
+ *
+ * Define contrato para operaciones relacionadas con el contador de uso de productos,
+ * utilizado cuando otros servicios notifican que han utilizado un producto.
+ */
+public interface IProductUsagePort {
+    /**
+     * @brief Incrementa el contador de uso de un producto
+     * @param productId ID del producto
+     * @param enterpriseId ID de la empresa
+     */
+    void incrementUsageCount(Long productId, String enterpriseId);
+}
+

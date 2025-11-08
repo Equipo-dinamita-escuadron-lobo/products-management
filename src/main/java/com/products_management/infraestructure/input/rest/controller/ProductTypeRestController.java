@@ -26,7 +26,10 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.Optional;
 
 /**
- * Controlador REST para la gestión de tipos de producto.
+ * @brief Controlador REST para gestión de tipos de producto
+ *
+ * Proporciona endpoints CRUD para administración de tipos de producto,
+ * incluyendo operaciones de cambio de estado y búsquedas paginadas.
  */
 @RestController
 @RequestMapping("/api/product-types")

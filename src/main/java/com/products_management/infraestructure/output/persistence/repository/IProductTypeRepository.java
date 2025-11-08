@@ -10,36 +10,29 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
+/**
+ * @brief Repositorio JPA para operaciones de persistencia de tipos de producto
+ *
+ * Proporciona métodos de consulta con soporte para multitenancy por empresa,
+ * incluyendo búsquedas filtradas y paginadas en tipos de producto.
+ */
 @Repository
 public interface IProductTypeRepository extends JpaRepository<ProductTypeEntity, Long> {
-    /**
-     * Busca un tipo de producto por ID e ID de empresa.
-     */
     Optional<ProductTypeEntity> findByIdAndEnterpriseId(Long id, String enterpriseId);
 
-    /**
-     * Verifica si existe un tipo de producto con el nombre especificado para una
-     * empresa.
-     */
     boolean existsByNameAndEnterpriseId(String name, String enterpriseId);
-
-    /**
-     * Verifica si existe un tipo de producto con el nombre especificado para una
-     * empresa, excluyendo un ID específico.
-     */
+    
     boolean existsByNameAndEnterpriseIdAndIdNot(String name, String enterpriseId, Long id);
 
     @Query("SELECT p FROM ProductTypeEntity p WHERE p.enterpriseId = :enterpriseId")
     Page<ProductTypeEntity> getProductTypesBy(String enterpriseId, Pageable page);
 
     /**
-     * Busca tipos de producto por empresa y término de búsqueda.
-     * Busca en: nombres, descripciones.
-     *
+     * @brief Busca tipos de producto por término de búsqueda en nombres y descripciones
      * @param enterpriseId ID de la empresa
-     * @param search       Término de búsqueda
-     * @param page         Paginación con ordenamiento
-     * @return Página de tipos de producto que coinciden con la búsqueda
+     * @param search término de búsqueda
+     * @param page configuración de paginación
+     * @return página de tipos de producto que coinciden con la búsqueda
      */
     @Query("SELECT p FROM ProductTypeEntity p WHERE p.enterpriseId = :enterpriseId AND " +
             "(LOWER(p.name) LIKE LOWER(CONCAT('%', :search, '%')) OR " +
@@ -48,11 +41,10 @@ public interface IProductTypeRepository extends JpaRepository<ProductTypeEntity,
             @Param("search") String search, Pageable page);
 
     /**
-     * Cuenta tipos de producto por empresa y término de búsqueda.
-     *
+     * @brief Cuenta tipos de producto que coinciden con búsqueda
      * @param enterpriseId ID de la empresa
-     * @param search       Término de búsqueda
-     * @return Cantidad de tipos de producto que coinciden
+     * @param search término de búsqueda
+     * @return cantidad de tipos de producto que coinciden
      */
     @Query("SELECT COUNT(p) FROM ProductTypeEntity p WHERE p.enterpriseId = :enterpriseId AND " +
             "(LOWER(p.name) LIKE LOWER(CONCAT('%', :search, '%')) OR " +
@@ -63,20 +55,18 @@ public interface IProductTypeRepository extends JpaRepository<ProductTypeEntity,
     long countByEnterpriseId(@Param("enterpriseId") String enterpriseId);
 
     /**
-     * Busca tipos de producto activados por empresa con paginación.
-     *
+     * @brief Obtiene tipos de producto activos de una empresa
      * @param enterpriseId ID de la empresa
-     * @param pageable Paginación
-     * @return Página de tipos de producto activados
+     * @param pageable configuración de paginación
+     * @return página de tipos de producto activos
      */
     @Query("SELECT p FROM ProductTypeEntity p WHERE p.enterpriseId = :enterpriseId AND p.state = true")
     Page<ProductTypeEntity> findActivatedByEnterpriseId(@Param("enterpriseId") String enterpriseId, Pageable pageable);
 
     /**
-     * Cuenta tipos de producto activados por empresa.
-     *
+     * @brief Cuenta tipos de producto activos por empresa
      * @param enterpriseId ID de la empresa
-     * @return Cantidad de tipos de producto activados
+     * @return cantidad total de tipos de producto activos
      */
     @Query("SELECT COUNT(p) FROM ProductTypeEntity p WHERE p.enterpriseId = :enterpriseId AND p.state = true")
     long countActivatedByEnterpriseId(@Param("enterpriseId") String enterpriseId);

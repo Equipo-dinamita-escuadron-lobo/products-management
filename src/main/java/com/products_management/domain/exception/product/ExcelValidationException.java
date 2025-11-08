@@ -4,7 +4,10 @@ import com.products_management.domain.exception.BaseBusinessException;
 import com.products_management.domain.exception.ErrorCode;
 
 /**
- * Excepción lanzada cuando ocurre un error de validación en archivos Excel.
+ * @brief Excepción para errores de validación en archivos Excel
+ *
+ * Se lanza cuando se detectan problemas durante el procesamiento y validación
+ * de archivos Excel durante operaciones de importación/exportación.
  */
 public class ExcelValidationException extends BaseBusinessException {
 

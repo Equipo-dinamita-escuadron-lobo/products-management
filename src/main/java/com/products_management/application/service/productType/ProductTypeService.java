@@ -1,4 +1,4 @@
-package com.products_management.application.service;
+package com.products_management.application.service.productType;
 
 import com.products_management.application.ports.input.IProductServicePort;
 import com.products_management.application.ports.input.IProductTypeServicePort;
@@ -82,13 +82,7 @@ public class ProductTypeService implements IProductTypeServicePort {
                 .orElseThrow(() -> new ProductTypeNotFoundException());
     }
     
-    /**
-     * Cambia el estado de un tipo de producto (activado/desactivado).
-     *
-     * @param id el ID del tipo de producto cuyo estado se va a cambiar.
-     * @param enterpriseId el ID de la empresa.
-     * @throws ProductTypeNotFoundException si el tipo de producto no se encuentra.
-     */
+    
     @Override
     public void changeState(Long id, String enterpriseId) {
         ProductType productType = productTypeOutputPort.findByIdAndEnterpriseId(id, enterpriseId)
@@ -128,10 +122,9 @@ public class ProductTypeService implements IProductTypeServicePort {
     }
     
     /**
-     * Valida que el nombre de un tipo de producto sea único dentro de la empresa.
-     *
-     * @param productType el tipo de producto a validar.
-     * @throws ProductTypeNameAlreadyExistsException si ya existe un tipo de producto con el mismo nombre.
+     * @brief Valida unicidad del nombre de tipo de producto en la empresa
+     * @param productType tipo de producto a validar
+     * @throws ProductTypeNameAlreadyExistsException si nombre ya existe
      */
     private void validateProductTypeUniqueness(ProductType productType) {
         // El nombre ya está normalizado, se usa directamente para validación
@@ -142,12 +135,10 @@ public class ProductTypeService implements IProductTypeServicePort {
     }
     
     /**
-     * Valida que el nombre de un tipo de producto sea único dentro de la empresa
-     * durante una actualización, excluyendo el tipo de producto que se está actualizando.
-     *
-     * @param id el ID del tipo de producto que se está actualizando.
-     * @param productType el tipo de producto a validar.
-     * @throws ProductTypeNameAlreadyExistsException si ya existe otro tipo de producto con el mismo nombre.
+     * @brief Valida unicidad del nombre durante actualización excluyendo registro actual
+     * @param id ID del tipo de producto que se está actualizando
+     * @param productType tipo de producto a validar
+     * @throws ProductTypeNameAlreadyExistsException si nombre ya existe en otro registro
      */
     private void validateProductTypeUniquenessForUpdate(Long id, ProductType productType) {
         // El nombre ya está normalizado, se usa directamente para validación

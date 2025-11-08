@@ -20,6 +20,7 @@ import com.products_management.domain.exception.unitOfMeasure.UnitOfMeasureNotFo
 import com.products_management.domain.model.Category;
 import com.products_management.domain.model.ProductType;
 import com.products_management.domain.model.UnitOfMeasure;
+import com.products_management.domain.exception.product.ProductInUseException;
 import com.products_management.domain.exception.product.ProductNotFoundException;
 import com.products_management.domain.exception.product.ProductNameAlreadyExistsException;
 import com.products_management.domain.exception.product.ProductReferenceAlreadyExistsException;
@@ -144,7 +145,7 @@ public class ProductService implements IProductServicePort {
                 .map(existingProduct -> {
                     // Validar que el producto no esté en uso
                     if (existingProduct.isInUse()) {
-                        throw new com.products_management.domain.exception.product.ProductInUseException(
+                        throw new ProductInUseException(
                             "No se puede editar el producto porque está siendo usado por otros servicios"
                         );
                     }
@@ -208,7 +209,7 @@ public class ProductService implements IProductServicePort {
         
         // Validar que el producto no esté en uso
         if (product.isInUse()) {
-            throw new com.products_management.domain.exception.product.ProductInUseException(
+            throw new ProductInUseException(
                 "No se puede eliminar el producto porque está siendo usado por otros servicios"
             );
         }

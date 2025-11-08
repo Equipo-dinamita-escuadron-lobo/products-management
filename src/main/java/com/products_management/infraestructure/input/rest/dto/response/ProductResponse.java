@@ -32,6 +32,6 @@ public class ProductResponse {
     private String reference;
     private String presentation;
     private Long productTypeId;
-
+    private Integer usageCount;
 
 }

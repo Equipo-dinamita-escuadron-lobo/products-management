@@ -20,7 +20,6 @@ public class RabbitProductConfig {
     public static final String PRODUCT_KARDEX_QUEUE = "product.kardex.queue";
     public static final String PRODUCT_STOCK_QUEUE = "product.stock.queue";
 
-
     @Bean
     Queue productKardexQueue() {
         return QueueBuilder.durable(PRODUCT_KARDEX_QUEUE).build();
@@ -45,6 +44,5 @@ public class RabbitProductConfig {
     Binding productStockQueueBinding() {
         return BindingBuilder.bind(productStockQueue()).to(productExchange());
     }
-
 
 }

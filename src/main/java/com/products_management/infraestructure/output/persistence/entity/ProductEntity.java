@@ -46,6 +46,8 @@ public class ProductEntity {
     private Long productTypeId;
     private String presentation;
     
+    private Integer usageCount;
+    
     @UpdateTimestamp
     private Instant lastModifiedDate;
 

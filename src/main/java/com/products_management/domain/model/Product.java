@@ -37,6 +37,9 @@ public class Product {
     private Long productTypeId;
 
     private String presentation;
+
+    @Builder.Default
+    private Integer usageCount = 0;
  
     /**
      * @brief Genera un código único basado en el nombre del producto, ID de la categoría y ID del producto.
@@ -44,5 +47,20 @@ public class Product {
     public void generateCode() {
         String namePrefix = name != null && name.length() >= 3 ? name.substring(0, 3).toUpperCase() : "UNK";
         this.code = String.format("%s-%d-%d", namePrefix, categoryId, id);
+    }
+
+    /**
+     * @brief Incrementa el contador de uso del producto
+     */
+    public void incrementUsageCount() {
+        this.usageCount = this.usageCount == null ? 1 : this.usageCount + 1;
+    }
+
+    /**
+     * @brief Verifica si el producto está siendo usado
+     * @return true si el producto tiene uso registrado
+     */
+    public boolean isInUse() {
+        return this.usageCount != null && this.usageCount > 0;
     }
 }

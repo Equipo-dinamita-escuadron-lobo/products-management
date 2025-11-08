@@ -141,6 +141,13 @@ public class ProductService implements IProductServicePort {
     public Product update(Long id, Product product, String enterpriseId) {
         return productPersistencePort.findByIdAndEnterpriseId(id, enterpriseId)
                 .map(existingProduct -> {
+                    // Validar que el producto no esté en uso
+                    if (existingProduct.isInUse()) {
+                        throw new com.products_management.domain.exception.product.ProductInUseException(
+                            "No se puede editar el producto porque está siendo usado por otros servicios"
+                        );
+                    }
+                    
                     product.setName(StringNormalizer.normalizeCode(product.getName()));
                     if (product.getReference() != null && !product.getReference().trim().isEmpty()) {
                         product.setReference(StringNormalizer.normalizeCode(product.getReference()));
@@ -183,9 +190,16 @@ public class ProductService implements IProductServicePort {
 
     @Override
     public void deleteById(Long id, String enterpriseId) {
-        if (productPersistencePort.findByIdAndEnterpriseId(id, enterpriseId).isEmpty()) {
-            throw new ProductNotFoundException();
+        Product product = productPersistencePort.findByIdAndEnterpriseId(id, enterpriseId)
+                .orElseThrow(ProductNotFoundException::new);
+        
+        // Validar que el producto no esté en uso
+        if (product.isInUse()) {
+            throw new com.products_management.domain.exception.product.ProductInUseException(
+                "No se puede eliminar el producto porque está siendo usado por otros servicios"
+            );
         }
+        
         productPersistencePort.deleteById(id);
     }
 

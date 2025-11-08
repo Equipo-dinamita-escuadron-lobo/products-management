@@ -22,9 +22,14 @@ import org.springframework.amqp.core.BindingBuilder;
 @Slf4j
 @Profile("!test")
 public class RabbitProductConfig {
+    // Configuración para eventos de productos (Products como productor)
     public static final String PRODUCT_EXCHANGE = "product.exchange";
     public static final String PRODUCT_KARDEX_QUEUE = "product.kardex.queue";
     public static final String PRODUCT_STOCK_QUEUE = "product.stock.queue";
+    
+    // Configuración para eventos de uso de productos (Products como consumidor)
+    public static final String PRODUCT_USAGE_EXCHANGE = "product.usage.exchange";
+    public static final String PRODUCT_USAGE_QUEUE = "product.usage.queue";
 
 
     /**
@@ -72,5 +77,31 @@ public class RabbitProductConfig {
         return BindingBuilder.bind(productStockQueue()).to(productExchange());
     }
 
+    /**
+     * @brief Crea cola durable para recibir eventos de uso de productos desde PEPS
+     * @return Cola configurada para eventos de uso
+     */
+    @Bean
+    Queue productUsageQueue() {
+        return QueueBuilder.durable(PRODUCT_USAGE_QUEUE).build();
+    }
+
+    /**
+     * @brief Crea exchange de fanout para eventos de uso de productos
+     * @return Exchange de fanout durable configurado
+     */
+    @Bean
+    FanoutExchange productUsageExchange() {
+        return new FanoutExchange(PRODUCT_USAGE_EXCHANGE, true, false);
+    }
+
+    /**
+     * @brief Vincula cola de uso de productos al exchange correspondiente
+     * @return Binding configurado entre cola y exchange
+     */
+    @Bean
+    Binding productUsageQueueBinding() {
+        return BindingBuilder.bind(productUsageQueue()).to(productUsageExchange());
+    }
 
 }

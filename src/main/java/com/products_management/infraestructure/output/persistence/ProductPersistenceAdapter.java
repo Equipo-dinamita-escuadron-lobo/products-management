@@ -32,6 +32,12 @@ public class ProductPersistenceAdapter implements IProductPersistencePort {
     }
 
     @Override
+    public Optional<Product> findById(Long id) {
+        return productRepository.findById(id)
+                .map(productPersistenceMapper::toProduct);
+    }
+
+    @Override
     public Product create(Product product) {
         return productPersistenceMapper.toProduct(productRepository.save(productPersistenceMapper.toProductEntity(product)));
     }

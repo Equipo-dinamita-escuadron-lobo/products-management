@@ -24,19 +24,19 @@ public class ProductUsageService implements IProductUsagePort {
     private final IProductPersistencePort productPersistencePort;
 
     @Override
-    public void incrementUsageCount(Long productId, String enterpriseId) {
-        log.info("Incrementing usage count for productId: {} in enterprise: {}", productId, enterpriseId);
-        
-        Product product = productPersistencePort.findByIdAndEnterpriseId(productId, enterpriseId)
+    public void incrementUsageCount(Long productId) {
+        log.info("Incrementing usage count for productId: {}", productId);
+
+        Product product = productPersistencePort.findById(productId)
                 .orElseThrow(() -> {
-                    log.warn("Product not found: {} in enterprise: {}", productId, enterpriseId);
+                    log.warn("Product not found: {}", productId);
                     return new ProductNotFoundException();
                 });
-        
+
         product.incrementUsageCount();
         productPersistencePort.create(product);
-        
-        log.info("Usage count incremented successfully for productId: {}. New count: {}", 
+
+        log.info("Usage count incremented successfully for productId: {}. New count: {}",
                  productId, product.getUsageCount());
     }
 }

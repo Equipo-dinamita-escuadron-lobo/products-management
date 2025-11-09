@@ -23,6 +23,13 @@ public interface IProductPersistencePort {
     Optional<Product> findByIdAndEnterpriseId(Long id, String enterpriseId);
 
     /**
+     * @brief Busca un producto por ID
+     * @param id el ID del producto a buscar
+     * @return Optional con el producto si existe
+     */
+    Optional<Product> findById(Long id);
+
+    /**
      * @brief Crea un nuevo producto
      * @param product el producto a crear
      * @return el producto creado con ID asignado

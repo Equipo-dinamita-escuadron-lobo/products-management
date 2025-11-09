@@ -91,16 +91,11 @@ public class ProductUsageListener extends AbstractMessageListener<EventDto<Produ
             }
             
             ProductUsageEventDto data = event.getData();
-            log.info("Processing usage for productId: {}, quantity: {}", 
+            log.info("Processing usage for productId: {}, quantity: {}",
                      data.getProductId(), data.getQuantityUsed());
-            
-            //productUsagePort.incrementUsageCount(data.getProductId(), data.getEnterpriseId());
 
-            log.info("---------------------------------------");
-            log.info("Aquí se suma :v");
-            log.info("---------------------------------------");
+            productUsagePort.incrementUsageCount(data.getProductId());
 
-            
             log.info("Product usage event processed successfully for productId: {}", data.getProductId());
             
         } catch (Exception e) {

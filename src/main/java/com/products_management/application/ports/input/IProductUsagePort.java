@@ -10,8 +10,7 @@ public interface IProductUsagePort {
     /**
      * @brief Incrementa el contador de uso de un producto
      * @param productId ID del producto
-     * @param enterpriseId ID de la empresa
      */
-    void incrementUsageCount(Long productId, String enterpriseId);
+    void incrementUsageCount(Long productId);
 }
 

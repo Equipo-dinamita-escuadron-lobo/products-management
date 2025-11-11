@@ -146,7 +146,7 @@ public class ProductService implements IProductServicePort {
                     // Validar que el producto no esté en uso
                     if (existingProduct.isInUse()) {
                         throw new ProductInUseException(
-                            "No se puede editar el producto porque tiene " + existingProduct.getUsageCount() + " registro(s) contable(s)"
+                            "No se puede editar el producto porque tiene movimientos contables"
                         );
                     }
                     
@@ -210,7 +210,7 @@ public class ProductService implements IProductServicePort {
         // Validar que el producto no esté en uso
         if (product.isInUse()) {
             throw new ProductInUseException(
-                "No se puede eliminar el producto porque tiene " + product.getUsageCount() + " registro(s) contable(s)"
+                "No se puede eliminar el producto porque tiene movimientos contables"
             );
         }
         

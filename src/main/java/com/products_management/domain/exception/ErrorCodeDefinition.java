@@ -1,7 +1,10 @@
 package com.products_management.domain.exception;
 
 /**
- * Definición de códigos de error para el dominio de productos.
+ * @brief Interfaz para definición de códigos de error
+ *
+ * Define el contrato que deben implementar todos los códigos de error
+ * en el sistema para acceso uniforme a código y mensaje.
  */
 public interface ErrorCodeDefinition {
 

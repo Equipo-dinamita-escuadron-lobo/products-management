@@ -6,8 +6,10 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * Modelo que representa los datos de un producto extraídos del archivo Excel.
- * Contiene los campos que se pueden importar desde Excel.
+ * @brief Modelo para datos de producto extraídos de Excel
+ *
+ * Representa la estructura temporal de datos durante el proceso de importación,
+ * incluyendo campos directos y nombres temporales para resolución de entidades relacionadas.
  */
 @Data
 @Builder(toBuilder = true)
@@ -15,64 +17,17 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class ProductExcelData {
 
-    /**
-     * Número de fila en el Excel (1-indexed).
-     */
     private int rowNumber;
-
-    /**
-     * Identificador de la empresa.
-     */
     private String enterpriseId;
-
-    /**
-     * Nombre del producto.
-     */
     private String name;
-
-    /**
-     * Descripción del producto.
-     */
     private String description;
-
-    /**
-     * Cantidad del producto (opcional).
-     */
     private Integer quantity;
-
-    /**
-     * ID de la unidad de medida.
-     */
     private Long unitOfMeasureId;
-
-    /**
-     * ID de la categoría.
-     */
     private Long categoryId;
-
-    /**
-     * ID del tipo de producto.
-     */
     private Long productTypeId;
-
-    /**
-     * Costo del producto (opcional).
-     */
     private Double cost;
-
-    /**
-     * Referencia del producto.
-     */
     private String reference;
-
-    /**
-     * Presentación del producto.
-     */
     private String presentation;
-
-    /**
-     * Nombres temporales para lookup (se convierten a IDs después).
-     */
     private String unitOfMeasureName;
     private String categoryName;
     private String productTypeName;

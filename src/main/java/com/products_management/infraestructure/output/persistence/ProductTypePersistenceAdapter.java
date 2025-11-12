@@ -16,6 +16,12 @@ import org.springframework.stereotype.Component;
 
 import java.util.Optional;
 
+/**
+ * @brief Adaptador de persistencia para operaciones CRUD de tipos de producto
+ *
+ * Implementa IProductTypePersistencePort para gestionar persistencia de tipos de producto
+ * con soporte para multitenancy por empresa y operaciones paginadas.
+ */
 @Component
 @RequiredArgsConstructor
 public class ProductTypePersistenceAdapter implements IProductTypePersistencePort {
@@ -108,10 +114,9 @@ public class ProductTypePersistenceAdapter implements IProductTypePersistencePor
     }
 
     /**
-     * Mapea el campo de ordenamiento del modelo ProductType al campo correspondiente en ProductTypeEntity.
-     * Solo permite ordenamiento por nombre.
-     * @param sortField Campo de ordenamiento del modelo
-     * @return Campo de ordenamiento de la entidad
+     * @brief Mapea campo de ordenamiento del dominio a campo de entidad
+     * @param sortField campo de ordenamiento del dominio
+     * @return campo de ordenamiento de la entidad
      */
     private String mapProductTypeSortField(String sortField) {
         if (sortField == null || sortField.trim().isEmpty()) {

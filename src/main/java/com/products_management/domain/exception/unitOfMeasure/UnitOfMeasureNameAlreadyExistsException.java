@@ -4,7 +4,10 @@ import com.products_management.domain.exception.BaseBusinessException;
 import com.products_management.domain.exception.ErrorCode;
 
 /**
- * Excepción lanzada cuando se intenta crear o actualizar una unidad de medida con un nombre que ya existe.
+ * @brief Excepción para nombre de unidad de medida duplicado
+ *
+ * Se lanza cuando se intenta crear o actualizar una unidad de medida con un nombre
+ * que ya está siendo usado por otra unidad de medida en la misma empresa.
  */
 public class UnitOfMeasureNameAlreadyExistsException extends BaseBusinessException {
     

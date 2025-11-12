@@ -11,16 +11,18 @@ import com.products_management.infraestructure.output.multitenancy.utils.TenantC
 import java.util.Map;
 
 /**
- * Implementación de resolver de identificador de inquilino actual para Hibernate.
- * Esta clase determina dinámicamente el inquilino actual basado en el contexto de TenantContext.
+ * @brief Resolver de identificador de tenant actual para Hibernate
+ *
+ * Determina dinámicamente el tenant actual basado en TenantContext,
+ * permitiendo aislamiento de datos por empresa en operaciones de base de datos.
  */
 @SuppressWarnings("rawtypes")
 @Component
 class CurrentTenantIdentifierResolverImpl implements CurrentTenantIdentifierResolver, HibernatePropertiesCustomizer {
 
     /**
-     * Resuelve el identificador del inquilino actual.
-     * @return ID del inquilino actual o "BOOTSTRAP" si no hay inquilino configurado.
+     * @brief Resuelve identificador del tenant actual
+     * @return ID del tenant actual o "BOOTSTRAP" si no hay tenant configurado
      */
     @Override
     public String resolveCurrentTenantIdentifier() {
@@ -34,8 +36,8 @@ class CurrentTenantIdentifierResolverImpl implements CurrentTenantIdentifierReso
     }
 
     /**
-     * Indica si se deben validar las sesiones actuales existentes.
-     * @return Siempre devuelve true para validar las sesiones existentes.
+     * @brief Indica si validar sesiones actuales existentes
+     * @return siempre true para validar sesiones existentes
      */
     @Override
     public boolean validateExistingCurrentSessions() {
@@ -43,8 +45,8 @@ class CurrentTenantIdentifierResolverImpl implements CurrentTenantIdentifierReso
     }
 
     /**
-     * Personaliza las propiedades de Hibernate añadiendo este resolver como identificador de inquilino.
-     * @param hibernateProperties Mapa de propiedades de Hibernate a personalizar.
+     * @brief Personaliza propiedades de Hibernate con este resolver
+     * @param hibernateProperties mapa de propiedades de Hibernate a personalizar
      */
     @Override
     public void customize(Map<String, Object> hibernateProperties) {

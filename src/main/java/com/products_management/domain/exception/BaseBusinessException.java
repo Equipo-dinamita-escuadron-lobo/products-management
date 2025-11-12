@@ -1,8 +1,10 @@
 package com.products_management.domain.exception;
 
 /**
- * Excepción base para todas las excepciones de negocio del dominio.
- * Proporciona funcionalidad común para manejo de códigos de error y mensajes.
+ * @brief Excepción base para errores de negocio del dominio
+ *
+ * Proporciona funcionalidad común para todas las excepciones de negocio,
+ * incluyendo manejo de códigos de error estandarizados y mensajes personalizables.
  */
 public abstract class BaseBusinessException extends RuntimeException {
     

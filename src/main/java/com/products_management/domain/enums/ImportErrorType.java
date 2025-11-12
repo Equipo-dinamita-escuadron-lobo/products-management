@@ -1,7 +1,10 @@
 package com.products_management.domain.enums;
 
 /**
- * Enum que representa los tipos de errores que pueden ocurrir durante la importación.
+ * @brief Tipos de errores durante proceso de importación
+ *
+ * Clasifica los diferentes tipos de errores que pueden ocurrir durante
+ * la importación de productos desde archivos Excel.
  */
 public enum ImportErrorType {
     FORMAT_ERROR,

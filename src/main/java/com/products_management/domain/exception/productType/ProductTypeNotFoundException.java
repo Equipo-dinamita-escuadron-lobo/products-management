@@ -4,7 +4,10 @@ import com.products_management.domain.exception.BaseBusinessException;
 import com.products_management.domain.exception.ErrorCode;
 
 /**
- * Excepción lanzada cuando no se encuentra un tipo de producto específico.
+ * @brief Excepción para tipo de producto no encontrado
+ *
+ * Se lanza cuando se intenta acceder a un tipo de producto que no existe
+ * o no está activo en el sistema.
  */
 public class ProductTypeNotFoundException extends BaseBusinessException {
     

@@ -3,8 +3,11 @@ package com.products_management.domain.utils;
 import java.text.Normalizer;
 
 /**
- * Utilidad para normalizar cadenas de texto para validaciones de unicidad.
- * Proporciona métodos para limpiar, normalizar y formatear nombres de manera consistente.
+ * @brief Utilidad para normalización de cadenas de texto
+ *
+ * Proporciona métodos estáticos para normalizar nombres, códigos y headers,
+ * eliminando acentos, espacios extra y aplicando formatos consistentes para
+ * validaciones de unicidad y procesamiento de datos.
  */
 public final class StringNormalizer {
 
@@ -13,12 +16,13 @@ public final class StringNormalizer {
     }
 
     /**
-     * Normaliza un nombre de manera consistente para validación y almacenamiento.
-     * Elimina tildes/acentos, espacios extra y capitaliza la primera letra.
-     * Este formato se usa tanto para comparar como para guardar en la base de datos.
+     * @brief Normaliza nombres para validación y almacenamiento
      *
-     * @param input el texto a normalizar
-     * @return el texto normalizado, o null si el input es null
+     * Aplica normalización completa: elimina acentos, espacios extra,
+     * convierte a minúsculas y capitaliza primera letra. Ideal para nombres de entidades.
+     *
+     * @param input Texto a normalizar
+     * @return Texto normalizado o null si input es null
      */
     public static String normalize(String input) {
         if (input == null || input.trim().isEmpty()) {
@@ -30,12 +34,13 @@ public final class StringNormalizer {
     }
 
     /**
-     * Normaliza un código/referencia manteniendo el formato en mayúsculas.
-     * Elimina tildes/acentos y espacios extra, pero convierte todo a mayúsculas.
-     * Ideal para códigos SKU, referencias, códigos de producto, etc.
+     * @brief Normaliza códigos y referencias en mayúsculas
      *
-     * @param input el código/referencia a normalizar
-     * @return el código normalizado en mayúsculas, o null si el input es null
+     * Elimina acentos y espacios extra, convirtiendo todo a mayúsculas.
+     * Ideal para códigos SKU, referencias y identificadores técnicos.
+     *
+     * @param input Código/referencia a normalizar
+     * @return Código normalizado en mayúsculas o null si input es null
      */
     public static String normalizeCode(String input) {
         if (input == null || input.trim().isEmpty()) {
@@ -46,10 +51,13 @@ public final class StringNormalizer {
     }
 
     /**
-     * Elimina tildes y acentos de una cadena de texto.
+     * @brief Elimina tildes y acentos de texto@
      *
-     * @param input el texto del cual eliminar acentos
-     * @return el texto sin acentos
+     * Utiliza Normalizer de Java para descomponer caracteres con acentos
+     * y eliminar las marcas diacríticas, produciendo texto ASCII limpio.
+     *
+     * @param input Texto del cual eliminar acentos
+     * @return Texto sin acentos
      */
     private static String removeAccents(String input) {
         if (input == null) {
@@ -64,8 +72,14 @@ public final class StringNormalizer {
     }
 
     /**
-     * Normaliza un nombre de header removiendo acentos, convirtiendo a minúsculas y
-     * aplicando reglas específicas para comparación.
+     * @brief Normaliza nombres de encabezados Excel para comparación
+     *
+     * Limpia y normaliza headers de Excel: elimina acentos, caracteres especiales,
+     * texto entre paréntesis, y aplica reglas específicas para mapear variaciones
+     * comunes de nombres de columnas.
+     *
+     * @param header Nombre del encabezado a normalizar
+     * @return Header normalizado para comparación consistente
      */
     public static String normalizeHeaderName(String header) {
         if (header == null) {
@@ -83,21 +97,22 @@ public final class StringNormalizer {
                         .replace('Ã', 'í')  // categoría alternativo
                         .replace('³', 'ó'); // descripción alternativo
 
-        // Normalizar acentos y diacríticos
         String normalized = Normalizer.normalize(cleaned, Normalizer.Form.NFD)
                 .replaceAll("\\p{InCombiningDiacriticalMarks}+", "");
 
-        // Convertir a minúsculas
         normalized = normalized.toLowerCase();
-
-        // Aplicar reglas específicas para headers conocidos
         normalized = applyHeaderRules(normalized);
-
         return normalized.trim();
     }
 
     /**
-     * Aplica reglas específicas para normalizar headers de Excel.
+     * @brief Aplica reglas específicas para mapear headers de Excel
+     *
+     * Convierte variaciones comunes de nombres de columnas (con acentos, en inglés,
+     * abreviaturas) a los nombres canónicos definidos en ImportConstants.
+     *
+     * @param header Header normalizado a mapear
+     * @return Nombre canónico del header o el original si no hay regla específica
      */
     private static String applyHeaderRules(String header) {
         // Reglas específicas para headers de productos
@@ -153,10 +168,13 @@ public final class StringNormalizer {
     }
 
     /**
-     * Capitaliza la primera letra de una cadena.
+     * @brief Capitaliza la primera letra de un texto
      *
-     * @param input el texto a capitalizar
-     * @return el texto con la primera letra en mayúscula
+     * Convierte la primera letra a mayúscula y el resto mantiene su formato.
+     * Maneja casos edge como textos de un solo caracter.
+     *
+     * @param input Texto a capitalizar
+     * @return Texto con primera letra en mayúscula
      */
     private static String capitalizeFirstLetter(String input) {
         if (input == null || input.isEmpty()) {

@@ -1,16 +1,13 @@
 package com.products_management.infraestructure.security;
 
 /**
- * Interfaz para utilidades relacionadas con JWT.
- * Proporciona métodos para interactuar con JWT.
+ * @brief Interfaz contrato para utilidades JWT
+ *
+ * Define contrato para acceso a información del contexto de seguridad JWT,
+ * incluyendo ID de usuario y token de autenticación.
  */
 public interface IJwtUtils {
 
-    /**
-     * Obtiene el ID del JWT.
-     *
-     * @return el ID del JWT
-     */
     String getId();
 
     String getToken();

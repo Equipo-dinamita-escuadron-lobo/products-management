@@ -4,8 +4,10 @@ import com.products_management.domain.exception.BaseBusinessException;
 import com.products_management.domain.exception.ErrorCode;
 
 /**
- * Excepción específica para errores durante la exportación de productos.
- * Extiende BaseBusinessException para mantener consistencia con el manejo de errores del dominio.
+ * @brief Excepción para errores durante exportación de productos
+ *
+ * Se lanza cuando ocurren problemas durante el proceso de exportación
+ * de productos a archivos Excel, incluyendo casos sin datos disponibles.
  */
 public class ProductExportException extends BaseBusinessException {
 

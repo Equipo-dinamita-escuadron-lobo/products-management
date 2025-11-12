@@ -8,29 +8,32 @@ import java.util.List;
 import org.mapstruct.Mapper;
 
 /**
- * Interfaz para mapear entre entidades de persistencia (UnitOfMeasureEntity) y objetos del dominio (UnitOfMeasure).
+ * @brief Mapper para transformación entre dominio y persistencia de unidades de medida
+ *
+ * Define contratos de mapeo bidireccional entre entidades JPA UnitOfMeasureEntity
+ * y objetos de dominio UnitOfMeasure para operaciones de persistencia.
  */
 @Mapper(componentModel = "spring")
 public interface IUnitOfMeasurePersistenceMapper {
 
     /**
-     * Convierte un objeto UnitOfMeasure del dominio en una UnitOfMeasureEntity de persistencia.
-     * @param unitOfMeasure Objeto UnitOfMeasure del dominio.
-     * @return UnitOfMeasureEntity correspondiente.
+     * @brief Convierte objeto de dominio a entidad JPA
+     * @param unitOfMeasure objeto UnitOfMeasure del dominio
+     * @return UnitOfMeasureEntity correspondiente para persistencia
      */
     UnitOfMeasureEntity toUnitOfMeasureEntity(UnitOfMeasure unitOfMeasure);
 
     /**
-     * Convierte una UnitOfMeasureEntity de persistencia en un objeto UnitOfMeasure del dominio.
-     * @param unitOfMeasureEntity UnitOfMeasureEntity de persistencia.
-     * @return Objeto UnitOfMeasure correspondiente.
+     * @brief Convierte entidad JPA a objeto de dominio
+     * @param unitOfMeasureEntity UnitOfMeasureEntity de persistencia
+     * @return objeto UnitOfMeasure del dominio
      */
     UnitOfMeasure toUnitOfMeasure(UnitOfMeasureEntity unitOfMeasureEntity);
 
     /**
-     * Convierte una lista de UnitOfMeasureEntity de persistencia en una lista de objetos UnitOfMeasure del dominio.
-     * @param unitOfMeasureEntityList Lista de UnitOfMeasureEntity de persistencia.
-     * @return Lista de objetos UnitOfMeasure correspondiente.
+     * @brief Convierte lista de entidades JPA a lista de objetos de dominio
+     * @param unitOfMeasureEntityList lista de UnitOfMeasureEntity de persistencia
+     * @return lista de objetos UnitOfMeasure del dominio
      */
     List<UnitOfMeasure> toUnitOfMeasureList(List<UnitOfMeasureEntity> unitOfMeasureEntityList);
 }

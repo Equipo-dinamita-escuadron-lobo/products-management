@@ -9,32 +9,32 @@ import java.util.List;
 import org.mapstruct.Mapper;
 
 /**
- * Interfaz que define métodos para mapear entre entidades de unidad de medida y sus representaciones REST.
+ * @brief Mapper para transformación de entidades de unidad de medida
+ *
+ * Define contratos de mapeo entre entidades de dominio UnitOfMeasure
+ * y DTOs de request/response para operaciones REST.
  */
 @Mapper(componentModel = "spring")
 public interface IUnitOfMeasureRestMapper {
 
     /**
-     * Convierte una solicitud de creación de unidad de medida ({@link UnitOfMeasureCreateRequest}) en una entidad de unidad de medida ({@link UnitOfMeasure}).
-     *
-     * @param unitOfMeasureCreateRequest la solicitud de creación de unidad de medida.
-     * @return la entidad de unidad de medida convertida.
+     * @brief Convierte DTO de creación a entidad de unidad de medida
+     * @param unitOfMeasureCreateRequest solicitud de creación de unidad de medida
+     * @return entidad de unidad de medida convertida
      */
     UnitOfMeasure toUnitOfMeasure(UnitOfMeasureCreateRequest unitOfMeasureCreateRequest);
 
     /**
-     * Convierte una entidad de unidad de medida ({@link UnitOfMeasure}) en una respuesta de unidad de medida ({@link UnitOfMeasureResponse}).
-     *
-     * @param unitOfMeasure la entidad de unidad de medida.
-     * @return la respuesta de unidad de medida convertida.
+     * @brief Convierte entidad de unidad de medida a DTO de respuesta
+     * @param unitOfMeasure entidad de unidad de medida
+     * @return respuesta de unidad de medida convertida
      */
     UnitOfMeasureResponse toUnitOfMeasureResponse(UnitOfMeasure unitOfMeasure);
 
     /**
-     * Convierte una lista de entidades de unidad de medida ({@link UnitOfMeasure}) en una lista de respuestas de unidad de medida ({@link UnitOfMeasureResponse}).
-     *
-     * @param unitOfMeasureList la lista de entidades de unidad de medida.
-     * @return la lista de respuestas de unidad de medida convertida.
+     * @brief Convierte lista de entidades a lista de DTOs de respuesta
+     * @param unitOfMeasureList lista de entidades de unidad de medida
+     * @return lista de respuestas de unidad de medida convertidas
      */
     List<UnitOfMeasureResponse> toUnitOfMeasureResponseList(List<UnitOfMeasure> unitOfMeasureList);
 }

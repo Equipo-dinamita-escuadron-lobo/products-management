@@ -7,7 +7,10 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
- * Entidad que representa una unidad de medida en la base de datos.
+ * @brief Entidad JPA para persistencia de unidades de medida
+ *
+ * Representa la tabla de unidades de medida en base de datos,
+ * definiendo abreviaturas y nombres para cuantificación de productos.
  */
 @Getter
 @Setter

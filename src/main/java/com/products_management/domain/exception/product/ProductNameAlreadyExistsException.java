@@ -4,7 +4,10 @@ import com.products_management.domain.exception.BaseBusinessException;
 import com.products_management.domain.exception.ErrorCode;
 
 /**
- * Excepción lanzada cuando se intenta crear o actualizar un producto con un nombre que ya existe.
+ * @brief Excepción para nombre de producto duplicado
+ *
+ * Se lanza cuando se intenta crear o actualizar un producto con un nombre
+ * que ya está siendo usado por otro producto en la misma empresa.
  */
 public class ProductNameAlreadyExistsException extends BaseBusinessException {
     

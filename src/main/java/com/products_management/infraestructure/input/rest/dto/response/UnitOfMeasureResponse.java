@@ -3,7 +3,10 @@ package com.products_management.infraestructure.input.rest.dto.response;
 import lombok.*;
 
 /**
- * Clase de respuesta que representa una unidad de medida en la API REST.
+ * @brief DTO de respuesta para datos de unidades de medida
+ *
+ * Representa información completa de unidades de medida para respuestas de la API REST,
+ * incluyendo nombre completo, abreviatura y estado de activación.
  */
 @Builder
 @Getter
@@ -12,33 +15,10 @@ import lombok.*;
 @NoArgsConstructor
 public class UnitOfMeasureResponse {
 
-    /**
-     * Identificador único de la unidad de medida.
-     */
     private Long id;
-
-    /**
-     * Nombre de la unidad de medida.
-     */
     private String name;
-
-    /**
-     * Descripción de la unidad de medida.
-     */
     private String description;
-
-    /**
-     * Abreviatura de la unidad de medida.
-     */
     private String abbreviation;
-
-    /**
-     * Identificador de la empresa a la que pertenece la unidad de medida.
-     */
     private String enterpriseId;
-
-    /**
-     * Estado de la unidad de medida (activo/inactivo).
-     */
     private boolean state;
 }

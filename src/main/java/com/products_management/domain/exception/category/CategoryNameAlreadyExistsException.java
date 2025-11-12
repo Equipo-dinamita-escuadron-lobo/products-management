@@ -4,7 +4,10 @@ import com.products_management.domain.exception.BaseBusinessException;
 import com.products_management.domain.exception.ErrorCode;
 
 /**
- * Excepción lanzada cuando se intenta crear o actualizar una categoría con un nombre que ya existe.
+ * @brief Excepción para nombre de categoría duplicado
+ *
+ * Se lanza cuando se intenta crear o actualizar una categoría con un nombre
+ * que ya está siendo usado por otra categoría en la misma empresa.
  */
 public class CategoryNameAlreadyExistsException extends BaseBusinessException {
     

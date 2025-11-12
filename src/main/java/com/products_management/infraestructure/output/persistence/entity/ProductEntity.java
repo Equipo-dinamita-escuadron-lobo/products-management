@@ -15,7 +15,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 /**
- * Entidad que representa un producto en la base de datos.
+ * @brief Entidad JPA para persistencia de productos
+ *
+ * Representa la tabla de productos en base de datos con soporte para multitenancy,
+ * incluyendo relaciones con categorías, tipos de producto y unidades de medida.
  */
 @Getter
 @Setter
@@ -42,6 +45,8 @@ public class ProductEntity {
     private String reference;
     private Long productTypeId;
     private String presentation;
+    
+    private Integer usageCount;
     
     @UpdateTimestamp
     private Instant lastModifiedDate;

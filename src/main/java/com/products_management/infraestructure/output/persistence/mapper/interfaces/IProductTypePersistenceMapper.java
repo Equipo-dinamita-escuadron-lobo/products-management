@@ -8,29 +8,32 @@ import java.util.List;
 import org.mapstruct.Mapper;
 
 /**
- * Interfaz para mapear entre entidades de persistencia (ProductTypeEntity) y objetos del dominio (ProductType).
+ * @brief Mapper para transformación entre dominio y persistencia de tipos de producto
+ *
+ * Define contratos de mapeo bidireccional entre entidades JPA ProductTypeEntity
+ * y objetos de dominio ProductType para operaciones de persistencia.
  */
 @Mapper(componentModel = "spring")
 public interface IProductTypePersistenceMapper {
 
     /**
-     * Convierte un objeto ProductType del dominio en un ProductTypeEntity de persistencia.
-     * @param productType Objeto ProductType del dominio.
-     * @return ProductTypeEntity correspondiente.
+     * @brief Convierte objeto de dominio a entidad JPA
+     * @param productType objeto ProductType del dominio
+     * @return ProductTypeEntity correspondiente para persistencia
      */
     ProductTypeEntity toProductTypeEntity(ProductType productType);
 
     /**
-     * Convierte un ProductTypeEntity de persistencia en un objeto ProductType del dominio.
-     * @param productTypeEntity ProductTypeEntity de persistencia.
-     * @return Objeto ProductType correspondiente.
+     * @brief Convierte entidad JPA a objeto de dominio
+     * @param productTypeEntity ProductTypeEntity de persistencia
+     * @return objeto ProductType del dominio
      */
     ProductType toProductType(ProductTypeEntity productTypeEntity);
 
     /**
-     * Convierte una lista de ProductTypeEntity de persistencia en una lista de objetos ProductType del dominio.
-     * @param productTypeEntityList Lista de ProductTypeEntity de persistencia.
-     * @return Lista de objetos ProductType correspondiente.
+     * @brief Convierte lista de entidades JPA a lista de objetos de dominio
+     * @param productTypeEntityList lista de ProductTypeEntity de persistencia
+     * @return lista de objetos ProductType del dominio
      */
     List<ProductType> toProductTypeList(List<ProductTypeEntity> productTypeEntityList);
 }

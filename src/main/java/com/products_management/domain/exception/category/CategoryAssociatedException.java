@@ -4,7 +4,10 @@ import com.products_management.domain.exception.BaseBusinessException;
 import com.products_management.domain.exception.ErrorCode;
 
 /**
- * Excepción lanzada cuando se intenta eliminar una categoría que está asociada con productos u otros elementos.
+ * @brief Excepción para categoría con asociaciones activas
+ *
+ * Se lanza cuando se intenta eliminar una categoría que tiene productos
+ * asociados, impidiendo la eliminación por integridad de datos.
  */
 public class CategoryAssociatedException extends BaseBusinessException {
     

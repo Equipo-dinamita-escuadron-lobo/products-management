@@ -7,7 +7,10 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
- * Clase de respuesta que representa un producto en la API REST.
+ * @brief DTO de respuesta para datos de productos
+ *
+ * Representa información completa de productos para respuestas de la API REST,
+ * incluyendo datos básicos, inventario y referencias a entidades relacionadas.
  */
 @Builder
 @Getter
@@ -16,67 +19,19 @@ import lombok.Setter;
 @NoArgsConstructor
 public class ProductResponse {
 
-    /**
-     * Identificador único del producto.
-     */
     private Long id;
-
-    /**
-     * Código del producto.
-     */
     private String code;
-
-    /**
-     * Nombre del producto.
-     */
     private String name;
-
-    /**
-     * Descripción del producto.
-     */
     private String description;
-
-    /**
-     * Cantidad del producto.
-     */
     private Integer quantity;
-
-    /**
-     * Identificador de la unidad de medida del producto.
-     */
     private Long unitOfMeasureId;
-
-    /**
-     * Identificador de la categoría del producto.
-     */
     private Long categoryId;
-
-    /**
-     * Identificador de la empresa a la que pertenece el producto.
-     */
     private String enterpriseId;
-
-    /**
-     * Costo del producto.
-     */
     private double cost;
-
-    /**
-     * Estado del producto (activo/inactivo).
-     */
     private boolean state;
-
-    /**
-     * Referencia del producto.
-     */
     private String reference;
-
     private String presentation;
-
-    /**
-     * Tipo de producto relacionado.
-     */
     private Long productTypeId;
-
+    private Integer usageCount;
 
 }

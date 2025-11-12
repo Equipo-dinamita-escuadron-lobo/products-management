@@ -10,9 +10,10 @@ import java.io.IOException;
 import java.util.*;
 
 /**
- * Utilidades para operaciones comunes con archivos Excel.
- * Centraliza funcionalidades de lectura, validación y manipulación
- * de archivos Excel para reutilización en diferentes módulos.
+ * @brief Utilidades completas para manipulación de archivos Excel
+ *
+ * Centraliza funcionalidades de validación, lectura, escritura y manipulación
+ * de archivos Excel usando Apache POI para reutilización en diferentes módulos.
  */
 public final class ExcelUtils {
 
@@ -20,13 +21,11 @@ public final class ExcelUtils {
         throw new UnsupportedOperationException("ExcelUtils es una clase de utilidad y no debe ser instanciada");
     }
 
-    // ===== VALIDACIONES DE ARCHIVO =====
   
     /**
-     * Verifica si un archivo tiene una extensión Excel válida.
-     * 
-     * @param fileName el nombre del archivo
-     * @return true si tiene extensión válida, false en caso contrario
+     * @brief Valida extensión de archivo Excel (.xlsx, .xls)
+     * @param fileName nombre del archivo a validar
+     * @return true si tiene extensión Excel válida
      */
     public static boolean isValidExcelExtension(String fileName) {
         if (fileName == null) {
@@ -38,13 +37,11 @@ public final class ExcelUtils {
                 .anyMatch(lowerFileName::endsWith);
     }
 
-    // ===== OPERACIONES DE LECTURA =====
 
     /**
-     * Abre un workbook desde un MultipartFile.
-     * 
-     * @param file el archivo Excel
-     * @return el workbook abierto
+     * @brief Abre workbook Excel desde MultipartFile
+     * @param file archivo Excel subido
+     * @return workbook XSSFWorkbook abierto
      * @throws IOException si hay error al leer el archivo
      */
     public static Workbook openWorkbook(MultipartFile file) throws IOException {
@@ -52,11 +49,10 @@ public final class ExcelUtils {
     }
 
     /**
-     * Obtiene la primera hoja del workbook.
-     * 
-     * @param workbook el workbook Excel
-     * @return la primera hoja
-     * @throws IllegalArgumentException si el workbook no tiene hojas
+     * @brief Obtiene primera hoja del workbook Excel
+     * @param workbook workbook Excel
+     * @return primera hoja del workbook
+     * @throws IllegalArgumentException si workbook no tiene hojas
      */
     public static Sheet getFirstSheet(Workbook workbook) {
         if (workbook.getNumberOfSheets() == 0) {
@@ -66,10 +62,9 @@ public final class ExcelUtils {
     }
 
     /**
-     * Detecta el mapeo de columnas basado en la fila de encabezados.
-     * 
-     * @param headerRow la fila de encabezados
-     * @return mapa que asocia nombre de columna con su índice
+     * @brief Detecta mapeo de columnas desde fila de encabezados
+     * @param headerRow fila que contiene los encabezados
+     * @return mapa que asocia nombre de columna con índice numérico
      */
     public static Map<String, Integer> detectColumnMapping(Row headerRow) {
         Map<String, Integer> columnMap = new HashMap<>();
@@ -91,11 +86,10 @@ public final class ExcelUtils {
     }
 
     /**
-     * Valida que todos los encabezados requeridos estén presentes.
-     * 
-     * @param columnMap el mapa de columnas detectado
-     * @param requiredHeaders los encabezados requeridos
-     * @return lista de encabezados faltantes (vacía si todos están presentes)
+     * @brief Valida presencia de encabezados requeridos
+     * @param columnMap mapa de columnas detectadas
+     * @param requiredHeaders array de encabezados obligatorios
+     * @return lista de encabezados faltantes (vacía si todos presentes)
      */
     public static List<String> validateRequiredHeaders(Map<String, Integer> columnMap, String[] requiredHeaders) {
         List<String> missingHeaders = new ArrayList<>();
@@ -109,13 +103,11 @@ public final class ExcelUtils {
         return missingHeaders;
     }
 
-    // ===== OPERACIONES DE CELDA =====
 
     /**
-     * Obtiene el valor de una celda como String, manejando diferentes tipos de datos.
-     * 
-     * @param cell la celda a leer
-     * @return el valor como String o null si la celda está vacía
+     * @brief Obtiene valor de celda como String con manejo de tipos
+     * @param cell celda Excel a leer
+     * @return valor como String o null si celda vacía
      */
     public static String getCellValueAsString(Cell cell) {
         if (cell == null) {
@@ -151,10 +143,9 @@ public final class ExcelUtils {
     }
 
     /**
-     * Obtiene el valor de una celda como Long.
-     * 
-     * @param cell la celda a leer
-     * @return el valor como Long o null si no se puede convertir
+     * @brief Obtiene valor de celda como Long
+     * @param cell celda Excel a leer
+     * @return valor como Long o null si no se puede convertir
      */
     public static Long getCellValueAsLong(Cell cell) {
         String stringValue = getCellValueAsString(cell);
@@ -170,12 +161,11 @@ public final class ExcelUtils {
     }
 
     /**
-     * Obtiene el valor de una celda por nombre de columna.
-     * 
-     * @param row la fila que contiene la celda
-     * @param columnName el nombre de la columna
-     * @param columnMap el mapa de columnas
-     * @return el valor como String o null si no se encuentra
+     * @brief Obtiene valor de celda por nombre de columna
+     * @param row fila que contiene la celda
+     * @param columnName nombre de la columna
+     * @param columnMap mapa de mapeo columna-nombre
+     * @return valor como String o null si no se encuentra
      */
     public static String getCellValueByColumnName(Row row, String columnName, Map<String, Integer> columnMap) {
         Integer columnIndex = columnMap.get(columnName);
@@ -188,12 +178,11 @@ public final class ExcelUtils {
     }
 
     /**
-     * Obtiene el valor de una celda como Long por nombre de columna.
-     * 
-     * @param row la fila que contiene la celda
-     * @param columnName el nombre de la columna
-     * @param columnMap el mapa de columnas
-     * @return el valor como Long o null si no se encuentra o no se puede convertir
+     * @brief Obtiene valor de celda como Long por nombre de columna
+     * @param row fila que contiene la celda
+     * @param columnName nombre de la columna
+     * @param columnMap mapa de mapeo columna-nombre
+     * @return valor como Long o null si no se encuentra o no se puede convertir
      */
     public static Long getCellValueAsLongByColumnName(Row row, String columnName, Map<String, Integer> columnMap) {
         Integer columnIndex = columnMap.get(columnName);
@@ -205,13 +194,11 @@ public final class ExcelUtils {
         return getCellValueAsLong(cell);
     }
 
-    // ===== OPERACIONES DE FILA =====
 
     /**
-     * Verifica si una fila está completamente vacía.
-     * 
-     * @param row la fila a verificar
-     * @return true si está vacía, false en caso contrario
+     * @brief Verifica si fila Excel está completamente vacía
+     * @param row fila Excel a verificar
+     * @return true si fila está vacía, false si tiene datos
      */
     public static boolean isRowEmpty(Row row) {
         if (row == null) {
@@ -229,11 +216,10 @@ public final class ExcelUtils {
     }
 
     /**
-     * Cuenta las filas con datos en una hoja (excluyendo encabezados).
-     * 
-     * @param sheet la hoja Excel
-     * @param startRow índice de la primera fila de datos (usualmente 1)
-     * @return número de filas con datos
+     * @brief Cuenta filas con datos en hoja Excel
+     * @param sheet hoja Excel a procesar
+     * @param startRow índice de primera fila de datos (excluyendo encabezados)
+     * @return número de filas que contienen datos
      */
     public static int countDataRows(Sheet sheet, int startRow) {
         int dataRowCount = 0;
@@ -249,15 +235,9 @@ public final class ExcelUtils {
         return dataRowCount;
     }
 
-    // ===== UTILIDADES DE GENERACIÓN =====
-
-
-    // ===== MANEJO DE ERRORES =====
-
     /**
-     * Cierra un workbook de manera segura.
-     * 
-     * @param workbook el workbook a cerrar
+     * @brief Cierra workbook Excel de manera segura
+     * @param workbook workbook Excel a cerrar
      */
     public static void closeWorkbookSafely(Workbook workbook) {
         if (workbook != null) {

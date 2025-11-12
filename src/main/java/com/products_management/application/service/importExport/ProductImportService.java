@@ -1,4 +1,4 @@
-package com.products_management.application.service;
+package com.products_management.application.service.importExport;
 
 import com.products_management.application.ports.input.IProductImportUseCase;
 import com.products_management.domain.enums.ImportErrorType;
@@ -17,8 +17,9 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
- * Servicio principal para la importación de productos desde archivos Excel.
- * Orquesta todos los servicios auxiliares para completar el proceso de importación.
+ * @brief Servicio principal de importación de productos desde Excel
+ *
+ * Orquesta el proceso completo de importación: validación, parseo, procesamiento y respuesta.
  */
 @Service
 @RequiredArgsConstructor
@@ -30,9 +31,6 @@ public class ProductImportService implements IProductImportUseCase {
     private final ProductBatchProcessor batchProcessor;
     private final ProductImportResponseBuilder responseBuilder;
 
-    /**
-     * Importa productos desde un archivo Excel.
-     */
     @Override
     public ProductImportResponse importProductsFromExcel(ProductImportRequest request) {
         String entId = request.getEntId();
@@ -124,8 +122,9 @@ public class ProductImportService implements IProductImportUseCase {
     }
 
     /**
-     * Calcula el número de registros únicos que tienen errores de validación.
-     * Un registro puede tener múltiples errores, pero solo cuenta como 1 fallo.
+     * @brief Calcula registros únicos con errores basándose en números de fila
+     * @param errors lista de errores de importación
+     * @return cantidad de filas únicas que tienen al menos un error
      */
     private int calculateUniqueFailedRecords(List<ImportErrorDetail> errors) {
         if (errors == null || errors.isEmpty()) {
@@ -138,8 +137,13 @@ public class ProductImportService implements IProductImportUseCase {
     }
 
     /**
-     * Filtra los productos que no tienen errores de parsing.
-     * Solo los productos sin errores de parsing pasan a la validación.
+     * @brief Filtra productos sin errores de parsing
+     *
+     * Excluye productos de filas con errores de parseo para continuar con validación.
+     *
+     * @param allProducts Lista completa de productos parseados
+     * @param parsingErrors Lista de errores de parsing
+     * @return Lista de productos válidos para validación posterior
      */
     private List<ProductExcelData> filterProductsWithoutParsingErrors(
             List<ProductExcelData> allProducts, List<ImportErrorDetail> parsingErrors) {
@@ -160,7 +164,18 @@ public class ProductImportService implements IProductImportUseCase {
     }
 
     /**
-     * Construye la respuesta final consolidada calculando correctamente las estadísticas.
+     * @brief Construye respuesta final con estadísticas consolidadas
+     *
+     * Combina métricas de todas las etapas (parsing, validación, procesamiento) en respuesta final.
+     *
+     * @param entId ID de la empresa
+     * @param fileName Nombre del archivo importado
+     * @param parsingResult Resultados del parsing Excel
+     * @param validationResult Resultados de validación por lotes
+     * @param processingResult Resultados de procesamiento por lotes
+     * @param allErrors Lista completa de errores encontrados
+     * @param parsingErrorCount Cantidad de errores de parsing únicos
+     * @return Respuesta completa con estadísticas consolidadas
      */
     private ProductImportResponse buildFinalResponse(String entId, String fileName,
             ProductExcelParsingService.ExcelParsingResult parsingResult,

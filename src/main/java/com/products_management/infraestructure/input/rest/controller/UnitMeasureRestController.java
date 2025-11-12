@@ -18,7 +18,10 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Optional;
 
 /**
- * Controlador REST para la gestión de unidades de medida.
+ * @brief Controlador REST para gestión de unidades de medida
+ *
+ * Administra unidades de medida con operaciones CRUD completas,
+ * incluyendo validaciones de unicidad y controles de eliminación segura.
  */
 @RestController
 @RequiredArgsConstructor

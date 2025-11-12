@@ -9,8 +9,10 @@ import com.products_management.infraestructure.output.multitenancy.interceptor.T
 import lombok.RequiredArgsConstructor;
 
 /**
- * Clase de configuración para la configuración web MVC.
- * Configura un interceptor para manejar la lógica de multitenancy basada en web requests.
+ * @brief Configuración web MVC para multitenancy
+ *
+ * Configura interceptores para manejar lógica de multitenancy en requests web,
+ * permitiendo identificar y aislar datos por empresa/tenant automáticamente.
  */
 @RequiredArgsConstructor
 @Configuration
@@ -18,11 +20,6 @@ public class WebConfiguration implements WebMvcConfigurer {
 
     private final TenantInterceptor tenantInterceptor;
 
-    /**
-     * Registra el interceptor de inquilino (tenant) en el registro de interceptores.
-     *
-     * @param registry el registro de interceptores de la configuración web MVC.
-     */
     @Override
     public void addInterceptors(@SuppressWarnings("null") InterceptorRegistry registry) {
         registry.addWebRequestInterceptor(tenantInterceptor);

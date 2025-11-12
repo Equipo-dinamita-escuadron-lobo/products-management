@@ -10,24 +10,33 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
 /**
- * Interfaz para mapear entre modelos de entrada (ProductTypeRequest) y objetos del dominio (ProductType).
+ * @brief Mapper para transformación de entidades de tipo de producto
+ *
+ * Define contratos de mapeo entre entidades de dominio ProductType
+ * y DTOs de request/response para operaciones REST.
  */
 @Mapper(componentModel = "spring")
 public interface IProductTypeRestMapper {
 
     /**
-     * Convierte un objeto ProductTypeRequest en un ProductType del dominio.
-     * @param productTypeRequest Objeto de solicitud.
-     * @return ProductType correspondiente.
+     * @brief Convierte DTO de solicitud a entidad de tipo de producto
+     * @param productTypeRequest objeto de solicitud
+     * @return entidad ProductType correspondiente
      */
     @Mapping(target = "id", ignore = true)
     ProductType toProductType(ProductTypeRequest productTypeRequest);
 
     /**
-     * Convierte una lista de ProductTypeRequest en una lista de objetos ProductType del dominio.
-     * @param productTypeRequestList Lista de objetos de solicitud.
-     * @return Lista de objetos ProductType correspondientes.
+     * @brief Convierte entidad de tipo de producto a DTO de respuesta
+     * @param productType entidad de tipo de producto
+     * @return respuesta convertida
      */
     ProductTypeResponse toProductTypeResponse(ProductType productType);
+
+    /**
+     * @brief Convierte lista de DTOs a lista de entidades
+     * @param productTypeRequestList lista de objetos de solicitud
+     * @return lista de entidades ProductType correspondientes
+     */
     List<ProductType> toProductTypeList(List<ProductTypeRequest> productTypeRequestList);
 }

@@ -8,7 +8,10 @@ import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 /**
- * Clase de solicitud utilizada para crear una categoría en el sistema.
+ * @brief DTO de solicitud para creación de categorías
+ *
+ * Contiene datos requeridos para crear nuevas categorías en el sistema,
+ * incluyendo configuración contable y referencias a entidades relacionadas.
  */
 @Builder
 @Getter
@@ -46,7 +49,7 @@ public class CategoryCreateRequest {
 
     @JsonIgnore
     @Builder.Default
-    private boolean state = true; // Por defecto activo
+    private boolean state = true;
 
     
 }

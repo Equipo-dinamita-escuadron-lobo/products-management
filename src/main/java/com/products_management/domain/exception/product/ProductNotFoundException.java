@@ -4,7 +4,9 @@ import com.products_management.domain.exception.BaseBusinessException;
 import com.products_management.domain.exception.ErrorCode;
 
 /**
- * Excepción lanzada cuando no se encuentra un producto.
+ * @brief Excepción para producto no encontrado
+ *
+ * Se lanza cuando se intenta acceder a un producto que no existe en el sistema.
  */
 public class ProductNotFoundException extends BaseBusinessException {
     

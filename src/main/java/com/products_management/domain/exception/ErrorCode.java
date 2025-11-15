@@ -24,6 +24,7 @@ public enum ErrorCode implements ErrorCodeDefinition {
     UNITOFMEASURE_NOT_FOUND("UNITOFMEASURE_NOT_FOUND", "Unidad de medida no encontrada"),
     INVALID_UNITOFMEASURE("INVALID_UNITOFMEASURE", "Unidad de medida inválida"),
     UNITOFMEASURE_ASSOCIATED("UNITOFMEASURE_ASSOCIATED_WITH_PRODUCT", "La unidad de medida está asociada con un producto"),
+    UNITOFMEASURE_IN_USE("UNITOFMEASURE_IN_USE", "La unidad de medida no se puede editar porque contiene productos con movimientos contables"),
     UNITOFMEASURE_NAME_ALREADY_EXISTS("UNITOFMEASURE_NAME_ALREADY_EXISTS", "Ya existe una unidad de medida con este nombre"),
     UNITOFMEASURE_ABBREVIATION_ALREADY_EXISTS("UNITOFMEASURE_ABBREVIATION_ALREADY_EXISTS", "Ya existe una unidad de medida con esta abreviación"),
 

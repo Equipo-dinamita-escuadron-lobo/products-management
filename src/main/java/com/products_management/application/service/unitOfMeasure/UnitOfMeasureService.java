@@ -5,6 +5,7 @@ import com.products_management.application.ports.output.IUnitOfMeasurePersistenc
 import com.products_management.application.service.product.ProductService;
 import com.products_management.domain.exception.unitOfMeasure.UnitOfMeasureAbbreviationAlreadyExistsException;
 import com.products_management.domain.exception.unitOfMeasure.UnitOfMeasureAssociatedException;
+import com.products_management.domain.exception.unitOfMeasure.UnitOfMeasureInUseException;
 import com.products_management.domain.exception.unitOfMeasure.UnitOfMeasureNameAlreadyExistsException;
 import com.products_management.domain.exception.unitOfMeasure.UnitOfMeasureNotFoundException;
 import com.products_management.domain.model.Product;
@@ -48,6 +49,8 @@ public class UnitOfMeasureService implements IUnitOfMeasureServicePort {
     public UnitOfMeasure update(Long id, String enterpriseId, UnitOfMeasure unitOfMeasure) {
         return unitMeasurePersistencePort.findByIdAndEnterpriseId(id, enterpriseId)
                 .map(existingUnit -> {
+                    // Verificar que la unidad de medida no contenga productos en uso antes de permitir la edición
+                    validateUnitOfMeasureNotInUse(id);
                     // Normalizar nombre y abreviación de manera consistente (para validación y almacenamiento)
                     unitOfMeasure.setName(StringNormalizer.normalize(unitOfMeasure.getName()));
                     unitOfMeasure.setAbbreviation(StringNormalizer.normalize(unitOfMeasure.getAbbreviation()));
@@ -119,7 +122,20 @@ public class UnitOfMeasureService implements IUnitOfMeasureServicePort {
         }
     }
 
-  
+    /**
+     * @brief Valida que la unidad de medida no contenga productos que ya han sido usados
+     * @param unitOfMeasureId ID de la unidad de medida a validar
+     * @throws UnitOfMeasureInUseException si la unidad de medida contiene productos en uso
+     */
+    private void validateUnitOfMeasureNotInUse(Long unitOfMeasureId) {
+        List<Product> products = productServicePort.findAllByUnitOfMeasure(unitOfMeasureId);
+        boolean hasProductsInUse = products.stream().anyMatch(Product::isInUse);
+
+        if (hasProductsInUse) {
+            throw new UnitOfMeasureInUseException();
+        }
+    }
+
     @Override
     public long countAllUnitOfMeasuresByEntId(String enterpriseId) {
         return unitMeasurePersistencePort.countByEnterpriseId(enterpriseId);

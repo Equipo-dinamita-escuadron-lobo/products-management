@@ -38,6 +38,7 @@ public enum ErrorCode implements ErrorCodeDefinition {
     PRODUCT_TYPE_NOT_FOUND("PRODUCT_TYPE_NOT_FOUND", "Tipo de producto no encontrado"),
     INVALID_PRODUCT_TYPE("INVALID_PRODUCT_TYPE", "Tipo de producto inválido"),
     PRODUCT_TYPE_ASSOCIATED("PRODUCT_TYPE_ASSOCIATED_WITH_PRODUCT", "El tipo de producto está asociado con un producto"),
+    PRODUCT_TYPE_IN_USE("PRODUCT_TYPE_IN_USE", "El tipo de producto no se puede editar porque contiene productos con movimientos contables"),
     PRODUCT_TYPE_NAME_ALREADY_EXISTS("PRODUCT_TYPE_NAME_ALREADY_EXISTS", "Ya existe un tipo de producto con este nombre"),
 
     //Códigos de Excel

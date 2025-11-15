@@ -31,6 +31,7 @@ public enum ErrorCode implements ErrorCodeDefinition {
     CATEGORY_NOT_FOUND("CATEGORY_NOT_FOUND", "Categoría no encontrada"),
     INVALID_CATEGORY("INVALID_CATEGORY", "Categoría inválida"),
     CATEGORY_ASSOCIATED("CATEGORY_ASSOCIATED_WITH_PRODUCT", "La categoría está asociada con un producto"),
+    CATEGORY_IN_USE("CATEGORY_IN_USE", "La categoría no se puede editar porque contiene productos con movimientos contables"),
     CATEGORY_NAME_ALREADY_EXISTS("CATEGORY_NAME_ALREADY_EXISTS", "Ya existe una categoría con este nombre"),
 
     //Codigos de tipo de producto

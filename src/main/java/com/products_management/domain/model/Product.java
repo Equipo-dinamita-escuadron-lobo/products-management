@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
- * @brief Entidad que representa un producto en el sistema
+ * @brief Entidad que representa un producto
  *
  * Contiene toda la información relacionada con un producto: datos básicos,
  * relaciones con entidades relacionadas y estado de activación.

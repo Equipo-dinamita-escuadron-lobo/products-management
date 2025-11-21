@@ -112,20 +112,82 @@ public class ProductRestController {
                                 .body(templateFile);
         }
 
-        @GetMapping("/export/excel")
-        public ResponseEntity<Resource> exportProductsWithValidations(
-                        @RequestParam String entId,
-                        @RequestParam(required = false) String companyName,
-                        @RequestParam(required = false) Boolean status) {
+    @GetMapping("/export/excel")
+    public ResponseEntity<Map<String, String>> exportProductsAsync(
+                    @RequestParam String entId,
+                    @RequestParam(required = false) String companyName,
+                    @RequestParam(required = false) Boolean status) {
 
-                Resource excelFile = productExportUseCase.exportProductsWithValidations(entId, status);
-                String filename = fileNameGenerator.generateExportFileName(entId, companyName, status);
+        log.info("Iniciando exportación asíncrona de productos. Empresa: {}, Estado: {}", entId, status);
 
-                return ResponseEntity.ok()
-                                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + filename + "\"")
-                                .contentType(MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
-                                .body(excelFile);
+        com.products_management.infraestructure.input.rest.dto.request.ProductExportRequest request = 
+                com.products_management.infraestructure.input.rest.dto.request.ProductExportRequest.builder()
+                        .entId(entId)
+                        .companyName(companyName)
+                        .status(status)
+                        .build();
+
+        String jobId = productExportUseCase.exportProductsAsync(request);
+
+        log.info("Exportación asíncrona de productos iniciada. JobId: {}", jobId);
+
+        Map<String, String> response = new HashMap<>();
+        response.put("jobId", jobId);
+        response.put("message", "Exportación iniciada correctamente");
+        response.put("status", "PENDING");
+
+        return ResponseEntity.accepted().body(response);
+    }
+
+    @GetMapping("/export/status/{jobId}")
+    public ResponseEntity<?> getExportStatus(@PathVariable String jobId) {
+        log.info("Consultando estado de exportación de productos. JobId: {}", jobId);
+
+        java.util.Optional<com.products_management.domain.model.ExportJobStatus> jobStatus = 
+                productExportUseCase.getExportStatus(jobId);
+
+        if (jobStatus.isEmpty()) {
+            log.warn("JobId de exportación no encontrado: {}", jobId);
+            return ResponseEntity.notFound().build();
         }
+
+        log.info("Estado de exportación de productos obtenido. JobId: {}, Estado: {}",
+                        jobId, jobStatus.get().getStatus());
+
+        return ResponseEntity.ok(jobStatus.get());
+    }
+
+    @GetMapping("/export/download/{jobId}")
+    public ResponseEntity<Resource> downloadExportedFile(@PathVariable String jobId) {
+        log.info("Descargando archivo exportado. JobId: {}", jobId);
+
+        java.util.Optional<com.products_management.domain.model.ExportJobStatus> jobStatus = 
+                productExportUseCase.getExportStatus(jobId);
+
+        if (jobStatus.isEmpty()) {
+            log.warn("JobId de exportación no encontrado: {}", jobId);
+            return ResponseEntity.notFound().build();
+        }
+
+        com.products_management.domain.model.ExportJobStatus status = jobStatus.get();
+
+        if (status.getStatus() != com.products_management.domain.enums.ImportStatus.COMPLETED) {
+            log.warn("Exportación no completada. JobId: {}, Estado: {}", jobId, status.getStatus());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+
+        if (status.getFileData() == null) {
+            log.error("Archivo no disponible. JobId: {}", jobId);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+
+        Resource resource = new org.springframework.core.io.ByteArrayResource(status.getFileData());
+
+        return ResponseEntity.ok()
+                        .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + status.getFileName() + "\"")
+                        .contentType(MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
+                        .body(resource);
+    }
 
         @PostMapping("/import/excel")
         public ResponseEntity<Map<String, String>> importProductsFromExcel(

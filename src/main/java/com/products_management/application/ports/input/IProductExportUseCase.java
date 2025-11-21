@@ -1,13 +1,17 @@
 package com.products_management.application.ports.input;
 
+import com.products_management.domain.model.ExportJobStatus;
+import com.products_management.infraestructure.input.rest.dto.request.ProductExportRequest;
 import org.springframework.core.io.Resource;
+
+import java.util.Optional;
 
 /**
  * @brief Puerto de entrada para exportación de productos a Excel
  *
  * Define contrato para generación de archivos Excel con productos:
  * - Plantillas con validaciones (listas desplegables)
- * - Exportación de datos existentes con filtros por estado
+ * - Exportación asíncrona de datos existentes con filtros por estado
  */
 public interface IProductExportUseCase {
 
@@ -19,11 +23,17 @@ public interface IProductExportUseCase {
     Resource exportProductTemplateWithValidations(String entId);
 
     /**
-     * @brief Exporta productos existentes con validaciones Excel
-     * @param entId ID de la entidad
-     * @param status estado de los productos (true=activos, false=inactivos, null=todos)
-     * @return Resource que contiene el archivo Excel con datos y validaciones
+     * @brief Inicia exportación asíncrona de productos
+     * @param exportRequest solicitud de exportación con filtros
+     * @return jobId único para consultar el estado
      */
-    Resource exportProductsWithValidations(String entId, Boolean status);
+    String exportProductsAsync(ProductExportRequest exportRequest);
+
+    /**
+     * @brief Obtiene el estado de un job de exportación
+     * @param jobId identificador único del job
+     * @return estado del job si existe
+     */
+    Optional<ExportJobStatus> getExportStatus(String jobId);
 
 }

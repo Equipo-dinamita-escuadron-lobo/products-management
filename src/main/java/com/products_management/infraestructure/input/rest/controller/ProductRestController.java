@@ -3,34 +3,37 @@ package com.products_management.infraestructure.input.rest.controller;
 import com.products_management.application.ports.input.IProductServicePort;
 import com.products_management.application.ports.input.IProductExportUseCase;
 import com.products_management.application.ports.input.IProductImportUseCase;
+import com.products_management.domain.model.ImportJobStatus;
 import com.products_management.domain.model.Product;
 import com.products_management.infraestructure.input.rest.dto.request.ProductCreateRequest;
 import com.products_management.infraestructure.input.rest.dto.request.ProductImportRequest;
-import com.products_management.infraestructure.input.rest.dto.response.ProductImportResponse;
 import com.products_management.infraestructure.input.rest.dto.response.ProductResponse;
 import com.products_management.infraestructure.input.rest.mapper.interfaces.IProductRestMapper;
 import com.products_management.infraestructure.utils.ExcelFileNameGenerator;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-
 import org.springframework.web.bind.annotation.*;
-
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 /**
  * @brief Controlador REST principal para gestión de productos
  *
  * Expone endpoints completos CRUD para productos, incluyendo operaciones
- * de importación/exportación masiva y sincronización con sistemas externos.
+ * de importación/exportación masiva (síncronas y asíncronas) y sincronización
+ * con sistemas externos.
  */
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/products")
@@ -125,14 +128,41 @@ public class ProductRestController {
         }
 
         @PostMapping("/import/excel")
-        public ResponseEntity<ProductImportResponse> importProductsFromExcel(
+        public ResponseEntity<Map<String, String>> importProductsFromExcel(
                         @RequestParam String entId,
                         @RequestParam("excelFile") MultipartFile excelFile) {
 
-                ProductImportRequest request = ProductImportRequest.from(entId, excelFile);
-                ProductImportResponse response = productImportUseCase.importProductsFromExcel(request);
+                log.info("Iniciando importación asíncrona de productos. Empresa: {}, Archivo: {}",
+                                entId, excelFile.getOriginalFilename());
 
-                return ResponseEntity.ok(response);
+                ProductImportRequest request = ProductImportRequest.from(entId, excelFile);
+                String jobId = productImportUseCase.importProductsAsync(request);
+
+                log.info("Importación asíncrona iniciada. JobId: {}", jobId);
+
+                Map<String, String> response = new HashMap<>();
+                response.put("jobId", jobId);
+                response.put("message", "Importación iniciada correctamente");
+                response.put("status", "PENDING");
+
+                return ResponseEntity.accepted().body(response);
+        }
+
+        @GetMapping("/import/status/{jobId}")
+        public ResponseEntity<?> getImportStatus(@PathVariable String jobId) {
+                log.info("Consultando estado de importación. JobId: {}", jobId);
+
+                Optional<ImportJobStatus> jobStatus = productImportUseCase.getImportStatus(jobId);
+
+                if (jobStatus.isEmpty()) {
+                        log.warn("JobId no encontrado: {}", jobId);
+                        return ResponseEntity.notFound().build();
+                }
+
+                log.info("Estado de importación obtenido. JobId: {}, Estado: {}",
+                                jobId, jobStatus.get().getStatus());
+
+                return ResponseEntity.ok(jobStatus.get());
         }
 
 }

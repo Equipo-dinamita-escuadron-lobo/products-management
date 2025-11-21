@@ -90,6 +90,57 @@ public class ProductExcelParsingService {
     }
 
     /**
+     * @brief Parsea archivo Excel desde bytes (para procesamiento asíncrono)
+     *
+     * Versión optimizada que recibe directamente los bytes del archivo para evitar
+     * problemas de serialización con MultipartFile en threads asíncronos.
+     *
+     * @param fileBytes contenido del archivo Excel en bytes
+     * @param entId identificador de la empresa
+     * @return resultado del parseo con datos procesados y errores
+     */
+    public ExcelParsingResult parseExcelFileFromBytes(byte[] fileBytes, String entId) {
+        List<ProductExcelData> productsData = new ArrayList<>();
+        List<ImportErrorDetail> errors = new ArrayList<>();
+        Map<String, Integer> columnMap = new HashMap<>();
+
+        try (Workbook workbook = new XSSFWorkbook(new java.io.ByteArrayInputStream(fileBytes))) {
+            Sheet sheet = workbook.getSheetAt(0);
+
+            if (sheet.getPhysicalNumberOfRows() == 0) {
+                throw new IllegalArgumentException(ImportConstants.ErrorMessages.EMPTY_FILE);
+            }
+
+            columnMap = detectColumnMapping(sheet, errors);
+            if (columnMap.isEmpty()) {
+                throw new IllegalArgumentException(ImportConstants.ErrorMessages.INVALID_HEADERS);
+            }
+
+            for (int rowIndex = DATA_START_ROW_INDEX; rowIndex <= sheet.getLastRowNum(); rowIndex++) {
+                Row row = sheet.getRow(rowIndex);
+                if (row == null || isEmptyRow(row)) {
+                    continue;
+                }
+
+                ProductExcelData productData = parseRow(row, rowIndex + 1, entId, columnMap, errors);
+                if (productData != null) {
+                    productsData.add(productData);
+                }
+            }
+
+        } catch (IOException e) {
+            throw new RuntimeException("Error leyendo archivo Excel desde bytes: " + e.getMessage(), e);
+        }
+
+        return ExcelParsingResult.builder()
+                .productsData(productsData)
+                .errors(errors)
+                .totalRows(productsData.size())
+                .columnMap(columnMap)
+                .build();
+    }
+
+    /**
      * @brief Detecta el mapeo de columnas basado en los encabezados del archivo
      *
      * Realiza mapeo dinámico de columnas identificando los encabezados del Excel

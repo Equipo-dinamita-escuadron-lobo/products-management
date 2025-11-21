@@ -20,7 +20,7 @@ spring:
       hibernate:
         dialect: ${DB_HIBERNATE_DIALECT:org.hibernate.dialect.PostgreSQLDialect}
         jdbc:
-        batch-size: 1000
+          batch-size: 1000
         order-inserts: true
         order-updates: true
         batch-versioned-data: true
@@ -79,16 +79,6 @@ eureka:
     service-url:
       defaultZone: ${EUREKA_URL:http://localhost:8761/eureka/}
 
-logging:
-  level:
-    org:
-      Keycloak: ${KEYCLOAK_LOG_LEVEL:DEBUG}
-      hibernate:
-        SQL: DEBUG
-        type:
-          descriptor:
-            sql:
-              BasicBinder: TRACE
 jwt:
   auth:
     converter:

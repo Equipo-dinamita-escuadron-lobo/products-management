@@ -37,6 +37,14 @@ public interface IProductPersistencePort {
     Product create(Product product);
 
     /**
+     * @brief Crea múltiples productos en lote
+     * @details Usa saveAll de JPA para inserción batch, reduciendo queries a BD
+     * @param products lista de productos a crear
+     * @return lista de productos creados con IDs asignados
+     */
+    List<Product> saveAll(List<Product> products);
+
+    /**
      * @brief Elimina un producto por ID
      * @param id el ID del producto a eliminar
      */
@@ -118,25 +126,11 @@ public interface IProductPersistencePort {
      */
     Page<Product> findByEnterpriseIdWithFilters(String enterpriseId, String search, int pageNumber, int pageSize, String sortField, String sortOrder);
     
-    /**
-     * @brief Cuenta productos por empresa con filtros de búsqueda
-     * @param enterpriseId el ID de la empresa
-     * @param search el término de búsqueda (opcional)
-     * @return el número de productos que coinciden
-     */
+   
     long countByEnterpriseIdWithFilters(String enterpriseId, String search);
     
-    /**
-     * @brief Cuenta todos los productos por empresa
-     * @param enterpriseId el ID de la empresa
-     * @return el número total de productos
-     */
+    
     long countByEnterpriseId(String enterpriseId);
     
-    /**
-     * @brief Cuenta productos activos por empresa
-     * @param enterpriseId el ID de la empresa
-     * @return el número de productos activos
-     */
     long countActivatedByEnterpriseId(String enterpriseId);
 }

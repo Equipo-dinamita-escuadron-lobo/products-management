@@ -8,6 +8,7 @@ import com.products_management.domain.enums.ImportStatus;
 import com.products_management.domain.exception.product.ProductExportException;
 import com.products_management.domain.model.Product;
 import com.products_management.infraestructure.input.rest.dto.request.ProductExportRequest;
+import com.products_management.infraestructure.utils.ExcelStyleHelper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.*;
@@ -145,10 +146,10 @@ public class ProductAsyncExportProcessor {
             Sheet sheet = workbook.createSheet("Productos");
 
             // Crear estilos
-            CellStyle headerStyle = createHeaderStyle(workbook);
-            CellStyle dataStyle = createDataStyle(workbook);
+            CellStyle headerStyle = ExcelStyleHelper.createHeaderStyle(workbook);
+            CellStyle dataStyle = ExcelStyleHelper.createDataStyle(workbook);
 
-            createHeaders(sheet, headerStyle, createOptionalHeaderStyle(workbook));
+            createHeaders(sheet, headerStyle, ExcelStyleHelper.createOptionalHeaderStyle(workbook));
 
             // Pre-cargar cache de nombres (3-4 queries en lugar de 54,708)
             EntityNamesCache namesCache = preloadEntityNamesCache(request.getEntId(), products);
@@ -164,53 +165,6 @@ public class ProductAsyncExportProcessor {
         }
     }
 
-    // ==================== MÉTODOS DE ESTILOS ====================
-
-    private CellStyle createHeaderStyle(Workbook workbook) {
-        CellStyle style = workbook.createCellStyle();
-        Font font = workbook.createFont();
-        font.setBold(true);
-        font.setColor(IndexedColors.WHITE.getIndex());
-        style.setFont(font);
-        style.setFillForegroundColor(IndexedColors.DARK_BLUE.getIndex());
-        style.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-        style.setBorderBottom(BorderStyle.THIN);
-        style.setBorderTop(BorderStyle.THIN);
-        style.setBorderRight(BorderStyle.THIN);
-        style.setBorderLeft(BorderStyle.THIN);
-        style.setAlignment(HorizontalAlignment.CENTER);
-        style.setVerticalAlignment(VerticalAlignment.CENTER);
-        style.setWrapText(true);
-        return style;
-    }
-
-    private CellStyle createOptionalHeaderStyle(Workbook workbook) {
-        CellStyle style = workbook.createCellStyle();
-        Font font = workbook.createFont();
-        font.setBold(true);
-        font.setColor(IndexedColors.BLACK.getIndex());
-        style.setFont(font);
-        style.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
-        style.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-        style.setBorderBottom(BorderStyle.THIN);
-        style.setBorderTop(BorderStyle.THIN);
-        style.setBorderRight(BorderStyle.THIN);
-        style.setBorderLeft(BorderStyle.THIN);
-        style.setAlignment(HorizontalAlignment.CENTER);
-        style.setVerticalAlignment(VerticalAlignment.CENTER);
-        style.setWrapText(true);
-        return style;
-    }
-
-    private CellStyle createDataStyle(Workbook workbook) {
-        CellStyle style = workbook.createCellStyle();
-        style.setBorderBottom(BorderStyle.THIN);
-        style.setBorderTop(BorderStyle.THIN);
-        style.setBorderRight(BorderStyle.THIN);
-        style.setBorderLeft(BorderStyle.THIN);
-        style.setVerticalAlignment(VerticalAlignment.CENTER);
-        return style;
-    }
 
     // ==================== MÉTODOS DE CONTENIDO ====================
 

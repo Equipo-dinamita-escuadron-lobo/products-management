@@ -173,19 +173,13 @@ public class ProductExportService implements IProductExportUseCase {
             
             // Crear job de exportación y obtener ID (síncrono, retorna inmediatamente)
             String jobId = exportJobTracker.createJob(exportRequest.getEntId(), fileName);
-            
-            log.info("Job de exportación de productos creado. JobId: {}, Entidad: {}, Archivo: {}", 
-                    jobId, exportRequest.getEntId(), fileName);
-            
+
             // Ejecutar exportación de forma asíncrona usando servicio separado
             asyncExportProcessor.processExportAsync(exportRequest, jobId);
-            
-            log.info("Job de exportación de productos lanzado de forma asíncrona. JobId: {}", jobId);
-            
+
             return jobId;
-            
+
         } catch (Exception e) {
-            log.error("Error al iniciar la exportación de productos: {}", e.getMessage(), e);
             throw new ProductExportException(ErrorCode.PRODUCT_EXPORT_ERROR,
                     "Error al iniciar la exportación: " + e.getMessage(), e);
         }

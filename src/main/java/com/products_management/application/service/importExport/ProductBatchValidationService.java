@@ -20,8 +20,12 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * @brief Servicio que valida lotes de productos importados aplicando reglas de negocio y referencias
@@ -120,10 +124,10 @@ public class ProductBatchValidationService {
         loadAllProductTypes(entId, cache);
 
         // Cargar referencias existentes en batch
-        java.util.Set<String> referencesToCheck = productsData.stream()
+        Set<String> referencesToCheck = productsData.stream()
                 .map(ProductExcelData::getReference)
                 .filter(ref -> ref != null && !ref.trim().isEmpty())
-                .collect(java.util.stream.Collectors.toSet());
+                .collect(Collectors.toSet());
 
         for (String ref : referencesToCheck) {
             if (productPersistencePort.existsByReferenceAndEnterpriseId(ref, entId)) {
@@ -268,10 +272,10 @@ public class ProductBatchValidationService {
      * @brief Cache interno para datos de referencia pre-cargados
      */
     private static class ReferenceDataCache {
-        final java.util.Map<String, Long> unitsByName = new java.util.HashMap<>();
-        final java.util.Map<String, Long> categoriesByName = new java.util.HashMap<>();
-        final java.util.Map<String, Long> productTypesByName = new java.util.HashMap<>();
-        final java.util.Set<String> existingReferences = new java.util.HashSet<>();
+        final Map<String, Long> unitsByName = new HashMap<>();
+        final Map<String, Long> categoriesByName = new HashMap<>();
+        final Map<String, Long> productTypesByName = new HashMap<>();
+        final Set<String> existingReferences = new HashSet<>();
     }
 
     /**

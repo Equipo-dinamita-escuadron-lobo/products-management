@@ -51,21 +51,14 @@ public class ProductImportService implements IProductImportUseCase {
             // Crear job de importación y obtener ID
             String jobId = jobTracker.createJob(entId, fileName);
 
-            log.info("Job de importación de productos creado: {} para empresa: {}, archivo: {}",
-                    jobId, entId, fileName);
-
             // Ejecutar importación de forma asíncrona
             asyncImportProcessor.processImportAsync(fileBytes, entId, fileName, jobId);
-
-            log.info("Job de importación de productos lanzado de forma asíncrona: {}", jobId);
 
             return jobId;
 
         } catch (IOException e) {
-            log.error("Error al leer archivo para importación asíncrona: {}", e.getMessage(), e);
             throw new RuntimeException("Error al procesar el archivo: " + e.getMessage(), e);
         } catch (Exception e) {
-            log.error("Error al iniciar importación asíncrona de productos: {}", e.getMessage(), e);
             throw new RuntimeException("Error al iniciar la importación: " + e.getMessage(), e);
         }
     }

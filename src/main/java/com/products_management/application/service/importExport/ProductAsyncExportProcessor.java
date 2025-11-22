@@ -19,9 +19,11 @@ import org.springframework.stereotype.Service;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * @brief Servicio para procesar exportaciones de productos de forma asíncrona
@@ -50,11 +52,6 @@ public class ProductAsyncExportProcessor {
      */
     @Async
     public void processExportAsync(ProductExportRequest exportRequest, String jobId) {
-        log.info("JobId {}: Iniciando procesamiento ASÍNCRONO de exportación de productos en thread: {}",
-                jobId, Thread.currentThread().getName());
-
-        long totalStartTime = System.currentTimeMillis();
-        Map<String, Long> phaseTimes = new LinkedHashMap<>();
         int totalRecords = 0;
 
         try {
@@ -62,14 +59,8 @@ public class ProductAsyncExportProcessor {
             jobTracker.updateProgress(jobId, 10);
 
             // FASE 1: Obtener datos filtrados con paginación
-            log.info("JobId {}: Fase 1 - Obtención de datos", jobId);
-            long phase1Start = System.currentTimeMillis();
             List<Product> products = getFilteredProducts(exportRequest, jobId);
-            long phase1Time = System.currentTimeMillis() - phase1Start;
-            phaseTimes.put("1. Obtención de Datos", phase1Time);
-            log.info("JobId {}: Fase 1 completada en {} ms - {} registros obtenidos", 
-                    jobId, phase1Time, products.size());
-            
+
             totalRecords = products.size();
             jobTracker.updateTotalRecords(jobId, totalRecords);
             jobTracker.updateProgress(jobId, 50);
@@ -81,33 +72,16 @@ public class ProductAsyncExportProcessor {
             }
 
             // FASE 2: Generar archivo Excel
-            log.info("JobId {}: Fase 2 - Generación de archivo Excel", jobId);
-            long phase2Start = System.currentTimeMillis();
             byte[] excelData = generateExcelFile(products, exportRequest, jobId);
-            long phase2Time = System.currentTimeMillis() - phase2Start;
-            phaseTimes.put("2. Generación Excel", phase2Time);
-            log.info("JobId {}: Fase 2 completada en {} ms - Archivo generado ({} bytes)", 
-                    jobId, phase2Time, excelData.length);
 
             jobTracker.updateProgress(jobId, 90);
 
             // FASE 3: Almacenar archivo en memoria
-            log.info("JobId {}: Fase 3 - Almacenamiento del archivo", jobId);
-            long phase3Start = System.currentTimeMillis();
             jobTracker.setFileData(jobId, excelData);
-            long phase3Time = System.currentTimeMillis() - phase3Start;
-            phaseTimes.put("3. Almacenamiento", phase3Time);
-            log.info("JobId {}: Fase 3 completada en {} ms", jobId, phase3Time);
 
             // Completar job
             jobTracker.updateProgress(jobId, 100);
             jobTracker.updateJobStatus(jobId, ImportStatus.COMPLETED);
-
-            // Imprimir resumen
-            long totalTime = System.currentTimeMillis() - totalStartTime;
-            printPhaseTimesTable(jobId, phaseTimes, totalTime, totalRecords);
-
-            log.info("JobId {}: Exportación de productos completada exitosamente en {} ms", jobId, totalTime);
 
         } catch (ProductExportException e) {
             handleExportError(jobId, e);
@@ -141,17 +115,15 @@ public class ProductAsyncExportProcessor {
                 page = productPersistencePort.findByEnterpriseIdWithFilters(
                         request.getEntId(), null, currentPage, EXPORT_PAGE_SIZE, "name", "asc");
             }
-            
+
             if (page != null && page.hasContent()) {
                 allProducts.addAll(page.getContent());
-                log.debug("JobId {}: Página {} procesada - {} registros acumulados", 
-                        jobId, currentPage, allProducts.size());
             }
-            
+
             currentPage++;
-            
+
         } while (page != null && page.hasNext());
-        
+
         return allProducts;
     }
 
@@ -179,7 +151,6 @@ public class ProductAsyncExportProcessor {
             createHeaders(sheet, headerStyle, createOptionalHeaderStyle(workbook));
 
             // Pre-cargar cache de nombres (3-4 queries en lugar de 54,708)
-            log.info("JobId {}: Pre-cargando cache de nombres de entidades relacionadas", jobId);
             EntityNamesCache namesCache = preloadEntityNamesCache(request.getEntId(), products);
 
             fillDataWithCache(sheet, products, dataStyle, namesCache);
@@ -329,23 +300,21 @@ public class ProductAsyncExportProcessor {
         EntityNamesCache cache = new EntityNamesCache();
 
         // Extraer IDs únicos de los productos
-        java.util.Set<Long> unitIds = products.stream()
+        Set<Long> unitIds = products.stream()
                 .map(Product::getUnitOfMeasureId)
                 .filter(id -> id != null)
-                .collect(java.util.stream.Collectors.toSet());
+                .collect(Collectors.toSet());
 
-        java.util.Set<Long> categoryIds = products.stream()
+        Set<Long> categoryIds = products.stream()
                 .map(Product::getCategoryId)
                 .filter(id -> id != null)
-                .collect(java.util.stream.Collectors.toSet());
+                .collect(Collectors.toSet());
 
-        java.util.Set<Long> typeIds = products.stream()
+        Set<Long> typeIds = products.stream()
                 .map(Product::getProductTypeId)
                 .filter(id -> id != null)
-                .collect(java.util.stream.Collectors.toSet());
+                .collect(Collectors.toSet());
 
-        log.debug("IDs únicos a cargar - Unidades: {}, Categorías: {}, Tipos: {}", 
-                unitIds.size(), categoryIds.size(), typeIds.size());
 
         // Query 1: Cargar todos los nombres de unidades de medida en batch
         for (Long unitId : unitIds) {
@@ -365,8 +334,6 @@ public class ProductAsyncExportProcessor {
                     .ifPresent(type -> cache.productTypeNames.put(typeId, type.getName()));
         }
 
-        log.debug("Cache cargado - Unidades: {}, Categorías: {}, Tipos: {}", 
-                cache.unitNames.size(), cache.categoryNames.size(), cache.productTypeNames.size());
 
         return cache;
     }
@@ -376,9 +343,9 @@ public class ProductAsyncExportProcessor {
      * @details Permite acceso O(1) a nombres sin queries adicionales
      */
     private static class EntityNamesCache {
-        final java.util.Map<Long, String> unitNames = new java.util.HashMap<>();
-        final java.util.Map<Long, String> categoryNames = new java.util.HashMap<>();
-        final java.util.Map<Long, String> productTypeNames = new java.util.HashMap<>();
+        final Map<Long, String> unitNames = new HashMap<>();
+        final Map<Long, String> categoryNames = new HashMap<>();
+        final Map<Long, String> productTypeNames = new HashMap<>();
 
         String getUnitOfMeasureName(Long id) {
             return id == null ? "" : unitNames.getOrDefault(id, "");
@@ -425,50 +392,19 @@ public class ProductAsyncExportProcessor {
 
     private void handleNoDataError(ProductExportRequest request, String jobId) {
         String message = "No hay productos para exportar con los filtros especificados";
-        log.warn("JobId {}: {}", jobId, message);
         jobTracker.setErrorMessage(jobId, message);
         jobTracker.updateJobStatus(jobId, ImportStatus.FAILED);
     }
 
     private void handleExportError(String jobId, ProductExportException e) {
-        log.error("JobId {}: Error de exportación: {}", jobId, e.getMessage(), e);
         jobTracker.setErrorMessage(jobId, e.getMessage());
         jobTracker.updateJobStatus(jobId, ImportStatus.FAILED);
     }
 
     private void handleUnexpectedError(String jobId, Exception e) {
-        log.error("JobId {}: Error inesperado durante la exportación: {}", jobId, e.getMessage(), e);
         jobTracker.setErrorMessage(jobId, "Error inesperado: " + e.getMessage());
         jobTracker.updateJobStatus(jobId, ImportStatus.FAILED);
     }
 
-    // ==================== UTILIDADES ====================
-
-    private void printPhaseTimesTable(String jobId, Map<String, Long> phaseTimes, long totalTime, int totalRecords) {
-        StringBuilder table = new StringBuilder();
-        table.append("\n╔════════════════════════════════════════════════════════════╗\n");
-        table.append(String.format("║  RESUMEN DE TIEMPOS - JobId: %-28s ║\n", jobId.substring(0, Math.min(28, jobId.length()))));
-        table.append("╠════════════════════════════════════════════════════════════╣\n");
-        table.append("║  Fase                     │ Tiempo (ms) │ Tiempo (s) │ % ║\n");
-        table.append("╠════════════════════════════════════════════════════════════╣\n");
-
-        for (Map.Entry<String, Long> entry : phaseTimes.entrySet()) {
-            double percentage = (entry.getValue() * 100.0) / totalTime;
-            double seconds = entry.getValue() / 1000.0;
-            table.append(String.format("║  %-24s │ %,11d │ %,10.2f │ %5.1f%% ║\n",
-                    entry.getKey(), entry.getValue(), seconds, percentage));
-        }
-
-        table.append("╠════════════════════════════════════════════════════════════╣\n");
-        table.append(String.format("║  TOTAL                    │ %,11d │ %,10.2f │ 100.0%% ║\n",
-                totalTime, totalTime / 1000.0));
-        table.append("╠════════════════════════════════════════════════════════════╣\n");
-        table.append(String.format("║  Total Registros: %-41d║\n", totalRecords));
-        table.append(String.format("║  Rendimiento: %-37.2f registros/seg ║\n",
-                (totalRecords * 1000.0) / totalTime));
-        table.append("╚════════════════════════════════════════════════════════════╝");
-
-        log.info("JobId {}: {}", jobId, table);
-    }
 }
 

@@ -49,9 +49,6 @@ public class ProductImportJobTracker {
 
         jobStatusMap.put(jobId, jobStatus);
 
-        log.info("Job de importación de productos creado: {} para empresa: {} archivo: {}", 
-                jobId, enterpriseId, fileName);
-
         return jobId;
     }
 
@@ -68,10 +65,7 @@ public class ProductImportJobTracker {
             if (status.isFinished()) {
                 jobStatus.setEndTime(LocalDateTime.now());
                 jobStatus.setProgress(100);
-                log.info("Job de importación de productos finalizado: {} con estado: {}", jobId, status);
             }
-        } else {
-            log.warn("Intento de actualizar job de productos inexistente: {}", jobId);
         }
     }
 
@@ -88,8 +82,6 @@ public class ProductImportJobTracker {
         ImportJobStatus jobStatus = jobStatusMap.get(jobId);
         if (jobStatus != null) {
             jobStatus.updateMetrics(totalRecords, successfulImports, failedImports, duplicatesSkipped);
-            log.debug("Métricas actualizadas para job de productos: {} - Total: {}, Exitosos: {}, Fallidos: {}, Duplicados: {}",
-                    jobId, totalRecords, successfulImports, failedImports, duplicatesSkipped);
         }
     }
 
@@ -102,7 +94,6 @@ public class ProductImportJobTracker {
         ImportJobStatus jobStatus = jobStatusMap.get(jobId);
         if (jobStatus != null) {
             jobStatus.setProgress(Math.min(100, Math.max(0, progress)));
-            log.debug("Progreso actualizado para job de productos: {} - {}%", jobId, progress);
         }
     }
 
@@ -132,10 +123,7 @@ public class ProductImportJobTracker {
      * @param jobId identificador del job
      */
     public void removeJob(String jobId) {
-        ImportJobStatus removed = jobStatusMap.remove(jobId);
-        if (removed != null) {
-            log.info("Job de productos removido del tracker: {}", jobId);
-        }
+        jobStatusMap.remove(jobId);
     }
 
     /**

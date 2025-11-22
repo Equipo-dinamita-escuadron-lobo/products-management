@@ -5,14 +5,17 @@ import com.products_management.application.ports.input.IProductExportUseCase;
 import com.products_management.application.ports.input.IProductImportUseCase;
 import com.products_management.domain.model.ImportJobStatus;
 import com.products_management.domain.model.Product;
+import com.products_management.domain.enums.ImportStatus;
+import com.products_management.domain.model.ExportJobStatus;
 import com.products_management.infraestructure.input.rest.dto.request.ProductCreateRequest;
+import com.products_management.infraestructure.input.rest.dto.request.ProductExportRequest;
 import com.products_management.infraestructure.input.rest.dto.request.ProductImportRequest;
 import com.products_management.infraestructure.input.rest.dto.response.ProductResponse;
 import com.products_management.infraestructure.input.rest.mapper.interfaces.IProductRestMapper;
 import com.products_management.infraestructure.utils.ExcelFileNameGenerator;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
@@ -29,11 +32,11 @@ import java.util.Optional;
 /**
  * @brief Controlador REST principal para gestión de productos
  *
- * Expone endpoints completos CRUD para productos, incluyendo operaciones
- * de importación/exportación masiva (síncronas y asíncronas) y sincronización
- * con sistemas externos.
+ *        Expone endpoints completos CRUD para productos, incluyendo operaciones
+ *        de importación/exportación masiva (síncronas y asíncronas) y
+ *        sincronización
+ *        con sistemas externos.
  */
-@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/products")
@@ -54,7 +57,8 @@ public class ProductRestController {
                         @RequestParam(defaultValue = "asc") String sortOrder,
                         @RequestParam(required = false) String search) {
 
-                Page<Product> productPage = productServicePort.findAllPaginated(enterpriseId, numPage, size, sortField, sortOrder, Optional.ofNullable(search));
+                Page<Product> productPage = productServicePort.findAllPaginated(enterpriseId, numPage, size, sortField,
+                                sortOrder, Optional.ofNullable(search));
                 Page<ProductResponse> responsePage = productPage.map(productRestMapper::toProductResponse);
                 return new ResponseEntity<>(responsePage, HttpStatus.OK);
         }
@@ -108,99 +112,81 @@ public class ProductRestController {
 
                 return ResponseEntity.ok()
                                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + filename + "\"")
-                                .contentType(MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
+                                .contentType(MediaType.parseMediaType(
+                                                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
                                 .body(templateFile);
         }
 
-    @GetMapping("/export/excel")
-    public ResponseEntity<Map<String, String>> exportProductsAsync(
-                    @RequestParam String entId,
-                    @RequestParam(required = false) String companyName,
-                    @RequestParam(required = false) Boolean status) {
+        @GetMapping("/export/excel")
+        public ResponseEntity<Map<String, String>> exportProductsAsync(
+                        @RequestParam String entId,
+                        @RequestParam(required = false) String companyName,
+                        @RequestParam(required = false) Boolean status) {
 
-        log.info("Iniciando exportación asíncrona de productos. Empresa: {}, Estado: {}", entId, status);
+                ProductExportRequest request = ProductExportRequest.builder()
+                                .entId(entId)
+                                .companyName(companyName)
+                                .status(status)
+                                .build();
 
-        com.products_management.infraestructure.input.rest.dto.request.ProductExportRequest request = 
-                com.products_management.infraestructure.input.rest.dto.request.ProductExportRequest.builder()
-                        .entId(entId)
-                        .companyName(companyName)
-                        .status(status)
-                        .build();
+                String jobId = productExportUseCase.exportProductsAsync(request);
 
-        String jobId = productExportUseCase.exportProductsAsync(request);
+                Map<String, String> response = new HashMap<>();
+                response.put("jobId", jobId);
+                response.put("message", "Exportación iniciada correctamente");
+                response.put("status", "PENDING");
 
-        log.info("Exportación asíncrona de productos iniciada. JobId: {}", jobId);
-
-        Map<String, String> response = new HashMap<>();
-        response.put("jobId", jobId);
-        response.put("message", "Exportación iniciada correctamente");
-        response.put("status", "PENDING");
-
-        return ResponseEntity.accepted().body(response);
-    }
-
-    @GetMapping("/export/status/{jobId}")
-    public ResponseEntity<?> getExportStatus(@PathVariable String jobId) {
-        log.info("Consultando estado de exportación de productos. JobId: {}", jobId);
-
-        java.util.Optional<com.products_management.domain.model.ExportJobStatus> jobStatus = 
-                productExportUseCase.getExportStatus(jobId);
-
-        if (jobStatus.isEmpty()) {
-            log.warn("JobId de exportación no encontrado: {}", jobId);
-            return ResponseEntity.notFound().build();
+                return ResponseEntity.accepted().body(response);
         }
 
-        log.info("Estado de exportación de productos obtenido. JobId: {}, Estado: {}",
-                        jobId, jobStatus.get().getStatus());
+        @GetMapping("/export/status/{jobId}")
+        public ResponseEntity<?> getExportStatus(@PathVariable String jobId) {
 
-        return ResponseEntity.ok(jobStatus.get());
-    }
+                Optional<ExportJobStatus> jobStatus = productExportUseCase.getExportStatus(jobId);
 
-    @GetMapping("/export/download/{jobId}")
-    public ResponseEntity<Resource> downloadExportedFile(@PathVariable String jobId) {
-        log.info("Descargando archivo exportado. JobId: {}", jobId);
+                if (jobStatus.isEmpty()) {
+                        return ResponseEntity.notFound().build();
+                }
 
-        java.util.Optional<com.products_management.domain.model.ExportJobStatus> jobStatus = 
-                productExportUseCase.getExportStatus(jobId);
-
-        if (jobStatus.isEmpty()) {
-            log.warn("JobId de exportación no encontrado: {}", jobId);
-            return ResponseEntity.notFound().build();
+                return ResponseEntity.ok(jobStatus.get());
         }
 
-        com.products_management.domain.model.ExportJobStatus status = jobStatus.get();
+        @GetMapping("/export/download/{jobId}")
+        public ResponseEntity<Resource> downloadExportedFile(@PathVariable String jobId) {
 
-        if (status.getStatus() != com.products_management.domain.enums.ImportStatus.COMPLETED) {
-            log.warn("Exportación no completada. JobId: {}, Estado: {}", jobId, status.getStatus());
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+                Optional<ExportJobStatus> jobStatus = productExportUseCase.getExportStatus(jobId);
+
+                if (jobStatus.isEmpty()) {
+                        return ResponseEntity.notFound().build();
+                }
+
+                ExportJobStatus status = jobStatus.get();
+
+                if (status.getStatus() != ImportStatus.COMPLETED) {
+                        return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+                }
+
+                if (status.getFileData() == null) {
+                        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+                }
+
+                Resource resource = new ByteArrayResource(status.getFileData());
+
+                return ResponseEntity.ok()
+                                .header(HttpHeaders.CONTENT_DISPOSITION,
+                                                "attachment; filename=\"" + status.getFileName() + "\"")
+                                .contentType(MediaType.parseMediaType(
+                                                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
+                                .body(resource);
         }
-
-        if (status.getFileData() == null) {
-            log.error("Archivo no disponible. JobId: {}", jobId);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
-
-        Resource resource = new org.springframework.core.io.ByteArrayResource(status.getFileData());
-
-        return ResponseEntity.ok()
-                        .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + status.getFileName() + "\"")
-                        .contentType(MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
-                        .body(resource);
-    }
 
         @PostMapping("/import/excel")
         public ResponseEntity<Map<String, String>> importProductsFromExcel(
                         @RequestParam String entId,
                         @RequestParam("excelFile") MultipartFile excelFile) {
 
-                log.info("Iniciando importación asíncrona de productos. Empresa: {}, Archivo: {}",
-                                entId, excelFile.getOriginalFilename());
-
                 ProductImportRequest request = ProductImportRequest.from(entId, excelFile);
                 String jobId = productImportUseCase.importProductsAsync(request);
-
-                log.info("Importación asíncrona iniciada. JobId: {}", jobId);
 
                 Map<String, String> response = new HashMap<>();
                 response.put("jobId", jobId);
@@ -212,17 +198,12 @@ public class ProductRestController {
 
         @GetMapping("/import/status/{jobId}")
         public ResponseEntity<?> getImportStatus(@PathVariable String jobId) {
-                log.info("Consultando estado de importación. JobId: {}", jobId);
 
                 Optional<ImportJobStatus> jobStatus = productImportUseCase.getImportStatus(jobId);
 
                 if (jobStatus.isEmpty()) {
-                        log.warn("JobId no encontrado: {}", jobId);
                         return ResponseEntity.notFound().build();
                 }
-
-                log.info("Estado de importación obtenido. JobId: {}, Estado: {}",
-                                jobId, jobStatus.get().getStatus());
 
                 return ResponseEntity.ok(jobStatus.get());
         }

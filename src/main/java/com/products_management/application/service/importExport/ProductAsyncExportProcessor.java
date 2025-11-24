@@ -105,14 +105,11 @@ public class ProductAsyncExportProcessor {
         do {
             // Obtener productos según filtros
             if (request.getStatus() != null) {
-                if (request.getStatus()) {
-                    page = productPersistencePort.findActivatedWithPagination(
-                            request.getEntId(), currentPage, EXPORT_PAGE_SIZE);
-                } else {
-                    page = productPersistencePort.findByEnterpriseIdWithFilters(
-                            request.getEntId(), null, currentPage, EXPORT_PAGE_SIZE, "name", "asc");
-                }
+                // Filtrar por estado específico (activo o inactivo)
+                page = productPersistencePort.findByEnterpriseIdAndState(
+                        request.getEntId(), request.getStatus(), currentPage, EXPORT_PAGE_SIZE);
             } else {
+                // Sin filtro de estado: obtener todos los productos
                 page = productPersistencePort.findByEnterpriseIdWithFilters(
                         request.getEntId(), null, currentPage, EXPORT_PAGE_SIZE, "name", "asc");
             }

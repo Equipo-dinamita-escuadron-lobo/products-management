@@ -60,6 +60,16 @@ public interface IProductPersistencePort {
     Page<Product> findActivatedWithPagination(String enterpriseId, int pageNumber, int pageSize);
     
     /**
+     * @brief Busca productos por empresa y estado con paginación
+     * @param enterpriseId el ID de la empresa
+     * @param state el estado del producto (true=activo, false=inactivo)
+     * @param pageNumber el número de página
+     * @param pageSize el tamaño de página
+     * @return página de productos filtrados por estado
+     */
+    Page<Product> findByEnterpriseIdAndState(String enterpriseId, boolean state, int pageNumber, int pageSize);
+    
+    /**
      * @brief Busca productos por ID de categoría
      * @param categoryId el ID de la categoría
      * @return lista de productos de la categoría

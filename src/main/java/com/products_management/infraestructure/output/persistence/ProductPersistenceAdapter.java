@@ -70,6 +70,14 @@ public class ProductPersistenceAdapter implements IProductPersistencePort {
     }
 
     @Override
+    public Page<Product> findByEnterpriseIdAndState(String enterpriseId, boolean state, int pageNumber, int pageSize) {
+        Sort sort = Sort.by("name").ascending();
+        PageRequest pageRequest = PageRequest.of(pageNumber, pageSize, sort);
+        return productRepository.findByEnterpriseIdAndState(enterpriseId, state, pageRequest)
+                .map(productPersistenceMapper::toProduct);
+    }
+
+    @Override
     public List<Product> findByCategoryId(Long categoryId) {
         return productPersistenceMapper.toProductList(
                 productRepository.findByCategoryId(categoryId));

@@ -187,9 +187,11 @@ public class ProductAsyncImportProcessor {
         ImportStatus finalStatus;
         if (totalFailures > 0 && processingResult.getSuccessCount() > 0) {
             finalStatus = ImportStatus.COMPLETED_WITH_ERRORS;
-        } else if (processingResult.getSuccessCount() == 0) {
+        } else if (totalFailures > 0) {
+            // Solo es FAILED si hay errores reales (sin importaciones exitosas)
             finalStatus = ImportStatus.FAILED;
         } else {
+            // Si no hay errores, es COMPLETED (incluso si solo hay duplicados omitidos)
             finalStatus = ImportStatus.COMPLETED;
         }
 
@@ -218,7 +220,10 @@ public class ProductAsyncImportProcessor {
                 validationResult.getDuplicateCount());
 
         jobTracker.addErrors(jobId, allErrors);
-        jobTracker.updateJobStatus(jobId, ImportStatus.FAILED);
+        
+        // Si solo hay duplicados omitidos sin errores reales, marcar como COMPLETED
+        ImportStatus finalStatus = (totalFailures > 0) ? ImportStatus.FAILED : ImportStatus.COMPLETED;
+        jobTracker.updateJobStatus(jobId, finalStatus);
         jobTracker.updateProgress(jobId, 100);
     }
 

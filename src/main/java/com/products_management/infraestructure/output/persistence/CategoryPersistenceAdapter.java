@@ -35,7 +35,24 @@ public class CategoryPersistenceAdapter implements ICategoryPersistencePort {
 
     @Override
     public Category create(Category category) {
-        return categoryPersistenceMapper.toCategory(categoryRepository.save(categoryPersistenceMapper.toCategoryEntity(category)));
+        CategoryEntity entity = categoryPersistenceMapper.toCategoryEntity(category);
+
+        // Si es una actualización (tiene ID), asegurar que los taxes se actualicen correctamente
+        if (category.getId() != null) {
+            Optional<CategoryEntity> existingEntity = categoryRepository.findById(category.getId());
+            if (existingEntity.isPresent()) {
+                CategoryEntity existing = existingEntity.get();
+                // Asegurar que los taxes se actualicen correctamente
+                existing.setTaxes(category.getTaxes());
+                entity = categoryRepository.save(existing);
+            } else {
+                entity = categoryRepository.save(entity);
+            }
+        } else {
+            entity = categoryRepository.save(entity);
+        }
+
+        return categoryPersistenceMapper.toCategory(entity);
     }
 
     @Override

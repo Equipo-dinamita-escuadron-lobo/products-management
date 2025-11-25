@@ -30,8 +30,24 @@ public interface ICategoryPersistenceMapper {
      * @param categoryEntity CategoryEntity de persistencia
      * @return objeto Category del dominio
      */
-    @Mapping(target = "taxes", ignore = true)
-    Category toCategory(CategoryEntity categoryEntity);
+    default Category toCategory(CategoryEntity categoryEntity) {
+        if (categoryEntity == null) {
+            return null;
+        }
+
+        return Category.builder()
+                .id(categoryEntity.getId())
+                .name(categoryEntity.getName())
+                .description(categoryEntity.getDescription())
+                .enterpriseId(categoryEntity.getEnterpriseId())
+                .inventoryId(categoryEntity.getInventoryId())
+                .costId(categoryEntity.getCostId())
+                .saleId(categoryEntity.getSaleId())
+                .returnId(categoryEntity.getReturnId())
+                .taxes(categoryEntity.getTaxes())
+                .state(categoryEntity.isState())
+                .build();
+    }
 
     /**
      * @brief Convierte lista de entidades JPA a lista de objetos de dominio

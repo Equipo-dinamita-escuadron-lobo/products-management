@@ -34,7 +34,7 @@ public class CategoryEntity {
     private Long costId;
     private Long saleId;
     private Long returnId;
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "category_taxes", joinColumns = @JoinColumn(name = "category_id"))
     @Column(name = "tax_id")
     private List<Long> taxes;

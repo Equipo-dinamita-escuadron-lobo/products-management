@@ -4,6 +4,7 @@ import com.products_management.application.ports.input.IProductServicePort;
 import com.products_management.application.ports.input.IProductTypeServicePort;
 import com.products_management.application.ports.output.IProductTypePersistencePort;
 import com.products_management.domain.exception.productType.ProductTypeAssociatedException;
+import com.products_management.domain.exception.productType.ProductTypeInUseException;
 import com.products_management.domain.exception.productType.ProductTypeNotFoundException;
 import com.products_management.domain.exception.productType.ProductTypeNameAlreadyExistsException;
 import com.products_management.domain.model.Product;
@@ -41,11 +42,14 @@ public class ProductTypeService implements IProductTypeServicePort {
         if (existingProductType.isEmpty()) {
             throw new ProductTypeNotFoundException();
         }
-        
+
+        // Verificar que el tipo de producto no contenga productos en uso antes de permitir la edición
+        validateProductTypeNotInUse(id);
+
         // Normalizar el nombre de manera consistente (para validación y almacenamiento)
         productType.setName(StringNormalizer.normalize(productType.getName()));
         validateProductTypeUniquenessForUpdate(id, productType);
-        
+
         return productTypeOutputPort.update(id, productType);
     }
 
@@ -145,6 +149,20 @@ public class ProductTypeService implements IProductTypeServicePort {
         if (productTypeOutputPort.existsByNameAndEnterpriseIdAndIdNot(
                 productType.getName(), productType.getEnterpriseId(), id)) {
             throw new ProductTypeNameAlreadyExistsException(productType.getName());
+        }
+    }
+
+    /**
+     * @brief Valida que el tipo de producto no contenga productos que ya han sido usados
+     * @param productTypeId ID del tipo de producto a validar
+     * @throws ProductTypeInUseException si el tipo de producto contiene productos en uso
+     */
+    private void validateProductTypeNotInUse(Long productTypeId) {
+        List<Product> products = productServicePort.findAllByProductType(productTypeId);
+        boolean hasProductsInUse = products.stream().anyMatch(Product::isInUse);
+
+        if (hasProductsInUse) {
+            throw new ProductTypeInUseException();
         }
     }
 }

@@ -30,6 +30,7 @@ public interface ICategoryPersistenceMapper {
      * @param categoryEntity CategoryEntity de persistencia
      * @return objeto Category del dominio
      */
+    @Mapping(target = "taxes", ignore = true)
     Category toCategory(CategoryEntity categoryEntity);
 
     /**

@@ -4,6 +4,7 @@ import com.products_management.application.ports.input.ICategoryServicePort;
 import com.products_management.application.ports.output.ICategoryPersistencePort;
 import com.products_management.application.service.product.ProductService;
 import com.products_management.domain.exception.category.CategoryAssociatedException;
+import com.products_management.domain.exception.category.CategoryInUseException;
 import com.products_management.domain.exception.category.CategoryNotFoundException;
 import com.products_management.domain.exception.category.CategoryNameAlreadyExistsException;
 import com.products_management.domain.model.Category;
@@ -51,6 +52,8 @@ public class CategoryService implements ICategoryServicePort {
     public Category update(String enterpriseId, Long id, Category category) {
         return categoryPersistencePort.findByIdAndEnterpriseId(id, enterpriseId)
                 .map(existingCategory -> {
+                    // Verificar que no haya productos en uso antes de permitir la edición
+                    validateCategoryNotInUse(id);
                     // Normalizar el nombre de manera consistente (para validación y almacenamiento)
                     category.setName(StringNormalizer.normalize(category.getName()));
                     validateCategoryUniquenessForUpdate(id, category);
@@ -111,6 +114,20 @@ public class CategoryService implements ICategoryServicePort {
         if (categoryPersistencePort.existsByNameAndEnterpriseIdAndIdNot(
                 category.getName(), category.getEnterpriseId(), id)) {
             throw new CategoryNameAlreadyExistsException(category.getName());
+        }
+    }
+
+    /**
+     * @brief Valida que la categoría no contenga productos que ya han sido usados
+     * @param categoryId ID de la categoría a validar
+     * @throws CategoryInUseException si la categoría contiene productos en uso
+     */
+    private void validateCategoryNotInUse(Long categoryId) {
+        List<Product> products = productServicePort.findAllByCategory(categoryId);
+        boolean hasProductsInUse = products.stream().anyMatch(Product::isInUse);
+
+        if (hasProductsInUse) {
+            throw new CategoryInUseException();
         }
     }
 

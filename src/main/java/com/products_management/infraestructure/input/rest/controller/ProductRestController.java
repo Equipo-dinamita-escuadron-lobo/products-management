@@ -3,33 +3,39 @@ package com.products_management.infraestructure.input.rest.controller;
 import com.products_management.application.ports.input.IProductServicePort;
 import com.products_management.application.ports.input.IProductExportUseCase;
 import com.products_management.application.ports.input.IProductImportUseCase;
+import com.products_management.domain.model.ImportJobStatus;
 import com.products_management.domain.model.Product;
+import com.products_management.domain.enums.ImportStatus;
+import com.products_management.domain.model.ExportJobStatus;
 import com.products_management.infraestructure.input.rest.dto.request.ProductCreateRequest;
+import com.products_management.infraestructure.input.rest.dto.request.ProductExportRequest;
 import com.products_management.infraestructure.input.rest.dto.request.ProductImportRequest;
-import com.products_management.infraestructure.input.rest.dto.response.ProductImportResponse;
 import com.products_management.infraestructure.input.rest.dto.response.ProductResponse;
 import com.products_management.infraestructure.input.rest.mapper.interfaces.IProductRestMapper;
 import com.products_management.infraestructure.utils.ExcelFileNameGenerator;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-
 import org.springframework.web.bind.annotation.*;
-
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 /**
  * @brief Controlador REST principal para gestión de productos
  *
- * Expone endpoints completos CRUD para productos, incluyendo operaciones
- * de importación/exportación masiva y sincronización con sistemas externos.
+ *        Expone endpoints completos CRUD para productos, incluyendo operaciones
+ *        de importación/exportación masiva (síncronas y asíncronas) y
+ *        sincronización
+ *        con sistemas externos.
  */
 @RestController
 @RequiredArgsConstructor
@@ -51,7 +57,8 @@ public class ProductRestController {
                         @RequestParam(defaultValue = "asc") String sortOrder,
                         @RequestParam(required = false) String search) {
 
-                Page<Product> productPage = productServicePort.findAllPaginated(enterpriseId, numPage, size, sortField, sortOrder, Optional.ofNullable(search));
+                Page<Product> productPage = productServicePort.findAllPaginated(enterpriseId, numPage, size, sortField,
+                                sortOrder, Optional.ofNullable(search));
                 Page<ProductResponse> responsePage = productPage.map(productRestMapper::toProductResponse);
                 return new ResponseEntity<>(responsePage, HttpStatus.OK);
         }
@@ -105,34 +112,100 @@ public class ProductRestController {
 
                 return ResponseEntity.ok()
                                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + filename + "\"")
-                                .contentType(MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
+                                .contentType(MediaType.parseMediaType(
+                                                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
                                 .body(templateFile);
         }
 
         @GetMapping("/export/excel")
-        public ResponseEntity<Resource> exportProductsWithValidations(
+        public ResponseEntity<Map<String, String>> exportProductsAsync(
                         @RequestParam String entId,
                         @RequestParam(required = false) String companyName,
                         @RequestParam(required = false) Boolean status) {
 
-                Resource excelFile = productExportUseCase.exportProductsWithValidations(entId, status);
-                String filename = fileNameGenerator.generateExportFileName(entId, companyName, status);
+                ProductExportRequest request = ProductExportRequest.builder()
+                                .entId(entId)
+                                .companyName(companyName)
+                                .status(status)
+                                .build();
+
+                String jobId = productExportUseCase.exportProductsAsync(request);
+
+                Map<String, String> response = new HashMap<>();
+                response.put("jobId", jobId);
+                response.put("message", "Exportación iniciada correctamente");
+                response.put("status", "PENDING");
+
+                return ResponseEntity.accepted().body(response);
+        }
+
+        @GetMapping("/export/status/{jobId}")
+        public ResponseEntity<?> getExportStatus(@PathVariable String jobId) {
+
+                Optional<ExportJobStatus> jobStatus = productExportUseCase.getExportStatus(jobId);
+
+                if (jobStatus.isEmpty()) {
+                        return ResponseEntity.notFound().build();
+                }
+
+                return ResponseEntity.ok(jobStatus.get());
+        }
+
+        @GetMapping("/export/download/{jobId}")
+        public ResponseEntity<Resource> downloadExportedFile(@PathVariable String jobId) {
+
+                Optional<ExportJobStatus> jobStatus = productExportUseCase.getExportStatus(jobId);
+
+                if (jobStatus.isEmpty()) {
+                        return ResponseEntity.notFound().build();
+                }
+
+                ExportJobStatus status = jobStatus.get();
+
+                if (status.getStatus() != ImportStatus.COMPLETED) {
+                        return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+                }
+
+                if (status.getFileData() == null) {
+                        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+                }
+
+                Resource resource = new ByteArrayResource(status.getFileData());
 
                 return ResponseEntity.ok()
-                                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + filename + "\"")
-                                .contentType(MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
-                                .body(excelFile);
+                                .header(HttpHeaders.CONTENT_DISPOSITION,
+                                                "attachment; filename=\"" + status.getFileName() + "\"")
+                                .contentType(MediaType.parseMediaType(
+                                                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
+                                .body(resource);
         }
 
         @PostMapping("/import/excel")
-        public ResponseEntity<ProductImportResponse> importProductsFromExcel(
+        public ResponseEntity<Map<String, String>> importProductsFromExcel(
                         @RequestParam String entId,
                         @RequestParam("excelFile") MultipartFile excelFile) {
 
                 ProductImportRequest request = ProductImportRequest.from(entId, excelFile);
-                ProductImportResponse response = productImportUseCase.importProductsFromExcel(request);
+                String jobId = productImportUseCase.importProductsAsync(request);
 
-                return ResponseEntity.ok(response);
+                Map<String, String> response = new HashMap<>();
+                response.put("jobId", jobId);
+                response.put("message", "Importación iniciada correctamente");
+                response.put("status", "PENDING");
+
+                return ResponseEntity.accepted().body(response);
+        }
+
+        @GetMapping("/import/status/{jobId}")
+        public ResponseEntity<?> getImportStatus(@PathVariable String jobId) {
+
+                Optional<ImportJobStatus> jobStatus = productImportUseCase.getImportStatus(jobId);
+
+                if (jobStatus.isEmpty()) {
+                        return ResponseEntity.notFound().build();
+                }
+
+                return ResponseEntity.ok(jobStatus.get());
         }
 
 }

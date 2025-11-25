@@ -15,13 +15,17 @@ import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.function.LongConsumer;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * @brief Servicio que valida lotes de productos importados aplicando reglas de negocio y referencias
@@ -54,7 +58,9 @@ public class ProductBatchValidationService {
     private static final String ENTITY_NOT_ACTIVE_SUFFIX_MASC = " no existe o está inactivo.";
 
     /**
-     * @brief Valida lote de productos aplicando reglas de negocio y verificando entidades relacionadas
+     * @brief Valida lote de productos usando cache pre-cargado para eliminar N+1 queries
+     * @details Pre-carga todas las entidades de referencia (categorías, unidades, tipos) y
+     * referencias existentes en una sola operación, luego valida usando datos en memoria.
      * @param productsData lista de datos de productos a validar
      * @param entId ID de la empresa
      * @param columnMap mapa de columnas para información de errores
@@ -62,6 +68,9 @@ public class ProductBatchValidationService {
      */
     public BatchValidationResult validateBatch(List<ProductExcelData> productsData, String entId,
                                                Map<String, Integer> columnMap) {
+        // Pre-cargar cache de datos de referencia (3 queries en lugar de N*3)
+        ReferenceDataCache cache = preloadReferenceData(entId, productsData);
+
         List<ProductExcelData> validRecords = new ArrayList<>();
         List<ImportErrorDetail> errors = new ArrayList<>();
         int duplicateCount = 0;
@@ -69,15 +78,14 @@ public class ProductBatchValidationService {
         for (ProductExcelData productData : productsData) {
             List<ImportErrorDetail> productErrors = validateProduct(productData, columnMap);
 
-            ProductExcelData resolvedData = resolveEntityIds(productData, entId, productErrors, columnMap);
+            ProductExcelData resolvedData = resolveEntityIdsWithCache(productData, cache, productErrors, columnMap);
 
             if (productErrors.isEmpty()) {
-                // Verificar si es duplicado por referencia
+                // Verificar si es duplicado usando cache
                 String reference = productData.getReference();
-                if (reference != null && productPersistencePort.existsByReferenceAndEnterpriseId(reference, entId)) {
+                if (reference != null && cache.existingReferences.contains(reference)) {
                     duplicateCount++;
                 } else {
-                    // No es duplicado, agregar a registros válidos
                     if (resolvedData != null) {
                         validRecords.add(resolvedData);
                     }
@@ -93,6 +101,181 @@ public class ProductBatchValidationService {
                 .duplicateCount(duplicateCount)
                 .validCount(validRecords.size())
                 .build();
+    }
+
+    /**
+     * @brief Pre-carga todos los datos de referencia necesarios para validación
+     * @details Usa paginación dinámica para obtener TODOS los registros activos sin límites hardcodeados.
+     * Esto evita problemas cuando hay más de 1000 categorías/unidades/tipos.
+     * @param entId ID de la empresa
+     * @param productsData lista de productos a validar
+     * @return cache con todos los datos pre-cargados
+     */
+    private ReferenceDataCache preloadReferenceData(String entId, List<ProductExcelData> productsData) {
+        ReferenceDataCache cache = new ReferenceDataCache();
+
+        // Cargar TODAS las unidades de medida activas con paginación dinámica
+        loadAllUnitOfMeasures(entId, cache);
+
+        // Cargar TODAS las categorías activas con paginación dinámica
+        loadAllCategories(entId, cache);
+
+        // Cargar TODOS los tipos de producto activos con paginación dinámica
+        loadAllProductTypes(entId, cache);
+
+        // Cargar referencias existentes en batch
+        Set<String> referencesToCheck = productsData.stream()
+                .map(ProductExcelData::getReference)
+                .filter(ref -> ref != null && !ref.trim().isEmpty())
+                .collect(Collectors.toSet());
+
+        for (String ref : referencesToCheck) {
+            if (productPersistencePort.existsByReferenceAndEnterpriseId(ref, entId)) {
+                cache.existingReferences.add(ref);
+            }
+        }
+
+        return cache;
+    }
+
+    /**
+     * @brief Carga todas las unidades de medida activas usando paginación dinámica
+     * @details Itera sobre todas las páginas hasta obtener todos los registros activos
+     * @param entId ID de la empresa
+     * @param cache cache donde almacenar los datos
+     */
+    private void loadAllUnitOfMeasures(String entId, ReferenceDataCache cache) {
+        int pageNumber = 0;
+        int pageSize = 500;
+        Page<UnitOfMeasure> page;
+
+        do {
+            page = unitOfMeasurePersistencePort.getAllUnitOfMeasuresByState(
+                    entId, true, PageRequest.of(pageNumber, pageSize));
+            
+            page.getContent().forEach(unit -> 
+                cache.unitsByName.put(unit.getName().toLowerCase(), unit.getId())
+            );
+            
+            pageNumber++;
+        } while (page.hasNext());
+    }
+
+    /**
+     * @brief Carga todas las categorías activas usando paginación dinámica
+     * @details Itera sobre todas las páginas hasta obtener todos los registros activos
+     * @param entId ID de la empresa
+     * @param cache cache donde almacenar los datos
+     */
+    private void loadAllCategories(String entId, ReferenceDataCache cache) {
+        int pageNumber = 0;
+        int pageSize = 500;
+        Page<Category> page;
+
+        do {
+            page = categoryPersistencePort.getAllCategoriesByState(
+                    entId, true, PageRequest.of(pageNumber, pageSize));
+            
+            page.getContent().forEach(cat -> 
+                cache.categoriesByName.put(cat.getName().toLowerCase(), cat.getId())
+            );
+            
+            pageNumber++;
+        } while (page.hasNext());
+    }
+
+    /**
+     * @brief Carga todos los tipos de producto activos usando paginación dinámica
+     * @details Itera sobre todas las páginas hasta obtener todos los registros activos
+     * @param entId ID de la empresa
+     * @param cache cache donde almacenar los datos
+     */
+    private void loadAllProductTypes(String entId, ReferenceDataCache cache) {
+        int pageNumber = 0;
+        int pageSize = 500;
+        Page<ProductType> page;
+
+        do {
+            page = productTypePersistencePort.findActivatedByEnterpriseId(entId, pageNumber, pageSize);
+            
+            page.getContent().forEach(type -> 
+                cache.productTypesByName.put(type.getName().toLowerCase(), type.getId())
+            );
+            
+            pageNumber++;
+        } while (page.hasNext());
+    }
+
+    /**
+     * @brief Resuelve IDs usando cache en memoria (sin queries adicionales)
+     * @param productData datos del producto
+     * @param cache cache con datos pre-cargados
+     * @param errors lista de errores
+     * @param columnMap mapa de columnas
+     * @return producto con IDs resueltos o null si hay errores
+     */
+    private ProductExcelData resolveEntityIdsWithCache(ProductExcelData productData, ReferenceDataCache cache,
+                                                       List<ImportErrorDetail> errors, Map<String, Integer> columnMap) {
+        try {
+            ProductExcelData.ProductExcelDataBuilder builder = productData.toBuilder();
+
+            // Resolver unidad de medida desde cache
+            if (productData.getUnitOfMeasureName() != null) {
+                Long unitId = cache.unitsByName.get(productData.getUnitOfMeasureName().toLowerCase());
+                if (unitId != null) {
+                    builder.unitOfMeasureId(unitId);
+                } else {
+                    addEntityNotFoundError(productData.getRowNumber(), COLUMN_UNIT_MEASURE, columnMap, errors,
+                            productData.getUnitOfMeasureName());
+                    return null;
+                }
+            }
+
+            // Resolver categoría desde cache
+            if (productData.getCategoryName() != null) {
+                Long catId = cache.categoriesByName.get(productData.getCategoryName().toLowerCase());
+                if (catId != null) {
+                    builder.categoryId(catId);
+                } else {
+                    addEntityNotFoundError(productData.getRowNumber(), COLUMN_CATEGORY, columnMap, errors,
+                            productData.getCategoryName());
+                    return null;
+                }
+            }
+
+            // Resolver tipo de producto desde cache
+            if (productData.getProductTypeName() != null) {
+                Long typeId = cache.productTypesByName.get(productData.getProductTypeName().toLowerCase());
+                if (typeId != null) {
+                    builder.productTypeId(typeId);
+                } else {
+                    addEntityNotFoundError(productData.getRowNumber(), COLUMN_PRODUCT_TYPE, columnMap, errors,
+                            productData.getProductTypeName());
+                    return null;
+                }
+            }
+
+            return builder.build();
+
+        } catch (Exception e) {
+            errors.add(ImportErrorDetail.builder()
+                    .rowNumber(productData.getRowNumber())
+                    .errorCode("ENTITY_RESOLUTION_ERROR")
+                    .errorMessage("Error resolviendo entidades: " + e.getMessage())
+                    .errorType(ImportErrorType.SYSTEM_ERROR)
+                    .build());
+            return null;
+        }
+    }
+
+    /**
+     * @brief Cache interno para datos de referencia pre-cargados
+     */
+    private static class ReferenceDataCache {
+        final Map<String, Long> unitsByName = new HashMap<>();
+        final Map<String, Long> categoriesByName = new HashMap<>();
+        final Map<String, Long> productTypesByName = new HashMap<>();
+        final Set<String> existingReferences = new HashSet<>();
     }
 
     /**
@@ -217,100 +400,6 @@ public class ProductBatchValidationService {
     }
 
     /**
-     * @brief Resuelve IDs de entidades relacionadas convirtiendo nombres a identificadores
-     * @param productData datos del producto con nombres de entidades
-     * @param entId ID de la empresa
-     * @param errors lista donde agregar errores de resolución
-     * @param columnMap mapa de columnas para información de errores
-     * @return datos del producto con IDs resueltos o null si hay errores
-     */
-    private ProductExcelData resolveEntityIds(ProductExcelData productData, String entId,
-                                             List<ImportErrorDetail> errors, Map<String, Integer> columnMap) {
-        try {
-            ProductExcelData.ProductExcelDataBuilder builder = productData.toBuilder();
-
-            // Resolver ID de unidad de medida
-            if (!resolveEntityId(productData.getUnitOfMeasureName(), entId, builder::unitOfMeasureId,
-                    COLUMN_UNIT_MEASURE, columnMap, errors, productData.getRowNumber())) {
-                return null;
-            }
-
-            // Resolver ID de categoría
-            if (!resolveEntityId(productData.getCategoryName(), entId, builder::categoryId,
-                    COLUMN_CATEGORY, columnMap, errors, productData.getRowNumber())) {
-                return null;
-            }
-
-            // Resolver ID de tipo de producto
-            if (!resolveEntityId(productData.getProductTypeName(), entId, builder::productTypeId,
-                    COLUMN_PRODUCT_TYPE, columnMap, errors, productData.getRowNumber())) {
-                return null;
-            }
-
-            return builder.build();
-
-        } catch (Exception e) {
-            errors.add(ImportErrorDetail.builder()
-                    .rowNumber(productData.getRowNumber())
-                    .errorCode("ENTITY_RESOLUTION_ERROR")
-                    .errorMessage("Error resolviendo entidades relacionadas: " + e.getMessage())
-                    .errorType(ImportErrorType.SYSTEM_ERROR)
-                    .fieldValue(null)
-                    .build());
-            return null;
-        }
-    }
-
-    /**
-     * @brief Método genérico que resuelve ID de entidad aplicando validaciones y manejo de errores
-     * @param entityName nombre de la entidad a resolver
-     * @param entId ID de la empresa
-     * @param idSetter función consumer para establecer el ID resuelto
-     * @param columnConstant constante de columna para identificar el tipo
-     * @param columnMap mapa de columnas para información de errores
-     * @param errors lista donde agregar errores encontrados
-     * @param rowNumber número de fila para información de errores
-     * @return true si la resolución fue exitosa, false si hubo errores
-     */
-    private boolean resolveEntityId(String entityName, String entId,
-                                   LongConsumer idSetter,
-                                   String columnConstant, Map<String, Integer> columnMap,
-                                   List<ImportErrorDetail> errors, int rowNumber) {
-        if (isNullOrEmpty(entityName)) {
-            return true; // No hay entidad que resolver, continuar
-        }
-
-        Long entityId = resolveEntityByName(entityName.trim(), entId, columnConstant);
-        if (entityId != null) {
-            idSetter.accept(entityId);
-            return true;
-        } else {
-            addEntityNotFoundError(rowNumber, columnConstant, columnMap, errors, entityName.trim());
-            return false;
-        }
-    }
-
-    /**
-     * @brief Resuelve entidad por nombre usando switch para determinar tipo específico
-     * @param name nombre de la entidad a buscar
-     * @param entId ID de la empresa
-     * @param entityType tipo de entidad (unidad de medida, categoría, tipo de producto)
-     * @return ID de la entidad encontrada o null si no existe
-     */
-    private Long resolveEntityByName(String name, String entId, String entityType) {
-        switch (entityType) {
-            case COLUMN_UNIT_MEASURE:
-                return resolveUnitOfMeasureId(name, entId);
-            case COLUMN_CATEGORY:
-                return resolveCategoryId(name, entId);
-            case COLUMN_PRODUCT_TYPE:
-                return resolveProductTypeId(name, entId);
-            default:
-                return null;
-        }
-    }
-
-    /**
      * @brief Agrega error específico cuando entidad relacionada no existe o está inactiva
      * @param rowNumber número de fila donde ocurrió el error
      * @param columnConstant constante que identifica el tipo de columna
@@ -379,87 +468,6 @@ public class ProductBatchValidationService {
 
     private boolean isNullOrEmpty(String value) {
         return value == null || value.trim().isEmpty();
-    }
-
-    /**
-     * @brief Resuelve ID de unidad de medida buscando coincidencia exacta case-insensitive
-     * @param name nombre de la unidad de medida a buscar
-     * @param entId ID de la empresa
-     * @return ID de la unidad de medida encontrada o null si no existe
-     */
-    private Long resolveUnitOfMeasureId(String name, String entId) {
-        if (name == null || name.trim().isEmpty()) {
-            return null;
-        }
-
-        try {
-            // Usar búsqueda exacta con paginación pequeña
-            var page = unitOfMeasurePersistencePort.findByEnterpriseIdAndSearch(
-                    entId, name.trim(), 0, 10, "name", "asc");
-
-            // Buscar coincidencia exacta (case-insensitive) y verificar que esté activa
-            return page.getContent().stream()
-                    .filter(unit -> unit.getName().equalsIgnoreCase(name.trim()) && unit.isState())
-                    .findFirst()
-                    .map(UnitOfMeasure::getId)
-                    .orElse(null);
-        } catch (Exception e) {
-            return null;
-        }
-    }
-
-    /**
-     * @brief Resuelve ID de categoría buscando coincidencia exacta case-insensitive
-     * @param name nombre de la categoría a buscar
-     * @param entId ID de la empresa
-     * @return ID de la categoría encontrada o null si no existe
-     */
-    private Long resolveCategoryId(String name, String entId) {
-        if (name == null || name.trim().isEmpty()) {
-            return null;
-        }
-
-        try {
-            // Usar búsqueda exacta con paginación pequeña
-            var page = categoryPersistencePort.findByEnterpriseIdAndSearch(
-                    entId, name.trim(), PageRequest.of(0, 10));
-
-            // Buscar coincidencia exacta (case-insensitive) y verificar que esté activa
-            return page.getContent().stream()
-                    .filter(category -> category.getName().equalsIgnoreCase(name.trim()) && category.isState())
-                    .findFirst()
-                    .map(Category::getId)
-                    .orElse(null);
-        } catch (Exception e) {
-            return null;
-        }
-    }
-
-    /**
-     * @brief Resuelve ID de tipo de producto buscando coincidencia exacta case-insensitive
-     * @param name nombre del tipo de producto a buscar
-     * @param entId ID de la empresa
-     * @return ID del tipo de producto encontrado o null si no existe
-     */
-    private Long resolveProductTypeId(String name, String entId) {
-        if (name == null || name.trim().isEmpty()) {
-            return null;
-        }
-
-        try {
-            // Usar búsqueda exacta con paginación pequeña
-            var page = productTypePersistencePort.findByEnterpriseIdAndSearch(
-                    entId, name.trim(), 0, 10, "name", "asc");
-
-            // Buscar coincidencia exacta (case-insensitive) y verificar que esté activo
-            return page.getContent().stream()
-                    .filter(productType -> productType.getName().equalsIgnoreCase(name.trim()) && productType.isState())
-                    .findFirst()
-                    .map(ProductType::getId)
-                    .orElse(null);
-        } catch (Exception e) {
-            return null;
-        }
     }
 
     /**

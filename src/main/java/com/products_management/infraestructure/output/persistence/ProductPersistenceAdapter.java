@@ -2,6 +2,7 @@ package com.products_management.infraestructure.output.persistence;
 
 import com.products_management.application.ports.output.IProductPersistencePort;
 import com.products_management.domain.model.Product;
+import com.products_management.infraestructure.output.persistence.entity.ProductEntity;
 import com.products_management.infraestructure.output.persistence.mapper.interfaces.IProductPersistenceMapper;
 import com.products_management.infraestructure.output.persistence.repository.IProductRepository;
 import lombok.RequiredArgsConstructor;
@@ -43,6 +44,19 @@ public class ProductPersistenceAdapter implements IProductPersistencePort {
     }
 
     @Override
+    public List<Product> saveAll(List<Product> products) {
+        List<ProductEntity> entities = products.stream()
+                .map(productPersistenceMapper::toProductEntity)
+                .toList();
+        
+        List<ProductEntity> savedEntities = productRepository.saveAll(entities);
+        
+        return savedEntities.stream()
+                .map(productPersistenceMapper::toProduct)
+                .toList();
+    }
+
+    @Override
     public void deleteById(Long id) {
         productRepository.deleteById(Long.valueOf(id));
     }
@@ -52,6 +66,14 @@ public class ProductPersistenceAdapter implements IProductPersistencePort {
         Sort sort = Sort.by("name").ascending();
         PageRequest pageRequest = PageRequest.of(pageNumber, pageSize, sort);
         return productRepository.findByEnterpriseIdAndState(enterpriseId, true, pageRequest)
+                .map(productPersistenceMapper::toProduct);
+    }
+
+    @Override
+    public Page<Product> findByEnterpriseIdAndState(String enterpriseId, boolean state, int pageNumber, int pageSize) {
+        Sort sort = Sort.by("name").ascending();
+        PageRequest pageRequest = PageRequest.of(pageNumber, pageSize, sort);
+        return productRepository.findByEnterpriseIdAndState(enterpriseId, state, pageRequest)
                 .map(productPersistenceMapper::toProduct);
     }
 

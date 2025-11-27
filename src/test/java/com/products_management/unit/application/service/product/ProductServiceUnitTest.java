@@ -887,4 +887,250 @@ class ProductServiceUnitTest {
         assertEquals(250.0, result.getCost());
         verify(productPersistencePort, times(1)).create(any(Product.class));
     }
+
+    @Test
+    @DisplayName("Debe crear producto sin referencia null")
+    void testCreateWithNullReference() {
+        // Arrange
+        Product newProduct = Product.builder()
+                .name("producto sin referencia")
+                .reference(null)
+                .unitOfMeasureId(1L)
+                .categoryId(1L)
+                .productTypeId(1L)
+                .enterpriseId(enterpriseId)
+                .quantity(50)
+                .cost(100.0)
+                .state(true)
+                .build();
+
+        when(unitOfMeasurePersistencePort.findByIdAndEnterpriseId(1L, enterpriseId))
+                .thenReturn(Optional.of(unitOfMeasure));
+        when(categoryPersistencePort.findByIdAndEnterpriseId(1L, enterpriseId))
+                .thenReturn(Optional.of(category));
+        when(productTypePersistencePort.findByIdAndEnterpriseId(1L, enterpriseId))
+                .thenReturn(Optional.of(productType));
+        when(productPersistencePort.existsByNameAndEnterpriseId(anyString(), eq(enterpriseId)))
+                .thenReturn(false);
+        when(productPersistencePort.create(any(Product.class))).thenAnswer(inv -> {
+            Product p = inv.getArgument(0);
+            p.setId(1L);
+            return p;
+        });
+        doNothing().when(productEventPort).publishCreatedStockEvent(any(ProductSyncDto.class));
+
+        // Act
+        Product result = productService.create(newProduct);
+
+        // Assert
+        assertNotNull(result);
+        verify(productPersistencePort, never()).existsByReferenceAndEnterpriseId(anyString(), anyString());
+        verify(productPersistencePort, times(2)).create(any(Product.class));
+    }
+
+    @Test
+    @DisplayName("Debe actualizar con referencia vacía sin validar duplicados")
+    void testUpdateWithEmptyReference() {
+        // Arrange
+        Product updateData = Product.builder()
+                .name("producto test")
+                .reference("  ")
+                .unitOfMeasureId(1L)
+                .categoryId(1L)
+                .productTypeId(1L)
+                .enterpriseId(enterpriseId)
+                .quantity(100)
+                .cost(150.0)
+                .build();
+
+        when(productPersistencePort.findByIdAndEnterpriseId(productId, enterpriseId))
+                .thenReturn(Optional.of(product));
+        when(unitOfMeasurePersistencePort.findByIdAndEnterpriseId(1L, enterpriseId))
+                .thenReturn(Optional.of(unitOfMeasure));
+        when(categoryPersistencePort.findByIdAndEnterpriseId(1L, enterpriseId))
+                .thenReturn(Optional.of(category));
+        when(productTypePersistencePort.findByIdAndEnterpriseId(1L, enterpriseId))
+                .thenReturn(Optional.of(productType));
+        when(productPersistencePort.existsByNameAndEnterpriseIdAndIdNot(anyString(), eq(enterpriseId), eq(productId)))
+                .thenReturn(false);
+        when(productPersistencePort.create(any(Product.class))).thenAnswer(inv -> inv.getArgument(0));
+        doNothing().when(productEventPort).publishUpdatedStockEvent(any(ProductSyncDto.class));
+
+        // Act
+        Product result = productService.update(productId, updateData, enterpriseId);
+
+        // Assert
+        assertNotNull(result);
+        verify(productPersistencePort, never()).existsByReferenceAndEnterpriseIdAndIdNot(anyString(), anyString(), anyLong());
+        verify(productPersistencePort, times(1)).create(any(Product.class));
+    }
+
+    @Test
+    @DisplayName("Debe actualizar con referencia null sin validar duplicados")
+    void testUpdateWithNullReference() {
+        // Arrange
+        Product updateData = Product.builder()
+                .name("producto test")
+                .reference(null)
+                .unitOfMeasureId(1L)
+                .categoryId(1L)
+                .productTypeId(1L)
+                .enterpriseId(enterpriseId)
+                .quantity(100)
+                .cost(150.0)
+                .build();
+
+        when(productPersistencePort.findByIdAndEnterpriseId(productId, enterpriseId))
+                .thenReturn(Optional.of(product));
+        when(unitOfMeasurePersistencePort.findByIdAndEnterpriseId(1L, enterpriseId))
+                .thenReturn(Optional.of(unitOfMeasure));
+        when(categoryPersistencePort.findByIdAndEnterpriseId(1L, enterpriseId))
+                .thenReturn(Optional.of(category));
+        when(productTypePersistencePort.findByIdAndEnterpriseId(1L, enterpriseId))
+                .thenReturn(Optional.of(productType));
+        when(productPersistencePort.existsByNameAndEnterpriseIdAndIdNot(anyString(), eq(enterpriseId), eq(productId)))
+                .thenReturn(false);
+        when(productPersistencePort.create(any(Product.class))).thenAnswer(inv -> inv.getArgument(0));
+        doNothing().when(productEventPort).publishUpdatedStockEvent(any(ProductSyncDto.class));
+
+        // Act
+        Product result = productService.update(productId, updateData, enterpriseId);
+
+        // Assert
+        assertNotNull(result);
+        verify(productPersistencePort, never()).existsByReferenceAndEnterpriseIdAndIdNot(anyString(), anyString(), anyLong());
+        verify(productPersistencePort, times(1)).create(any(Product.class));
+    }
+
+    @Test
+    @DisplayName("Debe buscar con búsqueda vacía tratándola como sin búsqueda")
+    void testFindAllPaginatedWithEmptySearch() {
+        // Arrange
+        Page<Product> expectedPage = new PageImpl<>(List.of(product));
+        when(productPersistencePort.countByEnterpriseId(enterpriseId)).thenReturn(1L);
+        when(productPersistencePort.findByEnterpriseIdWithFilters(
+                eq(enterpriseId), isNull(), anyInt(), anyInt(), anyString(), anyString()))
+                .thenReturn(expectedPage);
+
+        // Act
+        Page<Product> result = productService.findAllPaginated(
+                enterpriseId, Optional.empty(), Optional.empty(), "name", "asc", Optional.of("   "));
+
+        // Assert
+        assertNotNull(result);
+        assertEquals(1, result.getTotalElements());
+        verify(productPersistencePort, times(1)).countByEnterpriseId(enterpriseId);
+        verify(productPersistencePort, never()).countByEnterpriseIdWithFilters(anyString(), anyString());
+    }
+
+    @Test
+    @DisplayName("Debe crear producto con unitOfMeasureId null sin validar")
+    void testCreateWithNullUnitOfMeasureId() {
+        // Arrange
+        Product newProduct = Product.builder()
+                .name("producto sin unidad")
+                .unitOfMeasureId(null)
+                .categoryId(1L)
+                .productTypeId(1L)
+                .enterpriseId(enterpriseId)
+                .quantity(50)
+                .cost(100.0)
+                .state(true)
+                .build();
+
+        when(categoryPersistencePort.findByIdAndEnterpriseId(1L, enterpriseId))
+                .thenReturn(Optional.of(category));
+        when(productTypePersistencePort.findByIdAndEnterpriseId(1L, enterpriseId))
+                .thenReturn(Optional.of(productType));
+        when(productPersistencePort.existsByNameAndEnterpriseId(anyString(), eq(enterpriseId)))
+                .thenReturn(false);
+        when(productPersistencePort.create(any(Product.class))).thenAnswer(inv -> {
+            Product p = inv.getArgument(0);
+            p.setId(1L);
+            return p;
+        });
+        doNothing().when(productEventPort).publishCreatedStockEvent(any(ProductSyncDto.class));
+
+        // Act
+        Product result = productService.create(newProduct);
+
+        // Assert
+        assertNotNull(result);
+        verify(unitOfMeasurePersistencePort, never()).findByIdAndEnterpriseId(anyLong(), anyString());
+        verify(productPersistencePort, times(2)).create(any(Product.class));
+    }
+
+    @Test
+    @DisplayName("Debe crear producto con categoryId null sin validar")
+    void testCreateWithNullCategoryId() {
+        // Arrange
+        Product newProduct = Product.builder()
+                .name("producto sin categoría")
+                .unitOfMeasureId(1L)
+                .categoryId(null)
+                .productTypeId(1L)
+                .enterpriseId(enterpriseId)
+                .quantity(50)
+                .cost(100.0)
+                .state(true)
+                .build();
+
+        when(unitOfMeasurePersistencePort.findByIdAndEnterpriseId(1L, enterpriseId))
+                .thenReturn(Optional.of(unitOfMeasure));
+        when(productTypePersistencePort.findByIdAndEnterpriseId(1L, enterpriseId))
+                .thenReturn(Optional.of(productType));
+        when(productPersistencePort.existsByNameAndEnterpriseId(anyString(), eq(enterpriseId)))
+                .thenReturn(false);
+        when(productPersistencePort.create(any(Product.class))).thenAnswer(inv -> {
+            Product p = inv.getArgument(0);
+            p.setId(1L);
+            return p;
+        });
+        doNothing().when(productEventPort).publishCreatedStockEvent(any(ProductSyncDto.class));
+
+        // Act
+        Product result = productService.create(newProduct);
+
+        // Assert
+        assertNotNull(result);
+        verify(categoryPersistencePort, never()).findByIdAndEnterpriseId(anyLong(), anyString());
+        verify(productPersistencePort, times(2)).create(any(Product.class));
+    }
+
+    @Test
+    @DisplayName("Debe crear producto con productTypeId null sin validar")
+    void testCreateWithNullProductTypeId() {
+        // Arrange
+        Product newProduct = Product.builder()
+                .name("producto sin tipo")
+                .unitOfMeasureId(1L)
+                .categoryId(1L)
+                .productTypeId(null)
+                .enterpriseId(enterpriseId)
+                .quantity(50)
+                .cost(100.0)
+                .state(true)
+                .build();
+
+        when(unitOfMeasurePersistencePort.findByIdAndEnterpriseId(1L, enterpriseId))
+                .thenReturn(Optional.of(unitOfMeasure));
+        when(categoryPersistencePort.findByIdAndEnterpriseId(1L, enterpriseId))
+                .thenReturn(Optional.of(category));
+        when(productPersistencePort.existsByNameAndEnterpriseId(anyString(), eq(enterpriseId)))
+                .thenReturn(false);
+        when(productPersistencePort.create(any(Product.class))).thenAnswer(inv -> {
+            Product p = inv.getArgument(0);
+            p.setId(1L);
+            return p;
+        });
+        doNothing().when(productEventPort).publishCreatedStockEvent(any(ProductSyncDto.class));
+
+        // Act
+        Product result = productService.create(newProduct);
+
+        // Assert
+        assertNotNull(result);
+        verify(productTypePersistencePort, never()).findByIdAndEnterpriseId(anyLong(), anyString());
+        verify(productPersistencePort, times(2)).create(any(Product.class));
+    }
 }

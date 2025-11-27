@@ -361,7 +361,6 @@ class CategoryServiceUnitTest {
     void testFindByEntIdAndSearch() {
         // Arrange
         String search = "Electr";
-        Pageable pageable = Pageable.ofSize(10).withPage(0);
         Page<Category> categoryPage = new PageImpl<>(List.of(category));
         when(categoryPersistencePort.findByEnterpriseIdAndSearch(eq(enterpriseId), eq(search), any(Pageable.class)))
                 .thenReturn(categoryPage);

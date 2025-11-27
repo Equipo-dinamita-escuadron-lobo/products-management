@@ -140,7 +140,7 @@ public class ProductService implements IProductServicePort {
 
     @Override
     public Product update(Long id, Product product, String enterpriseId) {
-//productEventPort
+
         Product objProduct = productPersistencePort.findByIdAndEnterpriseId(id, enterpriseId)
                 .map(existingProduct -> {
                     // Validar que el producto no esté en uso

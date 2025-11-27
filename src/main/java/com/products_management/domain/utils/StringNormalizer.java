@@ -86,10 +86,18 @@ public final class StringNormalizer {
             return null;
         }
 
-        // Remover saltos de línea y texto adicional como "(Requerido)", "(Opcional)", etc.
-        String cleaned = header.replaceAll("\\s*\\([^)]*?\\)\\s*", "") // Remover texto entre paréntesis (usando lazy matching para evitar backtracking excesivo)
-                              .replaceAll("\\n.*", "") // Remover todo después del primer salto de línea
-                              .trim();
+        // Remover todo después del primer salto de línea
+        String cleaned = header;
+        if (cleaned.contains("\n")) {
+            cleaned = cleaned.substring(0, cleaned.indexOf("\n"));
+        }
+        if (cleaned.contains("\r")) {
+            cleaned = cleaned.substring(0, cleaned.indexOf("\r"));
+        }
+        
+        // Remover texto entre paréntesis como "(Requerido)", "(Opcional)", etc.
+        cleaned = cleaned.replaceAll("\\s*\\([^)]*?\\)\\s*", ""); // Usando lazy matching para evitar backtracking excesivo
+        cleaned = cleaned.trim();
 
         // Reemplazar caracteres especiales comunes por encoding issues
         cleaned = cleaned.replace('Ý', 'í')  // categoría

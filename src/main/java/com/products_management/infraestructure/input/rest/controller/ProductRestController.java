@@ -14,7 +14,9 @@ import com.products_management.infraestructure.input.rest.dto.response.ProductRe
 import com.products_management.infraestructure.input.rest.mapper.interfaces.IProductRestMapper;
 import com.products_management.infraestructure.utils.ExcelFileNameGenerator;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
@@ -37,6 +39,7 @@ import java.util.Optional;
  *        sincronización
  *        con sistemas externos.
  */
+@Validated
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/products")
@@ -50,7 +53,7 @@ public class ProductRestController {
 
         @GetMapping("/findAll")
         public ResponseEntity<Page<ProductResponse>> findAll(
-                        @RequestParam String enterpriseId,
+                        @RequestParam @NotBlank(message = "El enterpriseId es requerido") String enterpriseId,
                         @RequestParam(required = false) Optional<Integer> numPage,
                         @RequestParam(required = false) Optional<Integer> size,
                         @RequestParam(defaultValue = "name") String sortField,
@@ -70,7 +73,7 @@ public class ProductRestController {
 
         @GetMapping("/findActivate")
         public ResponseEntity<Page<ProductResponse>> findActivate(
-                        @RequestParam String enterpriseId,
+                        @RequestParam @NotBlank(message = "El enterpriseId es requerido") String enterpriseId,
                         @RequestParam(required = false) Optional<Integer> numPage,
                         @RequestParam(required = false) Optional<Integer> size) {
 
@@ -106,7 +109,8 @@ public class ProductRestController {
         }
 
         @GetMapping("/template/excel")
-        public ResponseEntity<Resource> exportProductTemplate(@RequestParam String entId) {
+        public ResponseEntity<Resource> exportProductTemplate(
+                        @RequestParam @NotBlank(message = "El enterpriseId es requerido") String entId) {
                 Resource templateFile = productExportUseCase.exportProductTemplateWithValidations(entId);
                 String filename = fileNameGenerator.generateTemplateFileName();
 
@@ -119,8 +123,8 @@ public class ProductRestController {
 
         @GetMapping("/export/excel")
         public ResponseEntity<Map<String, String>> exportProductsAsync(
-                        @RequestParam String entId,
-                        @RequestParam(required = false) String companyName,
+                        @RequestParam @NotBlank(message = "El enterpriseId es requerido") String entId,
+                        @RequestParam @NotBlank(message = "El nombre de la empresa es requerido") String companyName,
                         @RequestParam(required = false) Boolean status) {
 
                 ProductExportRequest request = ProductExportRequest.builder()
@@ -182,7 +186,7 @@ public class ProductRestController {
 
         @PostMapping("/import/excel")
         public ResponseEntity<Map<String, String>> importProductsFromExcel(
-                        @RequestParam String entId,
+                        @RequestParam @NotBlank(message = "El enterpriseId es requerido") String entId,
                         @RequestParam("excelFile") MultipartFile excelFile) {
 
                 ProductImportRequest request = ProductImportRequest.from(entId, excelFile);

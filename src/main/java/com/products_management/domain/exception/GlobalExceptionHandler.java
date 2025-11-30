@@ -4,11 +4,14 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
+import org.springframework.web.multipart.support.MissingServletRequestPartException;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import com.products_management.domain.exception.product.ProductFileSizeExceededException;
 import com.products_management.infraestructure.input.rest.dto.response.ErrorResponse;
@@ -184,6 +187,58 @@ public class GlobalExceptionHandler {
     }
 
     /**
+     * @brief Maneja errores de parámetro de solicitud faltante
+     *
+     * Procesa errores cuando un parámetro requerido de la solicitud
+     * (query param) no está presente.
+     *
+     * @param ex Excepción de parámetro de solicitud faltante
+     * @param request Información de la solicitud HTTP
+     * @return Respuesta HTTP con error de parámetro faltante
+     */
+    @ExceptionHandler(MissingServletRequestParameterException.class)
+    public ResponseEntity<ErrorResponse> handleMissingServletRequestParameter(
+            MissingServletRequestParameterException ex, WebRequest request) {
+
+        ErrorResponse errorResponse = ErrorResponse.builder()
+                .timestamp(LocalDateTime.now())
+                .status(HttpStatus.BAD_REQUEST.value())
+                .error("Bad Request")
+                .message("El parámetro requerido '" + ex.getParameterName() + "' no está presente")
+                .code("MISSING_REQUEST_PARAMETER")
+                .path(request.getDescription(false).replace("uri=", ""))
+                .build();
+
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
+
+    /**
+     * @brief Maneja errores de parte faltante en solicitud multipart
+     *
+     * Procesa errores cuando una parte requerida del formulario multipart
+     * (como un archivo) no está presente en la solicitud.
+     *
+     * @param ex Excepción de parte de solicitud faltante
+     * @param request Información de la solicitud HTTP
+     * @return Respuesta HTTP con error de parte faltante
+     */
+    @ExceptionHandler(MissingServletRequestPartException.class)
+    public ResponseEntity<ErrorResponse> handleMissingServletRequestPart(
+            MissingServletRequestPartException ex, WebRequest request) {
+
+        ErrorResponse errorResponse = ErrorResponse.builder()
+                .timestamp(LocalDateTime.now())
+                .status(HttpStatus.BAD_REQUEST.value())
+                .error("Bad Request")
+                .message("La parte requerida '" + ex.getRequestPartName() + "' no está presente en la solicitud")
+                .code("MISSING_REQUEST_PART")
+                .path(request.getDescription(false).replace("uri=", ""))
+                .build();
+
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
+
+    /**
      * @brief Maneja errores de deserialización JSON
      *
      * Procesa errores cuando el cuerpo de la solicitud HTTP no puede ser
@@ -236,6 +291,58 @@ public class GlobalExceptionHandler {
             return HttpStatus.PAYLOAD_TOO_LARGE;
         }
         return HttpStatus.BAD_REQUEST;
+    }
+
+    /**
+     * @brief Maneja excepciones de argumentos ilegales
+     *
+     * Procesa excepciones IllegalArgumentException, típicamente lanzadas
+     * por validaciones de parámetros como paginación negativa.
+     *
+     * @param ex Excepción de argumento ilegal
+     * @param request Información de la solicitud HTTP
+     * @return Respuesta HTTP con error de validación de parámetros
+     */
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<ErrorResponse> handleIllegalArgumentException(
+            IllegalArgumentException ex, WebRequest request) {
+
+        ErrorResponse errorResponse = ErrorResponse.builder()
+                .timestamp(LocalDateTime.now())
+                .status(HttpStatus.BAD_REQUEST.value())
+                .error("Bad Request")
+                .message(ex.getMessage())
+                .code("INVALID_PARAMETER")
+                .path(request.getDescription(false).replace("uri=", ""))
+                .build();
+
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
+
+    /**
+     * @brief Maneja excepciones de recurso no encontrado
+     *
+     * Procesa NoResourceFoundException que ocurre cuando una URL tiene
+     * segmentos vacíos o el recurso no existe en el sistema.
+     *
+     * @param ex Excepción de recurso no encontrado
+     * @param request Información de la solicitud HTTP
+     * @return Respuesta HTTP con error de recurso no encontrado
+     */
+    @ExceptionHandler(NoResourceFoundException.class)
+    public ResponseEntity<ErrorResponse> handleNoResourceFoundException(
+            NoResourceFoundException ex, WebRequest request) {
+
+        ErrorResponse errorResponse = ErrorResponse.builder()
+                .timestamp(LocalDateTime.now())
+                .status(HttpStatus.NOT_FOUND.value())
+                .error("Not Found")
+                .message("El recurso solicitado no fue encontrado. Verifique que los parámetros de la URL no estén vacíos.")
+                .code("RESOURCE_NOT_FOUND")
+                .path(request.getDescription(false).replace("uri=", ""))
+                .build();
+
+        return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
     }
 
     /**

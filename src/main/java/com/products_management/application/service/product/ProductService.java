@@ -170,6 +170,7 @@ public class ProductService implements IProductServicePort {
                     existingProduct.setCost(product.getCost());
                     existingProduct.setProductTypeId(product.getProductTypeId());
                     existingProduct.setReference(product.getReference());
+                    existingProduct.setPresentation(product.getPresentation());
 
                     if (shouldRegenerateCode) {
                         existingProduct.generateCode();

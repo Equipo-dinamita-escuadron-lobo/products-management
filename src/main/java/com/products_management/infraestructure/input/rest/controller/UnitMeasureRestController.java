@@ -13,6 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
@@ -81,6 +82,7 @@ public class UnitMeasureRestController {
                 return unitOfMeasureRestMapper.toUnitOfMeasureResponse(unitOfMeasureServicePort.findByIdAndEnterpriseId(id, enterpriseId));
         }
 
+        @PreAuthorize("hasAuthority('Create_Unit_Of_Measure')")
         @PostMapping("/create")
         public ResponseEntity<UnitOfMeasureResponse> create(
                         @Valid @RequestBody UnitOfMeasureCreateRequest unitOfMeasureCreateRequest) {
@@ -91,6 +93,7 @@ public class UnitMeasureRestController {
                                                                                 unitOfMeasureCreateRequest))));
         }
 
+        @PreAuthorize("hasAuthority('Update_Unit_Of_Measure')")
         @PutMapping("/update/{id}")
         public UnitOfMeasureResponse update(@PathVariable Long id,
                         @Valid @RequestBody UnitOfMeasureCreateRequest unitOfMeasureCreateRequest) {
@@ -99,11 +102,13 @@ public class UnitMeasureRestController {
                                 unitOfMeasureServicePort.update(id, unitOfMeasureCreateRequest.getEnterpriseId(), unitOfMeasure));
         }
 
+        @PreAuthorize("hasAuthority('Change_State_Unit_Of_Measure')")
         @PutMapping("/changeState/{id}")
         public void changeState(@PathVariable Long id, @RequestParam String enterpriseId) {
                 unitOfMeasureServicePort.changeState(id, enterpriseId);
         }
 
+        @PreAuthorize("hasAuthority('Delete_Unit_Of_Measure')")
         @DeleteMapping("/delete/{id}")
         public void deleteById(@PathVariable Long id, @RequestParam String enterpriseId) {
                 unitOfMeasureServicePort.deleteById(id, enterpriseId);

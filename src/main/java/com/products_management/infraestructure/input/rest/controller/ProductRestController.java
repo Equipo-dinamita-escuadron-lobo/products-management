@@ -24,6 +24,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -82,6 +83,7 @@ public class ProductRestController {
                 return new ResponseEntity<>(responsePage, HttpStatus.OK);
         }
 
+        @PreAuthorize("hasAuthority('Create_Product')")
         @PostMapping("/create")
         public ResponseEntity<ProductResponse> create(@Valid @RequestBody ProductCreateRequest productCreateRequest) {
                 return ResponseEntity.status(HttpStatus.CREATED)
@@ -90,6 +92,7 @@ public class ProductRestController {
                                                                 productRestMapper.toProduct(productCreateRequest))));
         }
 
+        @PreAuthorize("hasAuthority('Update_Product')")
         @PutMapping("/update/{id}")
         public ProductResponse update(@PathVariable Long id,
                         @Valid @RequestBody ProductCreateRequest productCreateRequest) {
@@ -98,16 +101,19 @@ public class ProductRestController {
                                                 productCreateRequest.getEnterpriseId()));
         }
 
+        @PreAuthorize("hasAuthority('Change_State_Product')")
         @PutMapping("/changeState/{id}/{enterpriseId}")
         public void changeState(@PathVariable Long id, @PathVariable String enterpriseId) {
                 productServicePort.changeState(id, enterpriseId);
         }
 
+        @PreAuthorize("hasAuthority('Delete_Product')")
         @DeleteMapping("/delete/{id}/{enterpriseId}")
         public void deleteById(@PathVariable Long id, @PathVariable String enterpriseId) {
                 productServicePort.deleteById(id, enterpriseId);
         }
 
+        @PreAuthorize("hasAuthority('Export_Template_Product')")
         @GetMapping("/template/excel")
         public ResponseEntity<Resource> exportProductTemplate(
                         @RequestParam @NotBlank(message = "El enterpriseId es requerido") String entId) {
@@ -120,7 +126,8 @@ public class ProductRestController {
                                                 "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
                                 .body(templateFile);
         }
-
+   
+        @PreAuthorize("hasAuthority('Export_Product')")
         @GetMapping("/export/excel")
         public ResponseEntity<Map<String, String>> exportProductsAsync(
                         @RequestParam @NotBlank(message = "El enterpriseId es requerido") String entId,
@@ -154,7 +161,7 @@ public class ProductRestController {
 
                 return ResponseEntity.ok(jobStatus.get());
         }
-
+        
         @GetMapping("/export/download/{jobId}")
         public ResponseEntity<Resource> downloadExportedFile(@PathVariable String jobId) {
 
@@ -184,6 +191,7 @@ public class ProductRestController {
                                 .body(resource);
         }
 
+        @PreAuthorize("hasAuthority('Import_Product')")
         @PostMapping("/import/excel")
         public ResponseEntity<Map<String, String>> importProductsFromExcel(
                         @RequestParam @NotBlank(message = "El enterpriseId es requerido") String entId,

@@ -12,6 +12,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import com.products_management.infraestructure.utils.PaginationHelper;
@@ -83,6 +84,7 @@ public class CategoryRestController {
                 return new ResponseEntity<>(responsePage, HttpStatus.OK);
         }
 
+        @PreAuthorize("hasAuthority('Create_Category')")
         @PostMapping("/create")
         public ResponseEntity<CategoryResponse> create(
                         @Valid @RequestBody CategoryCreateRequest categoryCreateRequest) {
@@ -92,6 +94,7 @@ public class CategoryRestController {
                                                                 categoryRestMapper.toCategory(categoryCreateRequest))));
         }
 
+        @PreAuthorize("hasAuthority('Update_Category')")
         @PutMapping("/update/{enterpriseId}/{id}")
         public CategoryResponse update(@PathVariable String enterpriseId, @PathVariable Long id,
                         @Valid @RequestBody CategoryCreateRequest categoryCreateRequest) {
@@ -99,11 +102,13 @@ public class CategoryRestController {
                                 categoryServicePort.update(enterpriseId, id, categoryRestMapper.toCategory(categoryCreateRequest)));
         }
 
+        @PreAuthorize("hasAuthority('Change_State_Category')")
         @PutMapping("/changeState/{enterpriseId}/{id}")
         public void changeState(@PathVariable String enterpriseId, @PathVariable Long id) {
                 categoryServicePort.changeState(enterpriseId, id);
         }
 
+        @PreAuthorize("hasAuthority('Delete_Category')")
         @DeleteMapping("/delete/{enterpriseId}/{id}")
         public void deleteById(@PathVariable String enterpriseId, @PathVariable Long id) {
                 categoryServicePort.deleteById(enterpriseId, id);

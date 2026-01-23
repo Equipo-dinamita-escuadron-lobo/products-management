@@ -126,7 +126,6 @@ public class ProductRestController {
                                                 "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
                                 .body(templateFile);
         }
-
    
         @PreAuthorize("hasAuthority('Export_Product')")
         @GetMapping("/export/excel")
@@ -162,8 +161,7 @@ public class ProductRestController {
 
                 return ResponseEntity.ok(jobStatus.get());
         }
-
-        @PreAuthorize("hasAuthority('Download_Exported_Product')")
+        
         @GetMapping("/export/download/{jobId}")
         public ResponseEntity<Resource> downloadExportedFile(@PathVariable String jobId) {
 

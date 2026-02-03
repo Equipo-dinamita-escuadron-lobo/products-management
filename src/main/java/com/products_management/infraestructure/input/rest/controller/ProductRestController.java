@@ -83,7 +83,7 @@ public class ProductRestController {
                 return new ResponseEntity<>(responsePage, HttpStatus.OK);
         }
 
-        @PreAuthorize("hasAuthority('Create_Product')")
+        //("hasAuthority('Create_Product')")
         @PostMapping("/create")
         public ResponseEntity<ProductResponse> create(@Valid @RequestBody ProductCreateRequest productCreateRequest) {
                 return ResponseEntity.status(HttpStatus.CREATED)
@@ -92,7 +92,7 @@ public class ProductRestController {
                                                                 productRestMapper.toProduct(productCreateRequest))));
         }
 
-        @PreAuthorize("hasAuthority('Update_Product')")
+        //("hasAuthority('Update_Product')")
         @PutMapping("/update/{id}")
         public ProductResponse update(@PathVariable Long id,
                         @Valid @RequestBody ProductCreateRequest productCreateRequest) {
@@ -101,19 +101,19 @@ public class ProductRestController {
                                                 productCreateRequest.getEnterpriseId()));
         }
 
-        @PreAuthorize("hasAuthority('Change_State_Product')")
+        //("hasAuthority('Change_State_Product')")
         @PutMapping("/changeState/{id}/{enterpriseId}")
         public void changeState(@PathVariable Long id, @PathVariable String enterpriseId) {
                 productServicePort.changeState(id, enterpriseId);
         }
 
-        @PreAuthorize("hasAuthority('Delete_Product')")
+        //("hasAuthority('Delete_Product')")
         @DeleteMapping("/delete/{id}/{enterpriseId}")
         public void deleteById(@PathVariable Long id, @PathVariable String enterpriseId) {
                 productServicePort.deleteById(id, enterpriseId);
         }
 
-        @PreAuthorize("hasAuthority('Export_Template_Product')")
+        //("hasAuthority('Export_Template_Product')")
         @GetMapping("/template/excel")
         public ResponseEntity<Resource> exportProductTemplate(
                         @RequestParam @NotBlank(message = "El enterpriseId es requerido") String entId) {
@@ -127,7 +127,7 @@ public class ProductRestController {
                                 .body(templateFile);
         }
    
-        @PreAuthorize("hasAuthority('Export_Product')")
+        //("hasAuthority('Export_Product')")
         @GetMapping("/export/excel")
         public ResponseEntity<Map<String, String>> exportProductsAsync(
                         @RequestParam @NotBlank(message = "El enterpriseId es requerido") String entId,
@@ -191,7 +191,7 @@ public class ProductRestController {
                                 .body(resource);
         }
 
-        @PreAuthorize("hasAuthority('Import_Product')")
+        //("hasAuthority('Import_Product')")
         @PostMapping("/import/excel")
         public ResponseEntity<Map<String, String>> importProductsFromExcel(
                         @RequestParam @NotBlank(message = "El enterpriseId es requerido") String entId,

@@ -40,7 +40,7 @@ public class ProductTypeRestController {
     private final IProductTypeServicePort productTypeService;
     private final IProductTypeRestMapper productTypeMapper;
 
-    @PreAuthorize("hasAuthority('Create_Product_Type')")
+    //("hasAuthority('Create_Product_Type')")
     @PostMapping
     public ResponseEntity<ProductTypeResponse> createProductType(@Valid @RequestBody ProductTypeRequest productTypeRequest) {
         ProductType productType = productTypeMapper.toProductType(productTypeRequest);
@@ -100,7 +100,7 @@ public class ProductTypeRestController {
         return ResponseEntity.ok(response);
     }
 
-    @PreAuthorize("hasAuthority('Update_Product_Type')")
+    //("hasAuthority('Update_Product_Type')")
     @PutMapping("/{id}")
     public ResponseEntity<ProductTypeResponse> updateProductType(
             @PathVariable Long id,
@@ -111,13 +111,13 @@ public class ProductTypeRestController {
         return ResponseEntity.ok(response);
     }
 
-    @PreAuthorize("hasAuthority('Change_State_Product_Type')")
+    //("hasAuthority('Change_State_Product_Type')")
     @PutMapping("/changeState/{id}")
     public void changeState(@PathVariable Long id, @RequestParam String enterpriseId) {
         productTypeService.changeState(id, enterpriseId);
     }
 
-    @PreAuthorize("hasAuthority('Delete_Product_Type')")
+    //("hasAuthority('Delete_Product_Type')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteProductType(@PathVariable Long id, @RequestParam String enterpriseId) {
         productTypeService.deleteProductType(id, enterpriseId);

@@ -21,8 +21,8 @@ import java.util.Optional;
 /**
  * @brief Controlador REST para gestión de unidades de medida
  *
- * Administra unidades de medida con operaciones CRUD completas,
- * incluyendo validaciones de unicidad y controles de eliminación segura.
+ *        Administra unidades de medida con operaciones CRUD completas,
+ *        incluyendo validaciones de unicidad y controles de eliminación segura.
  */
 @RestController
 @RequiredArgsConstructor
@@ -32,7 +32,6 @@ public class UnitMeasureRestController {
         private final IUnitOfMeasureServicePort unitOfMeasureServicePort;
         private final IUnitOfMeasureRestMapper unitOfMeasureRestMapper;
 
-       
         @GetMapping("/findAll")
         public ResponseEntity<Page<UnitOfMeasureResponse>> findAll(
                         @RequestParam String enterpriseId,
@@ -79,10 +78,11 @@ public class UnitMeasureRestController {
 
         @GetMapping("/findById/{id}")
         public UnitOfMeasureResponse findById(@PathVariable Long id, @RequestParam String enterpriseId) {
-                return unitOfMeasureRestMapper.toUnitOfMeasureResponse(unitOfMeasureServicePort.findByIdAndEnterpriseId(id, enterpriseId));
+                return unitOfMeasureRestMapper.toUnitOfMeasureResponse(
+                                unitOfMeasureServicePort.findByIdAndEnterpriseId(id, enterpriseId));
         }
 
-        //@PreAuthorize("hasAuthority('Create_Unit_Of_Measure')")
+        @PreAuthorize("hasAuthority('UM#C')")
         @PostMapping("/create")
         public ResponseEntity<UnitOfMeasureResponse> create(
                         @Valid @RequestBody UnitOfMeasureCreateRequest unitOfMeasureCreateRequest) {
@@ -93,22 +93,23 @@ public class UnitMeasureRestController {
                                                                                 unitOfMeasureCreateRequest))));
         }
 
-        //@PreAuthorize("hasAuthority('Update_Unit_Of_Measure')")
+        @PreAuthorize("hasAuthority('UM#U')")
         @PutMapping("/update/{id}")
         public UnitOfMeasureResponse update(@PathVariable Long id,
                         @Valid @RequestBody UnitOfMeasureCreateRequest unitOfMeasureCreateRequest) {
                 UnitOfMeasure unitOfMeasure = unitOfMeasureRestMapper.toUnitOfMeasure(unitOfMeasureCreateRequest);
                 return unitOfMeasureRestMapper.toUnitOfMeasureResponse(
-                                unitOfMeasureServicePort.update(id, unitOfMeasureCreateRequest.getEnterpriseId(), unitOfMeasure));
+                                unitOfMeasureServicePort.update(id, unitOfMeasureCreateRequest.getEnterpriseId(),
+                                                unitOfMeasure));
         }
 
-        //@PreAuthorize("hasAuthority('Change_State_Unit_Of_Measure')")
+        @PreAuthorize("hasAuthority('UM#CS')")
         @PutMapping("/changeState/{id}")
         public void changeState(@PathVariable Long id, @RequestParam String enterpriseId) {
                 unitOfMeasureServicePort.changeState(id, enterpriseId);
         }
 
-        //@PreAuthorize("hasAuthority('Delete_Unit_Of_Measure')")
+        @PreAuthorize("hasAuthority('UM#D')")
         @DeleteMapping("/delete/{id}")
         public void deleteById(@PathVariable Long id, @RequestParam String enterpriseId) {
                 unitOfMeasureServicePort.deleteById(id, enterpriseId);

@@ -11,6 +11,9 @@ import com.products_management.domain.exception.unitOfMeasure.UnitOfMeasureNotFo
 import com.products_management.domain.model.Product;
 import com.products_management.domain.model.UnitOfMeasure;
 import com.products_management.domain.utils.StringNormalizer;
+import com.products_management.infraestructure.audit.annotation.Auditable;
+import com.products_management.infraestructure.audit.annotation.OperationType;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
@@ -33,9 +36,11 @@ public class UnitOfMeasureService implements IUnitOfMeasureServicePort {
 
     @Override
     public UnitOfMeasure findByIdAndEnterpriseId(Long id, String enterpriseId) {
-        return unitMeasurePersistencePort.findByIdAndEnterpriseId(id, enterpriseId).orElseThrow(UnitOfMeasureNotFoundException::new);
+        return unitMeasurePersistencePort.findByIdAndEnterpriseId(id, enterpriseId)
+                .orElseThrow(UnitOfMeasureNotFoundException::new);
     }
 
+    @Auditable(operationType = OperationType.CREATE, affectedTable = "UNIT_OF_MEASURE")
     @Override
     public UnitOfMeasure create(UnitOfMeasure unitOfMeasure) {
         // Normalizar nombre y abreviación de manera consistente (para validación y almacenamiento)
@@ -45,6 +50,7 @@ public class UnitOfMeasureService implements IUnitOfMeasureServicePort {
         return unitMeasurePersistencePort.create(unitOfMeasure);
     }
 
+    @Auditable(operationType = OperationType.UPDATE, affectedTable = "UNIT_OF_MEASURE")
     @Override
     public UnitOfMeasure update(Long id, String enterpriseId, UnitOfMeasure unitOfMeasure) {
         return unitMeasurePersistencePort.findByIdAndEnterpriseId(id, enterpriseId)
@@ -63,6 +69,7 @@ public class UnitOfMeasureService implements IUnitOfMeasureServicePort {
                 .orElseThrow(UnitOfMeasureNotFoundException::new);
     }
 
+    @Auditable(operationType = OperationType.INACTIVATE, affectedTable = "UNIT_OF_MEASURE")
     @Override
     public void changeState(Long id, String enterpriseId) {
         UnitOfMeasure unitOfMeasure = unitMeasurePersistencePort.findByIdAndEnterpriseId(id, enterpriseId)
@@ -71,6 +78,7 @@ public class UnitOfMeasureService implements IUnitOfMeasureServicePort {
         unitMeasurePersistencePort.create(unitOfMeasure);
     }
 
+    @Auditable(operationType = OperationType.DELETE, affectedTable = "UNIT_OF_MEASURE")
     @Override
     public void deleteById(Long id, String enterpriseId) {
         if (unitMeasurePersistencePort.findByIdAndEnterpriseId(id, enterpriseId).isEmpty()) {

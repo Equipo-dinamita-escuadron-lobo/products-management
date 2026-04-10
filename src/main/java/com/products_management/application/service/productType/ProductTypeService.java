@@ -10,6 +10,9 @@ import com.products_management.domain.exception.productType.ProductTypeNameAlrea
 import com.products_management.domain.model.Product;
 import com.products_management.domain.model.ProductType;
 import com.products_management.domain.utils.StringNormalizer;
+import com.products_management.infraestructure.audit.annotation.Auditable;
+import com.products_management.infraestructure.audit.annotation.OperationType;
+
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
@@ -22,11 +25,13 @@ public class ProductTypeService implements IProductTypeServicePort {
     private final IProductTypePersistencePort productTypeOutputPort;
     private final IProductServicePort productServicePort;
 
-    public ProductTypeService(IProductTypePersistencePort productTypeOutputPort, IProductServicePort productServicePort) {
+    public ProductTypeService(IProductTypePersistencePort productTypeOutputPort,
+            IProductServicePort productServicePort) {
         this.productTypeOutputPort = productTypeOutputPort;
         this.productServicePort = productServicePort;
     }
 
+    @Auditable(operationType = OperationType.CREATE, affectedTable = "PRODUCT_TYPE")
     @Override
     public ProductType createProductType(ProductType productType) {
         // Normalizar el nombre de manera consistente (para validación y almacenamiento)
@@ -35,6 +40,7 @@ public class ProductTypeService implements IProductTypeServicePort {
         return productTypeOutputPort.save(productType);
     }
 
+    @Auditable(operationType = OperationType.UPDATE, affectedTable = "PRODUCT_TYPE")
     @Override
     public ProductType updateProductType(Long id, String enterpriseId, ProductType productType) {
         // Verificar que el tipo de producto existe y pertenece a la empresa antes de actualizar
@@ -53,6 +59,7 @@ public class ProductTypeService implements IProductTypeServicePort {
         return productTypeOutputPort.update(id, productType);
     }
 
+    @Auditable(operationType = OperationType.DELETE, affectedTable = "PRODUCT_TYPE")
     @Override
     public void deleteProductType(Long id, String enterpriseId) {
         // Verificar que el tipo de producto existe y pertenece a la empresa antes de eliminar
@@ -86,7 +93,7 @@ public class ProductTypeService implements IProductTypeServicePort {
                 .orElseThrow(() -> new ProductTypeNotFoundException());
     }
     
-    
+    @Auditable(operationType = OperationType.INACTIVATE, affectedTable = "PRODUCT_TYPE")
     @Override
     public void changeState(Long id, String enterpriseId) {
         ProductType productType = productTypeOutputPort.findByIdAndEnterpriseId(id, enterpriseId)

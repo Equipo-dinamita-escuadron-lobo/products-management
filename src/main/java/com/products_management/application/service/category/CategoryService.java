@@ -10,6 +10,8 @@ import com.products_management.domain.exception.category.CategoryNameAlreadyExis
 import com.products_management.domain.model.Category;
 import com.products_management.domain.model.Product;
 import com.products_management.domain.utils.StringNormalizer;
+import com.products_management.infraestructure.audit.annotation.Auditable;
+import com.products_management.infraestructure.audit.annotation.OperationType;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -39,7 +41,7 @@ public class CategoryService implements ICategoryServicePort {
     }
 
 
-
+    @Auditable(operationType = OperationType.CREATE, affectedTable = "CATEGORY")
     @Override
     public Category create(Category category) {
         // Normalizar el nombre de manera consistente (para validación y almacenamiento)
@@ -48,6 +50,7 @@ public class CategoryService implements ICategoryServicePort {
         return categoryPersistencePort.create(category);
     }
 
+    @Auditable(operationType = OperationType.UPDATE, affectedTable = "CATEGORY", idArgIndex = 1, enterpriseIdArgIndex = 0)
     @Override
     public Category update(String enterpriseId, Long id, Category category) {
         return categoryPersistencePort.findByIdAndEnterpriseId(id, enterpriseId)
@@ -70,6 +73,7 @@ public class CategoryService implements ICategoryServicePort {
                 .orElseThrow(CategoryNotFoundException::new);
     }
 
+    @Auditable(operationType = OperationType.INACTIVATE, affectedTable = "CATEGORY", idArgIndex = 1, enterpriseIdArgIndex = 0)
     @Override
     public void changeState(String enterpriseId, Long id) {
         Category category = categoryPersistencePort.findByIdAndEnterpriseId(id, enterpriseId)
@@ -78,6 +82,7 @@ public class CategoryService implements ICategoryServicePort {
         categoryPersistencePort.create(category);
     }
 
+    @Auditable(operationType = OperationType.DELETE, affectedTable = "CATEGORY", idArgIndex = 1, enterpriseIdArgIndex = 0)
     @Override
     public void deleteById(String enterpriseId, Long id) {
         if (categoryPersistencePort.findByIdAndEnterpriseId(id, enterpriseId).isEmpty()) {

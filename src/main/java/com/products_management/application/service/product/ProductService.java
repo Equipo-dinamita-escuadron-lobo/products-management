@@ -26,6 +26,8 @@ import com.products_management.domain.exception.product.ProductNameAlreadyExists
 import com.products_management.domain.exception.product.ProductReferenceAlreadyExistsException;
 import com.products_management.domain.model.Product;
 import com.products_management.domain.utils.StringNormalizer;
+import com.products_management.infraestructure.audit.annotation.Auditable;
+import com.products_management.infraestructure.audit.annotation.OperationType;
 import com.products_management.infraestructure.utils.PaginationHelper;
 
 import lombok.RequiredArgsConstructor;
@@ -106,6 +108,7 @@ public class ProductService implements IProductServicePort {
         return findActivatedWithPagination(enterpriseId, pageable.getPageNumber(), pageable.getPageSize());
     }
 
+    @Auditable(operationType = OperationType.CREATE, affectedTable = "PRODUCT")
     @Override
     public Product create(Product product) {
         // Normalizar nombre y referencia de productos en mayúsculas (formato estándar
@@ -138,6 +141,7 @@ public class ProductService implements IProductServicePort {
         return createdProduct;
     }
 
+    @Auditable(operationType = OperationType.UPDATE, affectedTable = "PRODUCT", idArgIndex = 0, enterpriseIdArgIndex = 2)
     @Override
     public Product update(Long id, Product product, String enterpriseId) {
 
@@ -194,7 +198,7 @@ public class ProductService implements IProductServicePort {
     }
 
    
-
+    @Auditable(operationType = OperationType.INACTIVATE, affectedTable = "PRODUCT", idArgIndex = 0, enterpriseIdArgIndex = 1)
     @Override
     public void changeState(Long id, String enterpriseId) {
         Product product = productPersistencePort.findByIdAndEnterpriseId(id, enterpriseId)
@@ -203,6 +207,7 @@ public class ProductService implements IProductServicePort {
         productPersistencePort.create(product);
     }
 
+    @Auditable(operationType = OperationType.DELETE, affectedTable = "PRODUCT", idArgIndex = 0, enterpriseIdArgIndex = 1)
     @Override
     public void deleteById(Long id, String enterpriseId) {
         Product product = productPersistencePort.findByIdAndEnterpriseId(id, enterpriseId)

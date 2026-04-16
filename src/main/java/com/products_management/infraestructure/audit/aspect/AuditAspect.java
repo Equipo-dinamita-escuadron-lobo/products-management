@@ -1,8 +1,10 @@
 package com.products_management.infraestructure.audit.aspect;
 
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -41,6 +43,18 @@ public class AuditAspect {
     private final IProductTypePersistencePort productTypePersistencePort;
     @Lazy
     private final IUnitOfMeasurePersistencePort unitOfMeasurePersistencePort;
+
+    private static final Map<Class<?>, List<String>> CONTEXT_FIELDS = Map.of(
+            Product.class, List.of("code", "name"),
+            Category.class, List.of("name"),
+            ProductType.class, List.of("name"),
+            UnitOfMeasure.class, List.of("name", "abbreviation"));
+
+    private static final Map<String, Class<?>> TABLE_TO_CLASS = Map.of(
+            "PRODUCT", Product.class,
+            "CATEGORY", Category.class,
+            "PRODUCT_TYPE", ProductType.class,
+            "UNIT_OF_MEASURE", UnitOfMeasure.class);
 
     public AuditAspect(
             AuditEventBuilder auditEventBuilder,
@@ -161,6 +175,7 @@ public class AuditAspect {
             Object result,
             Map<String, Object> beforeData,
             Auditable auditable) {
+        Class<?> entityClass = TABLE_TO_CLASS.get(auditable.affectedTable());
         return switch (operationType) {
 
             case CREATE -> {
@@ -182,21 +197,29 @@ public class AuditAspect {
 
             case UPDATE -> {
                 Map<String, Object> afterData = fetchCurrentState(auditable, args);
-                yield Map.of("changes", buildDiff(beforeData, afterData));
+                Map<String, Object> data = new LinkedHashMap<>();
+                Map<String, Object> context = buildContext(entityClass, beforeData);
+                if (!context.isEmpty())
+                    data.put("context", context);
+                data.put("changes", buildDiff(beforeData, afterData));
+                yield data;
             }
 
             case ACTIVATE, INACTIVATE -> {
                 if (beforeData != null) {
-                    Map<String, Object> beforeState = Map.of("state", beforeData.get("state"));
-                    Map<String, Object> afterState = Map.of("state", !(boolean) beforeData.get("state"));
-                    yield Map.of("changes", buildDiff(beforeState, afterState));
+                    Map<String, Object> data = new LinkedHashMap<>();
+                    Map<String, Object> context = buildContext(entityClass, beforeData);
+                    if (!context.isEmpty())
+                        data.put("context", context);
+                    data.put("changes", buildDiff(
+                            Map.of("state", beforeData.get("state")),
+                            Map.of("state", !((Boolean) beforeData.get("state")))));
+                    yield data;
                 }
                 yield Map.of();
             }
 
-            case DELETE -> {
-                yield Map.of("entity", beforeData != null ? beforeData : extractDeleteInfo(args));
-            }
+            case DELETE -> Map.of("entity", beforeData != null ? beforeData : Map.of("id", args[0]));
         };
     }
 
@@ -215,6 +238,20 @@ public class AuditAspect {
             }
         });
         return diff;
+    }
+
+    private Map<String, Object> buildContext(Class<?> entityClass, Map<String, Object> data) {
+        if (data == null || entityClass == null)
+            return Map.of();
+
+        return CONTEXT_FIELDS.getOrDefault(entityClass, List.of())
+                .stream()
+                .filter(field -> data.get(field) != null)
+                .collect(Collectors.toMap(
+                        field -> field,
+                        data::get,
+                        (a, b) -> a,
+                        LinkedHashMap::new));
     }
 
     private String resolveEnterpriseId(Auditable auditable, Object[] args, Object result) {
@@ -307,11 +344,5 @@ public class AuditAspect {
 
         map.entrySet().removeIf(entry -> entry.getValue() == null);
         return map;
-    }
-
-    private Map<String, Object> extractDeleteInfo(Object[] args) {
-        Map<String, Object> data = new LinkedHashMap<>();
-        data.put("id", args[0]);
-        return data;
     }
 }

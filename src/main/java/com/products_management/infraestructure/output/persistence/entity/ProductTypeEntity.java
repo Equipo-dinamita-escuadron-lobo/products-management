@@ -2,22 +2,11 @@ package com.products_management.infraestructure.output.persistence.entity;
 
 import lombok.*;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import jakarta.persistence.*;
+import io.swagger.v3.oas.annotations.media.Schema;
 
-/**
- * @brief Entidad JPA para persistencia de tipos de producto
- *
- * Representa la tabla de tipos de producto en base de datos,
- * permitiendo clasificación lógica de productos por empresa.
- */
+import java.time.Instant;
+
 @Entity
 @Table(name = "product_type")
 @Builder
@@ -33,5 +22,12 @@ public class ProductTypeEntity {
     private String name;    
     private String description;
     private String enterpriseId;
-    private boolean state;
+
+    /**
+     * Fecha de creación usada como corte para snapshot de copia.
+     * REQ-PRODUCTS-03.
+     */
+    @Builder.Default
+    @Column(name = "created_at", nullable = false, updatable = false)
+    private Instant createdAt = Instant.now();
 }

@@ -5,10 +5,10 @@ import java.util.List;
 import org.hibernate.annotations.TenantId;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+import io.swagger.v3.oas.annotations.media.Schema;
+
+import java.time.Instant;
 
 /**
  * @brief Entidad JPA para persistencia de categorías
@@ -18,6 +18,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
+@Builder
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
@@ -42,4 +43,14 @@ public class CategoryEntity {
 
     @TenantId
     private String tenantId;
+
+    private Long taxId;
+
+    /**
+     * Fecha de creación usada como corte para snapshot de copia.
+     * REQ-PRODUCTS-03.
+     */
+    @Builder.Default
+    @Column(name = "created_at", nullable = false, updatable = false)
+    private Instant createdAt = Instant.now();
 }

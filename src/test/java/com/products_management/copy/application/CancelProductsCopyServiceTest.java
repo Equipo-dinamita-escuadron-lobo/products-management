@@ -1,0 +1,64 @@
+package com.products_management.copy.application;
+
+import com.products_management.copy.application.output.ICopyJobLogRepositoryPort;
+import com.products_management.copy.application.services.CancelProductsCopyService;
+import com.products_management.copy.domain.enums.CopyEstado;
+import com.products_management.copy.domain.exceptions.DuplicateCopyJobException;
+import com.products_management.copy.domain.models.CopyJobLog;
+import com.products_management.copy.infraestructure.adapters.input.rest.dto.CopyCancelResponseDto;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.time.Instant;
+import java.util.Optional;
+import java.util.UUID;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.when;
+
+/**
+ * Tests unitarios para CancelProductsCopyService.
+ */
+@ExtendWith(MockitoExtension.class)
+class CancelProductsCopyServiceTest {
+
+    @Mock
+    private ICopyJobLogRepositoryPort logRepo;
+
+    @InjectMocks
+    private CancelProductsCopyService service;
+
+    @Test
+    void cancelarProcesoExistenteDebeRetornarEstadoCANCELADO() {
+        String idProceso = UUID.randomUUID().toString();
+        CopyJobLog log = CopyJobLog.builder()
+                .idProceso(UUID.fromString(idProceso))
+                .fase(2)
+                .modulo("products")
+                .estado(CopyEstado.EN_PROCESO)
+                .fechaInicio(Instant.now())
+                .equivalenciasGeneradas(0)
+                .build();
+
+        when(logRepo.buscarPorIdProceso(anyString())).thenReturn(Optional.of(log));
+        when(logRepo.guardar(any())).thenAnswer(inv -> inv.getArgument(0));
+
+        CopyCancelResponseDto resultado = service.cancelar(idProceso);
+
+        assertThat(resultado.getEstado()).isEqualTo("CANCELADO");
+    }
+
+    @Test
+    void cancelarProcesoInexistenteLanzaExcepcion() {
+        when(logRepo.buscarPorIdProceso(anyString())).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> service.cancelar("proceso-inexistente"))
+                .isInstanceOf(DuplicateCopyJobException.class);
+    }
+}

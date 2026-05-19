@@ -1,6 +1,7 @@
 package com.products_management.infraestructure.output.persistence.entity;
 
 import java.time.Instant;
+import java.util.Date;
 
 import org.hibernate.annotations.TenantId;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -10,10 +11,9 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+import jakarta.persistence.Column;
+import io.swagger.v3.oas.annotations.media.Schema;
 /**
  * @brief Entidad JPA para persistencia de productos
  *
@@ -53,5 +53,12 @@ public class ProductEntity {
 
     @TenantId
     private String tenantId;
+
+    /**
+     * Fecha de creación usada como corte para snapshot de copia.
+     * REQ-PRODUCTS-03.
+     */
+    @Column(name = "created_at", nullable = false, updatable = false)
+    private Instant createdAt = Instant.now();
 
 }

@@ -1,10 +1,10 @@
 package com.products_management.infraestructure.output.persistence.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+import io.swagger.v3.oas.annotations.media.Schema;
+
+import java.time.Instant;
 
 /**
  * @brief Entidad JPA para persistencia de unidades de medida
@@ -14,6 +14,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
+@Builder
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
@@ -28,5 +29,13 @@ public class UnitOfMeasureEntity {
     private String abbreviation;
     private String enterpriseId;
     private boolean state;
+
+    /**
+     * Fecha de creación usada como corte para snapshot de copia.
+     * Se asigna automáticamente al insertar (REQ-PRODUCTS-03).
+     */
+    @Builder.Default
+    @Column(name = "created_at", nullable = false, updatable = false)
+    private Instant createdAt = Instant.now();
 
 }

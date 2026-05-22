@@ -19,7 +19,7 @@ public interface CategoryCopySourceRepository extends JpaRepository<CategoryEnti
      * Retorna todas las categorías de entOrigen creadas antes del snapshot.
      * Usa enterpriseId para filtrar porque el tenant activo es entDestino durante la copia.
      */
-    @Query("SELECT c FROM CategoryEntity c WHERE c.enterpriseId = :entOrigen AND c.createdAt <= :snapshotCorte")
+    @Query("SELECT c FROM CategoryEntity c WHERE c.enterpriseId = :entOrigen AND (c.createdAt IS NULL OR c.createdAt <= :snapshotCorte)")
     List<CategoryEntity> findByEntOrigenBeforeSnapshot(
             @Param("entOrigen") String entOrigen,
             @Param("snapshotCorte") Instant snapshotCorte);

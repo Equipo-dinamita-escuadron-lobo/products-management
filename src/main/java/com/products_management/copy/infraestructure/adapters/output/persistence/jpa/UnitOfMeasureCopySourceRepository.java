@@ -20,7 +20,7 @@ public interface UnitOfMeasureCopySourceRepository extends JpaRepository<UnitOfM
      * Retorna todas las unidades de medida de entOrigen creadas antes del snapshot.
      * Filtra por enterpriseId porque UnitOfMeasure no tiene @TenantId.
      */
-    @Query("SELECT u FROM UnitOfMeasureEntity u WHERE u.enterpriseId = :entOrigen AND u.createdAt <= :snapshotCorte")
+    @Query("SELECT u FROM UnitOfMeasureEntity u WHERE u.enterpriseId = :entOrigen AND (u.createdAt IS NULL OR u.createdAt <= :snapshotCorte)")
     List<UnitOfMeasureEntity> findByEntOrigenBeforeSnapshot(
             @Param("entOrigen") String entOrigen,
             @Param("snapshotCorte") Instant snapshotCorte);

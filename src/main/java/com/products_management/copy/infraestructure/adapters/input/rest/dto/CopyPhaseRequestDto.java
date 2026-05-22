@@ -31,7 +31,6 @@ public class CopyPhaseRequestDto {
     @NotBlank
     private String entOrigen;
 
-    @NotBlank
     private String entDestino;
 
     @NotNull
@@ -39,4 +38,8 @@ public class CopyPhaseRequestDto {
 
     /** Equivalencias generadas por participantes anteriores (ej. CATALOGUE). */
     private List<CopyEquivalenciaDto> equivalenciasPrev;
+
+    /** Datos exportados por el modo BACKUP para ser importados en RESTORE. */
+    @com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL)
+    private Object datosImportados;
 }

@@ -27,4 +27,8 @@ public class CopyPhaseResponseDto {
     private String mensaje;
 
     private List<String> advertencias;
+
+    /** Snapshot de datos exportados durante el modo BACKUP. */
+    @com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL)
+    private Object datosExportados;
 }

@@ -19,9 +19,10 @@ public class ProductTypeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String name;    
+    private String name;
     private String description;
     private String enterpriseId;
+    private boolean state;
 
     /**
      * Fecha de creación usada como corte para snapshot de copia.

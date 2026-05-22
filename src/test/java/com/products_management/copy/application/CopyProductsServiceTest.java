@@ -10,7 +10,7 @@ import com.products_management.copy.infraestructure.adapters.input.rest.dto.Copy
 import com.products_management.copy.infraestructure.adapters.input.rest.dto.CopyPhaseRequestDto;
 import com.products_management.copy.infraestructure.adapters.input.rest.dto.CopyPhaseResponseDto;
 import com.products_management.infraestructure.output.persistence.entity.*;
-import com.products_management.infraestructure.output.persistence.multitenancy.utils.TenantContext;
+import com.products_management.infraestructure.output.multitenancy.utils.TenantContext;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

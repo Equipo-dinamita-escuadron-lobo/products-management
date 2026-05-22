@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.products_management.copy.application.input.*;
 import com.products_management.copy.infraestructure.adapters.input.rest.controller.CopyProductsController;
 import com.products_management.copy.infraestructure.adapters.input.rest.dto.*;
-import com.products_management.infraestructure.output.persistence.multitenancy.interceptor.TenantInterceptor;
+import com.products_management.infraestructure.output.multitenancy.interceptor.TenantInterceptor;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;

@@ -18,7 +18,7 @@ public interface ProductCopySourceRepository extends JpaRepository<ProductEntity
      * Retorna todos los productos de entOrigen creados antes del snapshot.
      * Usa enterpriseId para filtrar (bypass de tenant Hibernate en lectura de origen).
      */
-    @Query("SELECT p FROM ProductEntity p WHERE p.enterpriseId = :entOrigen AND p.createdAt <= :snapshotCorte")
+    @Query("SELECT p FROM ProductEntity p WHERE p.enterpriseId = :entOrigen AND (p.createdAt IS NULL OR p.createdAt <= :snapshotCorte)")
     List<ProductEntity> findByEntOrigenBeforeSnapshot(
             @Param("entOrigen") String entOrigen,
             @Param("snapshotCorte") Instant snapshotCorte);

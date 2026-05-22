@@ -54,7 +54,6 @@ class ProductTypePersistenceAdapterUnitTest {
         productTypeEntity.setId(PRODUCT_TYPE_ID);
         productTypeEntity.setName(PRODUCT_TYPE_NAME);
         productTypeEntity.setEnterpriseId(ENTERPRISE_ID);
-        productTypeEntity.setState(true);
     }
 
     // ==================== Tests de save ====================
@@ -95,7 +94,6 @@ class ProductTypePersistenceAdapterUnitTest {
         updatedEntity.setId(PRODUCT_TYPE_ID);
         updatedEntity.setName("Electrónico Actualizado");
         updatedEntity.setEnterpriseId(ENTERPRISE_ID);
-        updatedEntity.setState(true);
 
         when(productTypePersistenceMapper.toProductTypeEntity(any(ProductType.class))).thenReturn(updatedEntity);
         when(productTypeRepository.save(updatedEntity)).thenReturn(updatedEntity);

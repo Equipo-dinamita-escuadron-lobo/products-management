@@ -3,7 +3,7 @@ package com.products_management.copy.infraestructure.persistence;
 import com.products_management.copy.domain.enums.CopyEstado;
 import com.products_management.copy.infraestructure.adapters.output.persistence.jpa.CopyJobLogEntity;
 import com.products_management.copy.infraestructure.adapters.output.persistence.jpa.CopyJobLogJpaRepository;
-import com.products_management.infraestructure.output.persistence.multitenancy.utils.TenantContext;
+import com.products_management.infraestructure.output.multitenancy.utils.TenantContext;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

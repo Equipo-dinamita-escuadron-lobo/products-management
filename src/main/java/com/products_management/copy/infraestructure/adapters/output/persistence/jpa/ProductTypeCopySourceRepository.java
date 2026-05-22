@@ -18,7 +18,7 @@ public interface ProductTypeCopySourceRepository extends JpaRepository<ProductTy
     /**
      * Retorna todos los tipos de producto de entOrigen creados antes del snapshot.
      */
-    @Query("SELECT pt FROM ProductTypeEntity pt WHERE pt.enterpriseId = :entOrigen AND pt.createdAt <= :snapshotCorte")
+    @Query("SELECT pt FROM ProductTypeEntity pt WHERE pt.enterpriseId = :entOrigen AND (pt.createdAt IS NULL OR pt.createdAt <= :snapshotCorte)")
     List<ProductTypeEntity> findByEntOrigenBeforeSnapshot(
             @Param("entOrigen") String entOrigen,
             @Param("snapshotCorte") Instant snapshotCorte);

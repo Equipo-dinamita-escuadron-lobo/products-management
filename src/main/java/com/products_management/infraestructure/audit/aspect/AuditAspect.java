@@ -28,6 +28,7 @@ import com.products_management.infraestructure.audit.publisher.AuditEventPublish
 
 import lombok.extern.slf4j.Slf4j;
 
+//Aspect
 @Aspect
 @Component
 @Slf4j

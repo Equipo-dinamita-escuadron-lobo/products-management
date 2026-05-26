@@ -1,10 +1,13 @@
 package com.products_management.infraestructure.security;
 
+import java.util.List;
+
 /**
  * @brief Interfaz contrato para utilidades JWT
  *
- * Define contrato para acceso a información del contexto de seguridad JWT,
- * incluyendo ID de usuario y token de autenticación.
+ *        Define contrato para acceso a información del contexto de seguridad
+ *        JWT,
+ *        incluyendo ID de usuario y token de autenticación.
  */
 public interface IJwtUtils {
 
@@ -12,4 +15,7 @@ public interface IJwtUtils {
 
     String getToken();
 
+    String getUsername();
+
+    List<String> getRealmRoles();
 }

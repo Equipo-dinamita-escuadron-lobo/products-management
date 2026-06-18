@@ -28,6 +28,7 @@ import com.products_management.infraestructure.audit.publisher.AuditEventPublish
 
 import lombok.extern.slf4j.Slf4j;
 
+//Aspect
 @Aspect
 @Component
 @Slf4j
@@ -124,10 +125,10 @@ public class AuditAspect {
 
     }
 
-    private Map<String, Object> captureBeforeData(Auditable auditable, Object[] args) {
+    protected Map<String, Object> captureBeforeData(Auditable auditable, Object[] args) {
         try {
             return switch (auditable.operationType()) {
-                case UPDATE, INACTIVATE, DELETE -> fetchCurrentState(auditable, args);
+                case UPDATE, ACTIVATE, INACTIVATE, DELETE -> fetchCurrentState(auditable, args);
                 default -> null;
             };
         } catch (Exception e) {
@@ -137,7 +138,7 @@ public class AuditAspect {
         }
     }
 
-    private OperationType resolveFinalOperationType(Auditable auditable, Map<String, Object> beforeData) {
+    protected OperationType resolveFinalOperationType(Auditable auditable, Map<String, Object> beforeData) {
         if (auditable.operationType() == OperationType.INACTIVATE) {
             boolean wasActive = beforeData != null && (boolean) beforeData.get("state");
             return wasActive ? OperationType.INACTIVATE : OperationType.ACTIVATE;
@@ -145,7 +146,7 @@ public class AuditAspect {
         return auditable.operationType();
     }
 
-    private Map<String, Object> fetchCurrentState(Auditable auditable, Object[] args) {
+    protected Map<String, Object> fetchCurrentState(Auditable auditable, Object[] args) {
         Long id = (Long) args[auditable.idArgIndex()];
         String enterpriseId = (String) args[auditable.enterpriseIdArgIndex()];
 
@@ -170,7 +171,7 @@ public class AuditAspect {
         };
     }
 
-    private Map<String, Object> buildDataObject(OperationType operationType,
+    protected Map<String, Object> buildDataObject(OperationType operationType,
             Object[] args,
             Object result,
             Map<String, Object> beforeData,
@@ -223,7 +224,7 @@ public class AuditAspect {
         };
     }
 
-    private Map<String, Object> buildDiff(Map<String, Object> before, Map<String, Object> after) {
+    protected Map<String, Object> buildDiff(Map<String, Object> before, Map<String, Object> after) {
         Map<String, Object> diff = new LinkedHashMap<>();
         if (before == null || after == null)
             return diff;
@@ -240,7 +241,7 @@ public class AuditAspect {
         return diff;
     }
 
-    private Map<String, Object> buildContext(Class<?> entityClass, Map<String, Object> data) {
+    protected Map<String, Object> buildContext(Class<?> entityClass, Map<String, Object> data) {
         if (data == null || entityClass == null)
             return Map.of();
 
@@ -254,7 +255,7 @@ public class AuditAspect {
                         LinkedHashMap::new));
     }
 
-    private String resolveEnterpriseId(Auditable auditable, Object[] args, Object result) {
+    protected String resolveEnterpriseId(Auditable auditable, Object[] args, Object result) {
         return switch (auditable.operationType()) {
             case CREATE -> {
                 if (result instanceof Product p)
@@ -271,7 +272,7 @@ public class AuditAspect {
         };
     }
 
-    private String resolveRegisterId(Auditable auditable, Object[] args, Object result) {
+    protected String resolveRegisterId(Auditable auditable, Object[] args, Object result) {
         return switch (auditable.operationType()) {
             case CREATE -> {
                 if (result instanceof Product p)
@@ -288,7 +289,7 @@ public class AuditAspect {
         };
     }
 
-    private Map<String, Object> productToMap(Product p) {
+    protected Map<String, Object> productToMap(Product p) {
         Map<String, Object> map = new LinkedHashMap<>();
         map.put("id", p.getId());
         map.put("code", p.getCode());
@@ -307,7 +308,7 @@ public class AuditAspect {
         return map;
     }
 
-    private Map<String, Object> categoryToMap(Category c) {
+    protected Map<String, Object> categoryToMap(Category c) {
         Map<String, Object> map = new LinkedHashMap<>();
         map.put("id", c.getId());
         map.put("name", c.getName());
@@ -323,7 +324,7 @@ public class AuditAspect {
         return map;
     }
 
-    private Map<String, Object> productTypeToMap(ProductType pt) {
+    protected Map<String, Object> productTypeToMap(ProductType pt) {
         Map<String, Object> map = new LinkedHashMap<>();
         map.put("id", pt.getId());
         map.put("name", pt.getName());
@@ -334,7 +335,7 @@ public class AuditAspect {
         return map;
     }
 
-    private Map<String, Object> unitOfMeasureToMap(UnitOfMeasure u) {
+    protected Map<String, Object> unitOfMeasureToMap(UnitOfMeasure u) {
         Map<String, Object> map = new LinkedHashMap<>();
         map.put("id", u.getId());
         map.put("name", u.getName());
